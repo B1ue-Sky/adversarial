@@ -109,7 +109,7 @@ def main (args):
     data['weight_clf'] = pd.Series(data[weight_var].values, index=data.index)
 
     # -- Adversary
-    data['weight_adv'] = pd.Series(np.multiply(data['weight_adv'].values,  1. - data['signal'].values), index=data.index)
+    data['weight_adv'] = pd.Series(np.multiply(data[weight_var].values,  1. - data['signal'].values), index=data.index)
 
 
     # Classifier-only fit, cross-validation
