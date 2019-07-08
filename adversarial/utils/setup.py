@@ -41,7 +41,7 @@ def parse_args (cmdline_args=sys.argv[1:], backend=False, adversarial=False, plo
     """
 
     parser = argparse.ArgumentParser(description="Training uBoost classifierfor de-correlated jet tagging.")
-
+    print("Args: {}".format(cmdline_args))
     # Inputs
     parser.add_argument('--input',  action='store', type=str,
                         default='./input/', help='Input directory, from which to read HDF5 data file.')
@@ -250,15 +250,30 @@ def configure_tensorflow (args, num_cores):
     # Manually configure Tensorflow session
     gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.1,
                                 allow_growth=True)
+    #print("tf.GPUOptions={}".format(gpu_options))
+    #print("tf.ConfigProto=GPU:{}".format(args.gpu))
+    #print("tf.ConfigProto=device_count:{}".format(args.devices))
 
     config = tf.ConfigProto(intra_op_parallelism_threads=num_cores * 2,
                             inter_op_parallelism_threads=num_cores * 2,
                             allow_soft_placement=True,
                             device_count={'GPU': args.devices if args.gpu else 0},
                             gpu_options=gpu_options if args.gpu else None)
+    #L: num_cores * 2 is like hyperthread, but imply in tf's op pool model.
+    #L: device_count{CPU} is another parameter , but in tf's logical device model.
+    
+    #L: test auto set threads bumber, not good
+    #config = tf.ConfigProto(intra_op_parallelism_threads=0,
+    #                        inter_op_parallelism_threads=0,
+    #                        allow_soft_placement=True,
+    #                        device_count={'CPU': num_cores,
+    #				'GPU': args.devices if args.gpu else 0},
+    #                        gpu_options=gpu_options if args.gpu else None)
 
+    print("tf.config={}".format(config))
+    #print("tf.Session")
     session = tf.Session(config=config)
-
+    #print("configure_tensorflow done")
     return session
 
 
@@ -296,6 +311,13 @@ def initialise_backend (args):
         num_cores = 1
         log.warning("Could not retrieve CPU information -- probably running on macOS. Therefore, multi-core running is disabled.")
         pass
+    try:
+	#num_cores=os.environ["SLURM_CPUS_PER_TASK"]
+	#num_cores=os.environ["SLURM_JOB_CPUS_PER_NODE"]
+	num_cores=int(os.environ["SLURM_CPUS_ON_NODE"])
+	log.info("BUT Inside SLURM: {} cpus(cores) of this task".format(num_cores))
+    except:
+	pass
 
     # Configure backend
     if args.theano:
@@ -375,6 +397,7 @@ def load_data (path, name='dataset', train=None, test=None, signal=None, backgro
     if sample: assert 0 < sample and sample < 1.
 
     # Read data from HDF5 file
+    #data = pd.read_hdf(path, name,iterator=True)
     data = pd.read_hdf(path, name)
 
     # Subsample signal by x10 for testing: 1E+07 -> 1E+06
