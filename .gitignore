@@ -3,3 +3,6 @@ input/
 ~backup/
 .idea/
 venv/
+models/
+output/
+optimisation/output/
