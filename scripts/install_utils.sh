@@ -18,7 +18,8 @@ function fix_link () {
     fi
 
     # Silently try to activate environment
-    source activate "$env" 2>&1 1>/dev/null
+    #source activate "$env" 2>&1 1>/dev/null
+    conda activate "$env" 2>&1 1>/dev/null    
 
     # Check if environment was succesfully activated
     env_active="$(conda info --envs | grep \* | sed 's/ .*//g')"
@@ -63,7 +64,8 @@ function fix_link () {
         fi
 
         # Silently deactivate environment
-        source deactivate 2>&1 1>/dev/null
+        #source deactivate 2>&1 1>/dev/null
+	conda deactivate 2>&1 1>/dev/null
     else
         warning "Failed to activate '$env'."
     fi
@@ -202,8 +204,8 @@ function check_env_consistency () {
     print "Checking consistency of conda environment '$env' with file '$envfile'."
     
     # Silently activate environment
-    source activate $env 2>&1 1>/dev/null
-
+    #source activate $env 2>&1 1>/dev/null
+    conda activate $env 2>&1 1>/dev/null
     # (1) Conda packages
     # Write the enviroment specifications to file
     tmpfile=".tmp.env.txt"
@@ -262,7 +264,8 @@ function check_env_consistency () {
     rm -f $tmpfile
     
     # Silently deactivate environment
-    source deactivate 2>&1 1>/dev/null
+    #source deactivate 2>&1 1>/dev/null 
+    conda deactivate 2>&1 1>/dev/null
     
 }
 
@@ -318,7 +321,8 @@ function create_env () {
 	conda env create -f $envfile
 	
         # Silently activate environment
-        source activate $env 2>&1 1>/dev/null
+        #source activate $env 2>&1 1>/dev/null
+	conda activate $env 2>&1 1>/dev/null
 
 	# Fix ROOT setup problem on macOS (2/2)
 	if [[ "$(uname)" == *"Darwin"* ]]; then
@@ -345,7 +349,8 @@ function create_env () {
 	fi
 	
 	# Silently deactivate environment
-	source deactivate 2>&1 1>/dev/null
+	#source deactivate 2>&1 1>/dev/null
+	conda deactivate 2>&1 1>/dev/null
     fi
 
     # Fix known issues

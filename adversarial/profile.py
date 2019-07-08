@@ -112,6 +112,7 @@ def profile (fn):
         name  = (args[0].__class__.__name__ + '.') if (spec.args and spec.args[0] == 'self') else ''
         name += fn.__name__
         with Profile(title='@' + name, depth=3):
+            #print("profile DBG:{}/{}".format(args,kwargs))
             result = fn(*args, **kwargs)
             pass
         return result
