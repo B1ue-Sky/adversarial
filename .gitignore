@@ -2,4 +2,4 @@
 input/
 ~backup/
 .idea/
-
+venv/
