@@ -1,29 +1,3 @@
-**.pyc
-**.out
-**/db/**
-**patches**
-**.log
-**log.*
-**~
-*.o[0-9]*
-*.e[0-9]*
-*.po[0-9]*
-*.pe[0-9]*
-.*
-log*.txt
-
-**.bak
-*REF*
-
-# Directories
-logs**
-figures**
-input**
-output**
-models**
-# ^TEMP
-
-# Setuptools
-build**
-dist**
-**.egg-info**
+*.pyc
+input/
+~backup/
