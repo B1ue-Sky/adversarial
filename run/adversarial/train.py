@@ -101,11 +101,11 @@ def main (args):
     # Get standard-formatted decorrelation inputs
     decorrelation = get_decorrelation_variables(data)
     aux_vars = ['logpt']
-    data['logpt'] = pd.Series(np.log(data['pt'].values), index=data.index)
+    data['logpt'] = pd.Series(np.log(data['fjet_pt'].values), index=data.index)
     
     # Specify common weights
     # -- Classifier
-    weight_var = 'weight_adv'  # 'weight_adv' / 'weight_train'
+    weight_var = 'weight'  # 'weight_adv' / 'weight_train'
     data['weight_clf'] = pd.Series(data[weight_var].values, index=data.index)
 
     # -- Adversary

@@ -343,8 +343,49 @@ def initialise_backend (args):
 # re-weighted background _won't_ be flat in (log m, log pt), and vice versa. It
 # should go without saying, but draw target samples from a uniform prior on the
 # coordinates which are used for the decorrelation.
-DECORRELATION_VARIABLES = ['m']
-INPUT_VARIABLES = ['Tau21', 'C2', 'D2', 'Angularity', 'Aplanarity', 'FoxWolfram20', 'KtDR', 'PlanarFlow', 'Split12', 'ZCut12']
+DECORRELATION_VARIABLES = ['fjet_mass']
+#INPUT_VARIABLES = ['Tau21', 'C2', 'D2', 'Angularity', 'Aplanarity', 'FoxWolfram20', 'KtDR', 'PlanarFlow', 'Split12', 'ZCut12']
+INPUT_VARIABLES =['fjet_pt', 'fjet_eta', 'fjet_mass', 'fjet_Angularity', 'fjet_Aplanarity',
+                    'fjet_C2', 'fjet_D2', 'fjet_FoxWolfram20', 'fjet_KtDR', 'fjet_Qw',
+                    'fjet_PlanarFlow', 'fjet_Split12', 'fjet_Split23', 'fjet_Tau21_wta',
+                    'fjet_Tau32_wta', 'fjet_ZCut12', 'fjet_e3', 'fjet_mcEventWeight',
+                    'sjetVR1_IP2D_pb', 'sjetVR1_IP2D_pc', 'sjetVR1_IP2D_pu', 'sjetVR1_IP3D_pb',
+                    'sjetVR1_IP3D_pc', 'sjetVR1_IP3D_pu', 'sjetVR1_JetFitter_N2Tpair',
+                    'sjetVR1_JetFitter_dRFlightDir', 'sjetVR1_JetFitter_deltaeta',
+                    'sjetVR1_JetFitter_deltaphi', 'sjetVR1_JetFitter_energyFraction',
+                    'sjetVR1_JetFitter_mass', 'sjetVR1_JetFitter_massUncorr',
+                    'sjetVR1_JetFitter_nSingleTracks', 'sjetVR1_JetFitter_nTracksAtVtx',
+                    'sjetVR1_JetFitter_nVTX', 'sjetVR1_JetFitter_significance3d',
+                    'sjetVR1_SV1_L3d', 'sjetVR1_SV1_Lxy', 'sjetVR1_SV1_N2Tpair',
+                    'sjetVR1_SV1_NGTinSvx', 'sjetVR1_SV1_deltaR', 'sjetVR1_SV1_dstToMatLay',
+                    'sjetVR1_SV1_efracsvx', 'sjetVR1_SV1_masssvx', 'sjetVR1_SV1_pb',
+                    'sjetVR1_SV1_pc', 'sjetVR1_SV1_pu', 'sjetVR1_SV1_significance3d',
+                    'sjetVR1_deta', 'sjetVR1_dphi', 'sjetVR1_dr', 'sjetVR1_eta', 'sjetVR1_pt',
+                    'sjetVR1_rnnip_pb', 'sjetVR1_rnnip_pc', 'sjetVR1_rnnip_ptau', 'sjetVR1_rnnip_pu',
+                    'sjetVR2_IP2D_pb', 'sjetVR2_IP2D_pc', 'sjetVR2_IP2D_pu', 'sjetVR2_IP3D_pb',
+                    'sjetVR2_IP3D_pc', 'sjetVR2_IP3D_pu', 'sjetVR2_JetFitter_N2Tpair',
+                    'sjetVR2_JetFitter_dRFlightDir', 'sjetVR2_JetFitter_deltaeta',
+                    'sjetVR2_JetFitter_deltaphi', 'sjetVR2_JetFitter_energyFraction',
+                    'sjetVR2_JetFitter_mass', 'sjetVR2_JetFitter_massUncorr',
+                    'sjetVR2_JetFitter_nSingleTracks', 'sjetVR2_JetFitter_nTracksAtVtx',
+                    'sjetVR2_JetFitter_nVTX', 'sjetVR2_JetFitter_significance3d',
+                    'sjetVR2_SV1_L3d', 'sjetVR2_SV1_Lxy', 'sjetVR2_SV1_N2Tpair',
+                    'sjetVR2_SV1_NGTinSvx', 'sjetVR2_SV1_deltaR', 'sjetVR2_SV1_dstToMatLay',
+                    'sjetVR2_SV1_efracsvx', 'sjetVR2_SV1_masssvx', 'sjetVR2_SV1_pb', 'sjetVR2_SV1_pc',
+                    'sjetVR2_SV1_pu', 'sjetVR2_SV1_significance3d', 'sjetVR2_deta', 'sjetVR2_dphi',
+                    'sjetVR2_dr', 'sjetVR2_eta', 'sjetVR2_pt', 'sjetVR2_rnnip_pb', 'sjetVR2_rnnip_pc',
+                    'sjetVR2_rnnip_ptau', 'sjetVR2_rnnip_pu', 'sjetVR3_IP2D_pb', 'sjetVR3_IP2D_pc',
+                    'sjetVR3_IP2D_pu', 'sjetVR3_IP3D_pb', 'sjetVR3_IP3D_pc', 'sjetVR3_IP3D_pu',
+                    'sjetVR3_JetFitter_N2Tpair', 'sjetVR3_JetFitter_dRFlightDir',
+                    'sjetVR3_JetFitter_deltaeta', 'sjetVR3_JetFitter_deltaphi', 'sjetVR3_JetFitter_energyFraction',
+                    'sjetVR3_JetFitter_mass', 'sjetVR3_JetFitter_massUncorr',
+                    'sjetVR3_JetFitter_nSingleTracks', 'sjetVR3_JetFitter_nTracksAtVtx',
+                    'sjetVR3_JetFitter_nVTX', 'sjetVR3_JetFitter_significance3d',
+                    'sjetVR3_SV1_L3d', 'sjetVR3_SV1_Lxy', 'sjetVR3_SV1_N2Tpair', 'sjetVR3_SV1_NGTinSvx',
+                    'sjetVR3_SV1_deltaR', 'sjetVR3_SV1_dstToMatLay', 'sjetVR3_SV1_efracsvx', 'sjetVR3_SV1_masssvx',
+                    'sjetVR3_SV1_pb', 'sjetVR3_SV1_pc', 'sjetVR3_SV1_pu', 'sjetVR3_SV1_significance3d',
+                    'sjetVR3_deta', 'sjetVR3_dphi', 'sjetVR3_dr', 'sjetVR3_eta', 'sjetVR3_pt', 'sjetVR3_rnnip_pb',
+                    'sjetVR3_rnnip_pc', 'sjetVR3_rnnip_ptau', 'sjetVR3_rnnip_pu','weight', 'signal', 'train']
 
 @garbage_collect
 @profile
@@ -371,6 +412,7 @@ def get_decorrelation_variables (data):
 
 @garbage_collect
 @profile
+
 def load_data (path, name='dataset', train=None, test=None, signal=None, background=None, sample=None, seed=21, replace=True):
     """
     General script to load data, common to all run scripts.
@@ -397,31 +439,32 @@ def load_data (path, name='dataset', train=None, test=None, signal=None, backgro
     if sample: assert 0 < sample and sample < 1.
 
     # Read data from HDF5 file
-    #data = pd.read_hdf(path, name,iterator=True)
     data = pd.read_hdf(path, name)
 
-    # Subsample signal by x10 for testing: 1E+07 -> 1E+06
+    # Subsample signal by x10 for testing: 1E+07 -> 1E+06?????????
     np.random.seed(7)
     try:
-        msk_test  = data['train'] == 0
-        msk_train = ~msk_test
-        msk_bkg = data['signal'] == 0
-        msk_sig = ~msk_bkg
-        idx_sig = np.where(msk_sig)[0]
-        idx_sig = np.random.choice(idx_sig, int(msk_sig.sum() * 0.1), replace=False)
-        msk_sig = np.zeros_like(msk_bkg).astype(bool)
-        msk_sig[idx_sig] = True
-        data = data[msk_train | (msk_test & (msk_sig | msk_bkg))]
+        msk_test  = data['train'].astype(bool)
+        msk_train = ~msk_test #train/test disting
+        msk_bkg = data['signal'].astype(bool)
+        msk_sig = ~msk_bkg  #signal/bkg
+
+        # idx_sig = np.where(msk_sig)[0]
+        # idx_sig = np.random.choice(idx_sig, int(msk_sig.sum() * 0.1), replace=False) #select 10%
+        # msk_sig = np.zeros_like(msk_bkg).astype(bool)
+        # msk_sig[idx_sig] = True #reset selected sig
+        # data = data[msk_train | (msk_test & (msk_sig | msk_bkg))]
+        pass
     except:
         log.warning("Some of the keys ['train', 'signal'] were not present in file {}".format(path))
         pass
 
     # Logging
     try:
-        for sig, name in zip([1, 0], ['signal', 'background']):
+        for sig, name in zip([True, False], ['signal', 'background']):
             log.info("Found {:8.0f} training and {:8.0f} test samples for {}".format(
-                sum((data['signal'] == sig) & (data['train'] == 1)),
-                sum((data['signal'] == sig) & (data['train'] == 0)),
+                sum((data['signal'] == sig) & (data['train'] == True)),
+                sum((data['signal'] == sig) & (data['train'] == False)),
                 name
                 ))
             pass
@@ -433,30 +476,31 @@ def load_data (path, name='dataset', train=None, test=None, signal=None, backgro
     features_input         = INPUT_VARIABLES
     features_decorrelation = DECORRELATION_VARIABLES
 
-    # Split data
+    # Split data, for different usage
     if train:
         log.info("load_data: Selecting only training data.")
-        data = data[data['train']  == 1]
+        data = data[data['train']  == True]
         pass
 
     if test:
         log.info("load_data: Selecting only testing data.")
-        data = data[data['train']  == 0]
+        data = data[data['train']  == False]
         pass
 
     if signal:
         log.info("load_data: Selecting only signal data.")
-        data = data[data['signal'] == 1]
+        data = data[data['signal'] == True]
         pass
 
     if background:
         log.info("load_data: Selecting only background data.")
-        data = data[data['signal'] == 0]
+        data = data[data['signal'] == False]
         pass
 
     if sample:
         log.info("load_data: Selecting a random fraction {:.2f} of data (replace = {}, seed = {}).".format(sample, replace, seed))
-        data = data.sample(frac=sample, random_state=seed, replace=False)
+        data = data.sample(frac=sample, random_state=seed, replace=False) #dataframe.sample
+        # no replace means one element can only be selected once
         pass
 
     # Return
