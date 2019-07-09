@@ -97,6 +97,7 @@ def main (args):
     lambda_reg = cfg['combined']['model']['lambda_reg']  # Use same `lambda` as the adversary
     digits = int(np.ceil(max(-np.log10(lambda_reg), 0)))
     lambda_str = '{l:.{d:d}f}'.format(d=digits,l=lambda_reg).replace('.', 'p')
+    print "lambda_str=",lambda_str
 
     # Get standard-formatted decorrelation inputs
     decorrelation = get_decorrelation_variables(data)
@@ -110,7 +111,7 @@ def main (args):
 
     # -- Adversary
     data['weight_adv'] = pd.Series(np.multiply(data[weight_var].values,  1. - data['signal'].values), index=data.index)
-
+    #only weight bkg??
 
     # Classifier-only fit, cross-validation
     # --------------------------------------------------------------------------
@@ -200,22 +201,22 @@ def main (args):
                     pass
                 pass # end: k-fold cross-validation
             pass
-        else:
-
-            # Load pre-trained classifiers
-            log.info("Loading cross-validation classifiers from file")
-            try:
-                for fold in range(args.folds):
-                    name = '{}__{}of{}'.format(basename, fold + 1, args.folds)
-                    classifier, history = load(basedir, name)
-                    classifiers.append(classifier)
-                    histories.append(history)
-                    pass
-            except IOError as err:
-                log.error("{}".format(err))
-                log.error("Not all files were loaded. Exiting.")
-                #return 1  # @TEMP
-                pass
+        # else:
+        #
+        #     # Load pre-trained classifiers
+        #     log.info("Loading cross-validation classifiers from file")
+        #     try:
+        #         for fold in range(args.folds):
+        #             name = '{}__{}of{}'.format(basename, fold + 1, args.folds)
+        #             classifier, history = load(basedir, name)
+        #             classifiers.append(classifier)
+        #             histories.append(history)
+        #             pass
+        #     except IOError as err:
+        #         log.error("{}".format(err))
+        #         log.error("Not all files were loaded. Exiting.")
+        #         #return 1  # @TEMP
+        #         pass
 
             pass # end: train/load
         pass
@@ -391,6 +392,7 @@ def main (args):
 
                     # Add `ANN` variable
                     add_nn(data, classifier, 'ANN')
+                    #???
 
                     # Compute optimisation metric
                     try:
@@ -465,7 +467,7 @@ def main (args):
             W = [data['weight_clf'].values] + [data['weight_adv'].values]
 
             # Compile model for pre-training
-            classifier.trainable = False
+            classifier.trainable = False #lock pre-trained classifier
             parallelised.compile(**cfg['combined']['compile'])
 
             # Pre-training adversary
