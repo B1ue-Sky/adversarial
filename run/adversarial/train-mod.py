@@ -11,7 +11,6 @@ import itertools
 
 # Get ROOT to stop hogging the command-line options
 import ROOT
-
 ROOT.PyConfig.IgnoreCommandLineOptions = True
 
 # Scientific import(s)
@@ -21,15 +20,15 @@ import root_numpy
 from sklearn.model_selection import StratifiedKFold
 
 import matplotlib
-
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
 
 # Project import(s)
-from adversarial.utils import *
-from adversarial.profile import *
+from adversarial.utils     import *
+from adversarial.profile   import *
 from adversarial.constants import *
 from .common import *
+
 
 # Global variable(s)
 RNG = np.random.RandomState(21)  # For reproducibility
@@ -37,7 +36,8 @@ RNG = np.random.RandomState(21)  # For reproducibility
 
 # Main function definition
 @profile
-def main(args):
+def main (args):
+
     # Initialisation
     # --------------------------------------------------------------------------
     with Profile("Initialisation"):
@@ -50,7 +50,7 @@ def main(args):
         if args.optimise_classifier:
 
             # Stand-alone classifier optimisation
-            args.train_classifier = True
+            args.train_classifier  = True
             args.train_adversarial = False
             args.train = False
             cfg['classifier']['fit']['verbose'] = 2
@@ -58,7 +58,7 @@ def main(args):
         elif args.optimise_adversarial:
 
             # Adversarial network optimisation
-            args.train_classifier = False
+            args.train_classifier  = False
             args.train_adversarial = True
             args.train = False
             cfg['combined']['fit']['verbose'] = 2
@@ -66,7 +66,7 @@ def main(args):
             pass
 
         cfg['classifier']['fit']['verbose'] = 2  # @TEMP
-        cfg['combined']['fit']['verbose'] = 2  # @TEMP
+        cfg['combined']  ['fit']['verbose'] = 2  # @TEMP
 
         # Initialise Keras backend
         initialise_backend(args)
@@ -87,6 +87,7 @@ def main(args):
         print_env(args, cfg)
         pass
 
+
     # Loading data
     # --------------------------------------------------------------------------
     data, features, features_decorrelation = load_data(args.input + 'data.h5', train=True)
@@ -94,21 +95,25 @@ def main(args):
 
     # Regulsarisation parameter
     lambda_reg = cfg['combined']['model']['lambda_reg']  # Use same `lambda` as the adversary
+    #note Regularization for Simplicity lambda set big can prevent over-training
     digits = int(np.ceil(max(-np.log10(lambda_reg), 0)))
-    lambda_str = '{l:.{d:d}f}'.format(d=digits, l=lambda_reg).replace('.', 'p')
+    lambda_str = '{l:.{d:d}f}'.format(d=digits,l=lambda_reg).replace('.', 'p')
+    print "lambda_str=",lambda_str
 
     # Get standard-formatted decorrelation inputs
-    decorrelation = get_decorrelation_variables(data)
+    decorrelation= get_decorrelation_variables(data)
     aux_vars = ['logpt']
-    data['logpt'] = pd.Series(np.log(data['pt'].values), index=data.index)
-
+    data['logpt'] = pd.Series(np.log(data['fjet_pt'].values), index=data.index)
+    
     # Specify common weights
     # -- Classifier
-    weight_var = 'weight_adv'  # 'weight_adv' / 'weight_train'
+    from adversarial.utils import WEIGHT_VARIABLES
+    weight_var = WEIGHT_VARIABLES[0]
     data['weight_clf'] = pd.Series(data[weight_var].values, index=data.index)
 
     # -- Adversary
-    data['weight_adv'] = pd.Series(np.multiply(data['weight_adv'].values, 1. - data['signal'].values), index=data.index)
+    data['weight_adv'] = pd.Series(np.multiply(data[weight_var].values,  1. - data['signal'].values), index=data.index)
+    #only weight bkg?
 
     # Classifier-only fit, cross-validation
     # --------------------------------------------------------------------------
@@ -116,7 +121,7 @@ def main(args):
 
         # Define variable(s)
         basename = 'crossval_classifier'
-        basedir = 'models/adversarial/classifier/crossval/'
+        basedir  = 'models/adversarial/classifier/crossval/'
 
         # Get indices for each fold in stratified k-fold training
         # @NOTE: No shuffling is performed -- assuming that's already done.
@@ -128,7 +133,7 @@ def main(args):
 
         # Collection of classifiers and their associated training histories
         classifiers = list()
-        histories = list()
+        histories   = list()
 
         # Train or load classifiers
         if args.optimise_classifier:  # args.train or args.train_classifier:
@@ -173,16 +178,15 @@ def main(args):
                     # Compute initial losses
                     X_val, Y_val, W_val = validation_data
                     eval_opts = dict(batch_size=cfg['classifier']['fit']['batch_size'], verbose=0)
-                    initial_losses = [[parallelised.evaluate(X, Y, sample_weight=W, **eval_opts)],
+                    initial_losses = [[parallelised.evaluate(X,     Y,     sample_weight=W,     **eval_opts)],
                                       [parallelised.evaluate(X_val, Y_val, sample_weight=W_val, **eval_opts)]]
 
                     # Fit classifier model
-                    ret = parallelised.fit(X, Y, sample_weight=W, validation_data=validation_data, callbacks=callbacks,
-                                           **cfg['classifier']['fit'])
+                    ret = parallelised.fit(X, Y, sample_weight=W, validation_data=validation_data, callbacks=callbacks, **cfg['classifier']['fit'])
 
                     # Prepend initial losses
                     for metric, loss_train, loss_val in zip(parallelised.metrics_names, *initial_losses):
-                        ret.history[metric].insert(0, loss_train)
+                        ret.history[metric]         .insert(0, loss_train)
                         ret.history['val_' + metric].insert(0, loss_val)
                         pass
 
@@ -197,42 +201,45 @@ def main(args):
                     # trained classifiers
                     save([args.output, basedir], name, classifier, ret.history)
                     pass
-                pass  # end: k-fold cross-validation
+                pass # end: k-fold cross-validation
             pass
-        else:
+        # else:
+        #
+        #     # Load pre-trained classifiers
+        #     log.info("Loading cross-validation classifiers from file")
+        #     try:
+        #         for fold in range(args.folds):
+        #             name = '{}__{}of{}'.format(basename, fold + 1, args.folds)
+        #             classifier, history = load(basedir, name)
+        #             classifiers.append(classifier)
+        #             histories.append(history)
+        #             pass
+        #     except IOError as err:
+        #         log.error("{}".format(err))
+        #         log.error("Not all files were loaded. Exiting.")
+        #         #return 1  # @TEMP
+        #         pass
 
-            # Load pre-trained classifiers
-            log.info("Loading cross-validation classifiers from file")
-            try:
-                for fold in range(args.folds):
-                    name = '{}__{}of{}'.format(basename, fold + 1, args.folds)
-                    classifier, history = load(basedir, name)
-                    classifiers.append(classifier)
-                    histories.append(history)
-                    pass
-            except IOError as err:
-                log.error("{}".format(err))
-                log.error("Not all files were loaded. Exiting.")
-                # return 1  # @TEMP
-                pass
-
-            pass  # end: train/load
+            pass # end: train/load
         pass
+
 
     # Early stopping in case of stand-alone classifier optimisation
     # --------------------------------------------------------------------------
     if args.optimise_classifier:
+
         # Compute average validation loss
         val_avg = np.mean([hist['val_loss'] for hist in histories], axis=0)
-        val_std = np.std([hist['val_loss'] for hist in histories], axis=0)
+        val_std = np.std ([hist['val_loss'] for hist in histories], axis=0)
         return val_avg[-1] + val_std[-1]
+
 
     # Classifier-only fit, full
     # --------------------------------------------------------------------------
     with Profile("Classifier-only fit, full"):
 
         # Define variable(s)
-        name = 'classifier'
+        name    = 'classifier'
         basedir = 'models/adversarial/classifier/full/'
 
         if args.train or args.train_classifier:
@@ -278,16 +285,19 @@ def main(args):
             # Load pre-trained classifier
             log.info("Loading full classifier from file")
             classifier, history = load(basedir, name)
-            pass  # end: train/load
+            pass # end: train/load
         pass
+
+
 
     # Definitions for adversarial training
     # --------------------------------------------------------------------------
     # Create custom Kullback-Leibler (KL) divergence cost.
-    def kullback_leibler(p_true, p_pred):
+    def kullback_leibler (p_true, p_pred):
         return -K.log(p_pred)
 
     cfg['combined']['compile']['loss'][1] = kullback_leibler
+
 
     # @TODO: Make `train_{classifier,adverarial}` methods for used with _both_
     #        cross-val.- and full trianing
@@ -299,9 +309,9 @@ def main(args):
         # - Checkpointing
 
         # Define variables
-        results = []  # Holding optimisation metrics
+        results  = []  # Holding optimisation metrics
         basename = 'combined_lambda{}'.format(lambda_str)
-        basedir = 'models/adversarial/combined/crossval/'
+        basedir  = 'models/adversarial/combined/crossval/'
 
         # Get indices for each fold in stratified k-fold training
         # @NOTE: No shuffling is performed -- assuming that's already done above.
@@ -324,7 +334,7 @@ def main(args):
                     # Set up adversary
                     adversary = adversary_model(gmm_dimensions=len(DECORRELATION_VARIABLES),
                                                 **cfg['adversary']['model'])
-
+                    
                     # Set up combined, adversarial model
                     combined = combined_model(classifier, adversary, **cfg['combined']['model'])
 
@@ -332,17 +342,17 @@ def main(args):
                     parallelised = parallelise_model(combined, args)
 
                     # Prepare arrays
-                    X = [data[features].values[train]] + [data[aux_vars].values[train], decorrelation[train]]
-                    Y = [data['signal'].values[train]] + [np.ones_like(data['signal'].values[train])]
-                    W = [data['weight_clf'].values[train]] + [data['weight_adv'].values[train]]
+                    #Note!! mass-deco is achived by drop mass-related vars in train and adversial against mass-related vars
+                    X = [data[features]    .values[train]] + [data[aux_vars].values[train], decorrelation[train]]
+                    Y = [data['signal']    .values[train]] + [np.ones_like(data['signal'].values[train])]
+                    W = [data['weight_clf'].values[train]] + [data['weight_adv'].values[train]] #??
 
                     validation_data = (
-                        [data[features].values[validation]] + [data[aux_vars].values[validation],
-                                                               decorrelation[validation]],
-                        [data['signal'].values[validation]] + [np.ones_like(data['signal'].values[validation])],
+                        [data[features]    .values[validation]] + [data[aux_vars].values[validation], decorrelation[validation]],
+                        [data['signal']    .values[validation]] + [np.ones_like(data['signal'].values[validation])],
                         [data['weight_clf'].values[validation]] + [data['weight_adv'].values[validation]]
-                    )
-
+                        )
+                        
                     # Compile model for pre-training
                     classifier.trainable = False
                     parallelised.compile(**cfg['combined']['compile'])
@@ -351,15 +361,14 @@ def main(args):
                     log.info("Computing initial loss")
                     X_val, Y_val, W_val = validation_data
                     eval_opts = dict(batch_size=cfg['combined']['fit']['batch_size'], verbose=0)
-                    initial_losses = [parallelised.evaluate(X, Y, sample_weight=W, **eval_opts),
+                    initial_losses = [parallelised.evaluate(X,     Y,     sample_weight=W,     **eval_opts),
                                       parallelised.evaluate(X_val, Y_val, sample_weight=W_val, **eval_opts)]
 
                     # Pre-training adversary
                     log.info("Pre-training")
                     pretrain_fit_opts = dict(**cfg['combined']['fit'])
                     pretrain_fit_opts['epochs'] = cfg['combined']['pretrain']
-                    ret_pretrain = parallelised.fit(X, Y, sample_weight=W, validation_data=validation_data,
-                                                    **pretrain_fit_opts)
+                    ret_pretrain = parallelised.fit(X, Y, sample_weight=W, validation_data=validation_data, **pretrain_fit_opts)
 
                     # Re-compile combined model for full training
                     classifier.trainable = True
@@ -367,19 +376,17 @@ def main(args):
 
                     # Fit classifier model
                     log.info("Actual training")
-                    ret = parallelised.fit(X, Y, sample_weight=W, validation_data=validation_data,
-                                           **cfg['combined']['fit'])
+                    ret = parallelised.fit(X, Y, sample_weight=W, validation_data=validation_data, **cfg['combined']['fit'])
 
                     # Prepend initial losses
                     for metric, loss_train, loss_val in zip(parallelised.metrics_names, *initial_losses):
-                        ret_pretrain.history[metric].insert(0, loss_train)
+                        ret_pretrain.history[metric]         .insert(0, loss_train)
                         ret_pretrain.history['val_' + metric].insert(0, loss_val)
                         pass
 
                     for metric in parallelised.metrics_names:
-                        ret.history[metric] = ret_pretrain.history[metric] + ret.history[metric]
-                        ret.history['val_' + metric] = ret_pretrain.history['val_' + metric] + ret.history[
-                            'val_' + metric]
+                        ret.history[metric]          = ret_pretrain.history[metric]          + ret.history[metric]
+                        ret.history['val_' + metric] = ret_pretrain.history['val_' + metric] + ret.history['val_' + metric]
                         pass
 
                     # Save combined model and training history to file, both in unique
@@ -388,13 +395,14 @@ def main(args):
 
                     # Add `ANN` variable
                     add_nn(data, classifier, 'ANN')
+                    #?????? used for optization result test in this function
 
                     # Compute optimisation metric
                     try:
                         rej, jsd = metrics(data.iloc[validation], 'ANN')
                         print "Background rejection: {}".format(rej)
                         print "1/JSD:                {}".format(jsd)
-                        if np.inf in [rej, jsd] or np.nan in [rej, jsd]:
+                        if np.inf in [rej,jsd] or np.nan in [rej,jsd]:
                             return 0
                         results.append(rej + lambda_reg * jsd)
                     except ValueError:
@@ -405,19 +413,22 @@ def main(args):
             pass
         pass
 
+
     # Early stopping in case of adversarial network
     # --------------------------------------------------------------------------
     if args.optimise_adversarial:
+
         # Return optimisation metric: - (rej + 1/jsd)
         print "rej + 1/jsd: {} ± {}".format(np.mean(results), np.std(results))
         return - (np.mean(results) - np.std(results))
+
 
     # Combined adversarial fit, full
     # --------------------------------------------------------------------------
     with Profile("Combined adversarial fit, full"):
 
         # Define variables
-        name = 'combined_lambda{}'.format(lambda_str)
+        name    = 'combined_lambda{}'.format(lambda_str)
         basedir = 'models/adversarial/combined/full/'
 
         # Load pre-trained classifier
@@ -426,7 +437,7 @@ def main(args):
         # Set up adversary
         adversary = adversary_model(gmm_dimensions=len(DECORRELATION_VARIABLES),
                                     **cfg['adversary']['model'])
-
+        
         # Save adversarial model diagram
         plot_model(adversary, to_file=args.output + 'model_adversary.png', show_shapes=True)
 
@@ -454,12 +465,12 @@ def main(args):
             parallelised.compile(**cfg['combined']['compile'])
 
             # Prepare arrays
-            X = [data[features].values] + [data[aux_vars].values, decorrelation]
-            Y = [data['signal'].values] + [np.ones_like(data['signal'].values)]
+            X = [data[features]    .values] + [data[aux_vars].values, decorrelation]
+            Y = [data['signal']    .values] + [np.ones_like(data['signal'].values)]
             W = [data['weight_clf'].values] + [data['weight_adv'].values]
 
             # Compile model for pre-training
-            classifier.trainable = False
+            classifier.trainable = False #lock pre-trained classifier
             parallelised.compile(**cfg['combined']['compile'])
 
             # Pre-training adversary
@@ -478,13 +489,13 @@ def main(args):
 
             # Prepend initial losses
             for metric in parallelised.metrics_names:
-                ret.history[metric] = ret_pretrain.history[metric] + ret.history[metric]
+                ret.history[metric]          = ret_pretrain.history[metric]          + ret.history[metric]
                 pass
 
             # Save combined model and training history to file, both in unique
             # output directory and in the directory for pre-trained classifiers.
             adv = lambda s: s.replace('combined', 'adversary')
-            save([args.output, basedir], name, combined, ret.history)
+            save([args.output,     basedir],      name,  combined, ret.history)
             save([args.output, adv(basedir)], adv(name), adversary)
 
             # Saving adversarially trained classifier in lwtnn-friendly format.
@@ -497,7 +508,7 @@ def main(args):
             # extract it manually afterwards.
             log.info("Loading full, combined model from file")
             combined, history = load(basedir, name, model=combined)
-            pass  # end: train/load
+            pass # end: train/load
 
         pass
 
@@ -506,6 +517,7 @@ def main(args):
 
 # Main function call
 if __name__ == '__main__':
+
     # Parse command-line arguments
     args = parse_args(adversarial=True)
 

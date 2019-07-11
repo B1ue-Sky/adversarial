@@ -343,9 +343,12 @@ def initialise_backend (args):
 # re-weighted background _won't_ be flat in (log m, log pt), and vice versa. It
 # should go without saying, but draw target samples from a uniform prior on the
 # coordinates which are used for the decorrelation.
+WEIGHT_VARIABLES = ['reweight',"fjet_mcEventWeight"] #hard_coded!!
+# Note: weight is local! havn't generate global weight now!
 DECORRELATION_VARIABLES = ['fjet_mass']
+#DECORRELATION_VARIABLES_AUX=['fjet_pt']
 #INPUT_VARIABLES = ['Tau21', 'C2', 'D2', 'Angularity', 'Aplanarity', 'FoxWolfram20', 'KtDR', 'PlanarFlow', 'Split12', 'ZCut12']
-INPUT_VARIABLES =['fjet_pt', 'fjet_eta', 'fjet_mass', 'fjet_Angularity', 'fjet_Aplanarity',
+INPUT_VARIABLES =[  'fjet_eta', 'fjet_Angularity', 'fjet_Aplanarity',
                     'fjet_C2', 'fjet_D2', 'fjet_FoxWolfram20', 'fjet_KtDR', 'fjet_Qw',
                     'fjet_PlanarFlow', 'fjet_Split12', 'fjet_Split23', 'fjet_Tau21_wta',
                     'fjet_Tau32_wta', 'fjet_ZCut12', 'fjet_e3', 'fjet_mcEventWeight',
@@ -389,7 +392,7 @@ INPUT_VARIABLES =['fjet_pt', 'fjet_eta', 'fjet_mass', 'fjet_Angularity', 'fjet_A
 
 @garbage_collect
 @profile
-def get_decorrelation_variables (data):
+def get_decorrelation_variables (data,bWithAux=False,bAuxLog=True):
     """
     Get array of standardised decorrelation variables.
 
