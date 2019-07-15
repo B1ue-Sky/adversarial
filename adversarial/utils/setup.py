@@ -488,7 +488,7 @@ def load_data (path, name='dataset', train=None, test=None, signal=None, backgro
     if sample: assert 0 < sample and sample < 1.
 
     # Read data from HDF5 file
-    data = pd.read_hdf(path, name)
+    data = pd.read_hdf(path, name).fillna(value=INPUT_DEFAULTS)
 
     # Subsample signal by x10 for testing: 1E+07 -> 1E+06?????????
     np.random.seed(7)
@@ -551,6 +551,5 @@ def load_data (path, name='dataset', train=None, test=None, signal=None, backgro
         data = data.sample(frac=sample, random_state=seed, replace=False) #dataframe.sample
         # no replace means one element can only be selected once
         pass
-    data=data.fillna(value=INPUT_DEFAULTS)
     # Return
     return data, features_input, features_decorrelation
