@@ -133,12 +133,17 @@ def plot (*argv):
                 )
             cfg = dict(**base)
             cfg.update(opts)
-            msk = (data['signal'] == 0) & msks_pass[feat]
+            msk = (data['signal'] == False) & msks_pass[feat]
+            print 1 + ifeat//2
             pad = c.pads()[1 + ifeat//2]
             # pad.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, label=" " + latex(feat, ROOT=True), **cfg)
             pad.hist(data.loc[msk, M].values, label=" " + latex(feat, ROOT=True), **cfg)
             pass
-
+        try:
+            print len(c.pads())
+            print c.pads()
+        except Exception as e:
+            print e
         # -- Legend(s)
         for ipad, pad in enumerate(c.pads()[1:], 1):
             offsetx = (0.20 if ipad % 2 else 0.05)
@@ -302,7 +307,7 @@ def plot_individual (*argv):
                         )
                     cfg = dict(**base)
                     cfg.update(opts)
-                    msk = (data['signal'] == 0) & msks_pass[feat]
+                    msk = (data['signal'] == False) & msks_pass[feat]
                     # c.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, label=" " + latex(feat, ROOT=True), **cfg)
                     c.hist(data.loc[msk, M].values, label=" " + latex(feat, ROOT=True), **cfg)
                     pass
