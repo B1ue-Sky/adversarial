@@ -56,7 +56,7 @@ def main (args):
 
     # Load data
     data, features, _ = load_data(args.input + 'data.h5', test=True)
-    #DATA, _, _ = load_data(args.input + 'data.h5')
+    DATA, _, _ = load_data(args.input + 'data.h5')
 
 
     # Common definitions
@@ -209,7 +209,7 @@ def exam_samples(data, args, features=None):
         Method exam samples.
         """
         masscuts = [True, False]
-        trains=[True,False]
+        trains=[None,True,False]
         pt_ranges = [None, (200 * GeV, 500 * GeV), (500 * GeV, 1000 * GeV), (1000 * GeV, 2000 * GeV)]
         if features is None:
             features=set(INPUT_VARIABLES,DECORRELATION_VARIABLES,
