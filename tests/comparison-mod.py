@@ -198,7 +198,7 @@ def main (args):
     gc.collect() #important!
 
     # Perform performance studies
-    perform_studies (data, args, tagger_features, ann_vars, uboost_vars)
+    perform_studies (data, args, tagger_features, ann_vars)
     exam_samples(DATA, args,all_variables)
 
     return 0
@@ -224,7 +224,7 @@ def exam_samples(data, args, features=None):
             pass
 
 
-def perform_studies (data, args, tagger_features, ann_vars, uboost_vars):
+def perform_studies (data, args, tagger_features, ann_vars):
     """
     Method delegating performance studies.
     """
