@@ -12,6 +12,7 @@ from adversarial.constants import *
 # Custom import(s)
 import rootplotting as rp
 
+
 #Now without weight_test
 
 
@@ -22,7 +23,7 @@ HISTSTYLE[False]['label'] = "Multijets"
 
 @garbage_collect
 @showsave
-def distribution (data_, args, feat, pt_range, mass_range):
+def samplesexam (data_, args, feat, pt_range=None, mass_range=None,train=None):
     """
     Perform study of substructure variable distributions.
 
@@ -31,14 +32,25 @@ def distribution (data_, args, feat, pt_range, mass_range):
     Arguments:
         data: Pandas data frame from which to read data.
         args: Namespace holding command-line arguments.
-        feat: Feature for which to plot signal- and background distributions.
+        feat: Feature for which to plot.
     """
+
+    if train is not None:
+        if train:
+            data = data_[data_['train']==True]
+            pass
+        else:
+            data = data_[data_['train']==False]
+            pass
+    else:
+        data=data_
+        pass
 
     # Select data
     if pt_range is not None:
-        data = data_[(data_[PT] > pt_range[0]) & (data_[PT] < pt_range[1])]
+        data = data[(data[PT] > pt_range[0]) & (data[PT] < pt_range[1])]
     else:
-        data = data_
+        # data = data
         pass
 
     if mass_range is not None:
@@ -71,7 +83,7 @@ def distribution (data_, args, feat, pt_range, mass_range):
     c = plot(args, data, feat, bins, pt_range, mass_range)
 
     # Output
-    path = 'figures/distribution/distribution_{}{}{}.pdf'.format(standardise(feat), '__pT{:.0f}_{:.0f}'.format(pt_range[0], pt_range[1]) if pt_range is not None else '', '__mass{:.0f}_{:.0f}'.format(mass_range[0], mass_range[1]) if mass_range is not None else '')
+    path = 'figures/samples/{}-{}_{}{}.pdf'.format(standardise(feat), "train" if train else "test",'__pT{:.0f}_{:.0f}'.format(pt_range[0], pt_range[1]) if pt_range is not None else '', '__mass{:.0f}_{:.0f}'.format(mass_range[0], mass_range[1]) if mass_range is not None else '')
 
     return c, args, path
 

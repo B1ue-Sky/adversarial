@@ -20,10 +20,10 @@ import rootplotting as rp
 
 # Global variable definition(s)
 ROOT.gStyle.SetTitleOffset(2.0, 'y')
-
+#now without weight_test
 
 @showsave
-def roc (data_, args, features, masscut=False, pt_range=(200, 2000)):
+def roc (data_, args, features, masscut=False, pt_range=(200*GeV, 2000*GeV)):
     """
     Perform study of ...
 
@@ -38,13 +38,13 @@ def roc (data_, args, features, masscut=False, pt_range=(200, 2000)):
 
     # Select pT-range
     if pt_range is not None:
-        data = data_.loc[(data_['pt'] > pt_range[0]) & (data_['pt'] < pt_range[1])]
+        data = data_.loc[(data_[PT] > pt_range[0]) & (data_[PT] < pt_range[1])]
     else:
         data = data_
         pass
 
     # (Opt.) masscut | @NOTE: Duplication with adversarial/utils/metrics.py
-    msk = (data['m'] > 60.) & (data['m'] < 100.) if masscut else np.ones_like(data['signal']).astype(bool)
+    msk = (data[M] > 60.*GeV) & (data[M] < 100.*GeV) if masscut else np.ones_like(data['signal']).astype(bool)
 
     # Computing ROC curves
     ROCs = dict()
@@ -52,9 +52,11 @@ def roc (data_, args, features, masscut=False, pt_range=(200, 2000)):
 
         sign = -1. if signal_low(feat) else 1.
 
+        # eff_bkg, eff_sig, thresholds = roc_curve(data.loc[msk, 'signal'].values,
+        #                                          data.loc[msk, feat]    .values * sign,
+        #                                          sample_weight=data.loc[msk, 'weight_test'].values)
         eff_bkg, eff_sig, thresholds = roc_curve(data.loc[msk, 'signal'].values,
-                                                 data.loc[msk, feat]    .values * sign,
-                                                 sample_weight=data.loc[msk, 'weight_test'].values)
+                                                 data.loc[msk, feat].values * sign)
 
         if masscut:
             eff_sig_mass = np.mean(msk[data['signal'] == 1])
@@ -83,9 +85,11 @@ def roc (data_, args, features, masscut=False, pt_range=(200, 2000)):
     AUCs = dict()
     for feat in features:
         sign = -1. if signal_low(feat) else 1.
+        # AUCs[feat] = roc_auc_score(data['signal'].values,
+        #                            data[feat]    .values * sign,
+        #                            sample_weight=data['weight_test'].values)
         AUCs[feat] = roc_auc_score(data['signal'].values,
-                                   data[feat]    .values * sign,
-                                   sample_weight=data['weight_test'].values)
+                                   data[feat]    .values * sign)
         pass
 
     # Report scores

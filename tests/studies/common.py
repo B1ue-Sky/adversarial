@@ -43,7 +43,12 @@ TEXT = ["#sqrt{s} = 13 TeV",
 ROOT.gStyle.SetHatchesLineWidth(3)
 ROOT.gStyle.SetTitleOffset(1.6, 'y')
 
-
+####################################################################################
+from adversarial.utils import DECORRELATION_VARIABLES, WEIGHT_VARIABLES, DECORRELATION_VARIABLES_AUX,INPUT_VARIABLES
+PT=DECORRELATION_VARIABLES_AUX[0]
+M=DECORRELATION_VARIABLES[0]
+GeV=1000.0
+####################################################################################
 class TemporaryStyle ():
     """
     Context manager to temporarily modify global ROOT style settings.

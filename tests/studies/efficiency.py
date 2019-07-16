@@ -35,7 +35,8 @@ def efficiency (data, args, feat):
     # Define cuts
     cuts = list()
     for eff in effs:
-        cut = wpercentile(data.loc[msk, feat].values, eff if signal_low(feat) else 100 - eff, weights=data.loc[msk, 'weight_test'].values)
+        # cut = wpercentile(data.loc[msk, feat].values, eff if signal_low(feat) else 100 - eff, weights=data.loc[msk, 'weight_test'].values)
+        cut = wpercentile(data.loc[msk, feat].values, eff if signal_low(feat) else 100 - eff)
         cuts.append(cut)
         pass
 
@@ -56,7 +57,8 @@ def efficiency (data, args, feat):
         M = np.vstack((data.loc[msk, 'm'].values, msk_pass[msk])).T
         weights = data.loc[msk, 'weight_test'].values
 
-        root_numpy.fill_profile(profile, M, weights=weights)
+        # root_numpy.fill_profile(profile, M, weights=weights)
+        root_numpy.fill_profile(profile, M)
 
         # Add to list
         profiles.append(profile)

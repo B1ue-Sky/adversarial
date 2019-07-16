@@ -33,7 +33,7 @@ import studies
 # Custom import(s)
 import rootplotting as rp
 
-
+#now all keep 4 test and addition samplesexame(), all without weight!
 # Main function definition
 @profile
 def main (args):
@@ -56,12 +56,14 @@ def main (args):
 
     # Load data
     data, features, _ = load_data(args.input + 'data.h5', test=True)
+    #DATA, _, _ = load_data(args.input + 'data.h5')
 
 
     # Common definitions
     # --------------------------------------------------------------------------
     # # -- k-nearest neighbour
     # kNN_var = 'D2-k#minusNN'
+
 
     #common useful function
     def meaningful_digits (number):
@@ -73,7 +75,7 @@ def main (args):
     # --------------------------------------------------------------------------
 
     # -- Adversarial neural network (ANN) scan
-    lambda_reg  = 10.
+    lambda_reg  = 10. #should be same with config?
     lambda_regs = sorted([1., 3., 10.,100.]) #Allen use 100, but how about train config.jso setting??
     ann_vars    = list()
     lambda_strs = list()
@@ -96,18 +98,16 @@ def main (args):
     # uboost_vars = ['uBoost(#alpha={:s})'.format(meaningful_digits(ur)) for ur in uboost_urs]
     # uboost_pattern = 'uboost_ur_{{:4.2f}}_te_{:.0f}_rel21_fixed'.format(uboost_eff)
 
-    # -- MV2c10 tagger
+    # -- MV2c10 tagger => only 2 b jets!
+    # mv_vars=["sjetVRGT1_MV2c10_discriminant",
+    #          "sjetVRGT2_MV2c10_discriminant"]
     mv_vars=["sjetVR1_MV2c10_discriminant",
-             "sjetVR2_MV2c10_discriminant",
-             "sjetVR3_MV2c10_discriminant",
-             "sjetVRGT1_MV2c10_discriminant",
-             "sjetVRGT2_MV2c10_discriminant",
-             "sjetVRGT3_MV2c10_discriminant"]
+             "sjetVR2_MV2c10_discriminant"]
     mv_var="MV2c10"
 
     # -- HbbScore tagger
     sc_vars=["fjet_XbbScoreHiggs","fjet_HbbScore","fjet_XbbScoreTop","fjet_XbbScoreQCD","fjet_JSSTopScore"]
-    sc_var="fjet_XbbScoreHiggs"
+    sc_var=sc_vars[0]
 
     # -- Truth information (for backup)
     tru_vars=["fjet_GhostBHadronsFinalCount","fjet_GhostCHadronsFinalCount","fjet_GhostTQuarksFinalCount",
@@ -151,7 +151,6 @@ def main (args):
 
         # ANN
         with Profile("ANN"):
-            from adversarial.utils import DECORRELATION_VARIABLES, WEIGHT_VARIABLES
             adversary = adversary_model(gmm_dimensions=len(DECORRELATION_VARIABLES),
                                         **cfg['adversary']['model'])
 
@@ -163,6 +162,11 @@ def main (args):
                 combined.load_weights('models/adversarial/combined/full/combined_lambda{}.h5'.format(lambda_str_))
                 add_nn(data, classifier, ann_var_)
                 pass
+            pass
+
+        # MV2C10
+        with Profile("MV2C10"):
+            data[mv_var] = pd.concat([data[var] for var in mv_vars], axis=1).min(axis=1)
             pass
 
         # # Adaboost/uBoost
@@ -183,17 +187,40 @@ def main (args):
 
         pass
 
+
     # Remove unused variables
-    study_vars=DECORRELATION_VARIABLES+['pt']+WEIGHT_VARIABLES
-    used_variables = set(tagger_features + ann_vars + uboost_vars + study_vars)
+    study_vars=DECORRELATION_VARIABLES+WEIGHT_VARIABLES+DECORRELATION_VARIABLES_AUX
+    used_variables = set(tagger_features + ann_vars + study_vars)
+    all_variables=set(used_variables,INPUT_VARIABLES)
     unused_variables = [var for var in list(data) if var not in used_variables]
     data.drop(columns=unused_variables)
-    gc.collect()
+    gc.collect() #important!
 
     # Perform performance studies
     perform_studies (data, args, tagger_features, ann_vars, uboost_vars)
+    exam_samples(DATA, args,all_variables)
 
     return 0
+
+
+def exam_samples(data, args, features=None):
+        """
+        Method exam samples.
+        """
+        masscuts = [True, False]
+        trains=[True,False]
+        pt_ranges = [None, (200 * GeV, 500 * GeV), (500 * GeV, 1000 * GeV), (1000 * GeV, 2000 * GeV)]
+        if features is None:
+            features=set(INPUT_VARIABLES,DECORRELATION_VARIABLES,
+                         WEIGHT_VARIABLES,DECORRELATION_VARIABLES_AUX)
+        with Profile("Study: samples variables"):
+            mass_ranges = np.linspace(50*GeV, 300*GeV, (5 + 1)*GeV, endpoint=True)
+            mass_ranges = [None] + zip(mass_ranges[:-1], mass_ranges[1:])
+            for feat, pt_range, mass_range,train in itertools.product(features, pt_ranges,
+                                                                mass_ranges,trains):
+                studies.samplesexam(data, args, feat, pt_range, mass_range,train)
+                pass
+            pass
 
 
 def perform_studies (data, args, tagger_features, ann_vars, uboost_vars):
@@ -201,37 +228,40 @@ def perform_studies (data, args, tagger_features, ann_vars, uboost_vars):
     Method delegating performance studies.
     """
     masscuts  = [True, False]
-    pt_ranges = [None, (200, 500), (500, 1000), (1000, 2000)]
+    #pt_ranges = [None, (200, 500), (500, 1000), (1000, 2000)]
+    pt_ranges = [None, (200*GeV, 500*GeV), (500*GeV, 1000*GeV), (1000*GeV, 2000*GeV)]
 
-    # Perform combined robustness study
-    with Profile("Study: Robustness"):
-        for masscut in masscuts:
-            studies.robustness_full(data, args, tagger_features, masscut=masscut)
-            pass
-        pass
+    # # Perform combined robustness study
+    # with Profile("Study: Robustness"):
+    #     for masscut in masscuts:
+    #         studies.robustness_full(data, args, tagger_features, masscut=masscut)
+    #         pass
+    #     pass
 
     # Perform jet mass distribution comparison study
     with Profile("Study: Jet mass comparison"):
         studies.jetmasscomparison(data, args, tagger_features)
         pass
 
-    # Perform summary plot study
-    with Profile("Study: Summary plot"):
-        regex_nn = re.compile('\#lambda=[\d\.]+')
-        regex_ub = re.compile('\#alpha=[\d\.]+')
+    # # Perform summary plot study
+    # with Profile("Study: Summary plot"):
+    #     regex_nn = re.compile('\#lambda=[\d\.]+')
+    #     regex_ub = re.compile('\#alpha=[\d\.]+')
+    #
+    #     # scan_features = {'NN':       map(lambda feat: (feat, regex_nn.search(feat).group(0)), ann_vars),
+    #     #                  'Adaboost': map(lambda feat: (feat, regex_ub.search(feat).group(0)), uboost_vars)
+    #     #                  }
+    #     scan_features = {'NN': map(lambda feat: (feat, regex_nn.search(feat).group(0)), ann_vars),
+    #                      }
+    #
+    #     for masscut, pt_range in itertools.product(masscuts, pt_ranges):
+    #         studies.summary(data, args, tagger_features, scan_features, masscut=masscut, pt_range=pt_range)
+    #         pass
+    #     pass
 
-        scan_features = {'NN':       map(lambda feat: (feat, regex_nn.search(feat).group(0)), ann_vars),
-                         'Adaboost': map(lambda feat: (feat, regex_ub.search(feat).group(0)), uboost_vars)
-                         }
-
-        for masscut, pt_range in itertools.product(masscuts, pt_ranges):
-            studies.summary(data, args, tagger_features, scan_features, masscut=masscut, pt_range=pt_range)
-            pass
-        pass
-
-    # Perform distributions study
+    # Perform distributions study (now tyr to use exam_samples
     with Profile("Study: Substructure tagger distributions"):
-        mass_ranges = np.linspace(50, 300, 5 + 1, endpoint=True)
+        mass_ranges = np.linspace(50 * GeV, 300 * GeV, (5 + 1) * GeV, endpoint=True)
         mass_ranges = [None] + zip(mass_ranges[:-1], mass_ranges[1:])
         for feat, pt_range, mass_range in itertools.product(tagger_features, pt_ranges, mass_ranges):  # tagger_features
             studies.distribution(data, args, feat, pt_range, mass_range)
@@ -245,12 +275,12 @@ def perform_studies (data, args, tagger_features, ann_vars, uboost_vars):
             pass
         pass
 
-    # Perform JSD study
-    with Profile("Study: JSD"):
-        for pt_range in pt_ranges:
-            studies.jsd(data, args, tagger_features, pt_range)
-            pass
-        pass
+    # # Perform JSD study
+    # with Profile("Study: JSD"):
+    #     for pt_range in pt_ranges:
+    #         studies.jsd(data, args, tagger_features, pt_range)
+    #         pass
+    #     pass
 
     # Perform efficiency study
     with Profile("Study: Efficiency"):

@@ -14,6 +14,8 @@ from adversarial.constants import *
 import rootplotting as rp
 
 
+#Now test with no test_weight
+
 @showsave
 def jetmasscomparison (data, args, features, eff_sig=50):
     """
@@ -30,11 +32,12 @@ def jetmasscomparison (data, args, features, eff_sig=50):
     """
 
     # Define masks and direction-dependent cut value
-    msk_sig = data['signal'] == 1
+    msk_sig = data['signal'] == True
     cuts, msks_pass = dict(), dict()
     for feat in features:
-        eff_cut = eff_sig if signal_low(feat) else 100 - eff_sig
-        cut = wpercentile(data.loc[msk_sig, feat].values, eff_cut, weights=data.loc[msk_sig, 'weight_test'].values)
+        eff_cut = eff_sig if signal_low(feat) else 100 - eff_sig #default is high tagger output->more like sig; or shouled correct here
+        # cut = wpercentile(data.loc[msk_sig, feat].values, eff_cut, weights=data.loc[msk_sig, 'weight_test'].values)
+        cut = wpercentile(data.loc[msk_sig, feat].values, eff_cut)
         msks_pass[feat] = data[feat] > cut
 
         # Ensure correct cut direction
@@ -104,7 +107,8 @@ def plot (*argv):
             histstyle[signal].update(base)
             for ipad, pad in enumerate(c.pads()[1:], 1):
                 histstyle[signal]['option'] = 'HIST'
-                pad.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, **histstyle[signal])
+                # pad.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, **histstyle[signal])
+                pad.hist(data.loc[msk, M].values,  **histstyle[signal])
                 pass
             pass
 
@@ -131,7 +135,8 @@ def plot (*argv):
             cfg.update(opts)
             msk = (data['signal'] == 0) & msks_pass[feat]
             pad = c.pads()[1 + ifeat//2]
-            pad.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, label=" " + latex(feat, ROOT=True), **cfg)
+            # pad.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, label=" " + latex(feat, ROOT=True), **cfg)
+            pad.hist(data.loc[msk, M].values, label=" " + latex(feat, ROOT=True), **cfg)
             pass
 
         # -- Legend(s)
@@ -275,7 +280,8 @@ def plot_individual (*argv):
                     msk = data['signal'] == signal
                     histstyle[signal].update(base)
                     histstyle[signal]['option'] = 'HIST'
-                    c.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, **histstyle[signal])
+                    # c.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, **histstyle[signal])
+                    c.hist(data.loc[msk, M].values, **histstyle[signal])
                     pass
 
                 for sig in [True, False]:
@@ -292,7 +298,8 @@ def plot_individual (*argv):
                     cfg = dict(**base)
                     cfg.update(opts)
                     msk = (data['signal'] == 0) & msks_pass[feat]
-                    c.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, label=" " + latex(feat, ROOT=True), **cfg)
+                    # c.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, label=" " + latex(feat, ROOT=True), **cfg)
+                    c.hist(data.loc[msk, M].values, label=" " + latex(feat, ROOT=True), **cfg)
                     pass
 
                 # -- Legend(s)
