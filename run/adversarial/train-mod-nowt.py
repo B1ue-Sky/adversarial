@@ -160,7 +160,7 @@ def main (args):
                     # Prepare arrays
                     X = data[features].values[train]
                     Y = data['signal'].values[train]
-                    W = data['weight_clf'].values[train]
+                    #W = data['weight_clf'].values[train]
                     validation_data = (
                         data[features].values[validation],
                         data['signal'].values[validation]
@@ -273,7 +273,7 @@ def main (args):
             # Prepare arrays
             X = data[features].values
             Y = data['signal'].values
-            W = data['weight_clf'].values
+            #W = data['weight_clf'].values
 
             # Fit classifier model
             # ret = parallelised.fit(X, Y, sample_weight=W, callbacks=callbacks, **cfg['classifier']['fit'])
@@ -351,7 +351,7 @@ def main (args):
                     #Note!! mass-deco is achived by drop mass-related vars in train and adversial against mass-related vars
                     X = [data[features]    .values[train]] + [data[aux_vars].values[train], decorrelation[train]]
                     Y = [data['signal']    .values[train]] + [np.ones_like(data['signal'].values[train])]
-                    W = [data['weight_clf'].values[train]] + [data['weight_adv'].values[train]] #??
+                    #W = [data['weight_clf'].values[train]] + [data['weight_adv'].values[train]] #??
 
                     validation_data = (
                         [data[features]    .values[validation]] + [data[aux_vars].values[validation], decorrelation[validation]],
@@ -477,7 +477,7 @@ def main (args):
             # Prepare arrays
             X = [data[features]    .values] + [data[aux_vars].values, decorrelation]
             Y = [data['signal']    .values] + [np.ones_like(data['signal'].values)]
-            W = [data['weight_clf'].values] + [data['weight_adv'].values]
+            #W = [data['weight_clf'].values] + [data['weight_adv'].values]
 
             # Compile model for pre-training
             classifier.trainable = False #lock pre-trained classifier
