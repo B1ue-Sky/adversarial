@@ -148,6 +148,8 @@ def plot (*argv):
             try:
                 print len(pad._legends)
                 print pad._legends
+            except Exception as e:
+                print e
             pad._legends[-1].SetMargin(0.35)
             pad._legends[-1].SetTextSize(style.GetLegendTextSize())
             pass
