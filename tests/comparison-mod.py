@@ -76,7 +76,8 @@ def main (args):
 
     # -- Adversarial neural network (ANN) scan
     lambda_reg  = 10. #should be same with config?
-    lambda_regs = sorted([1., 3., 10.,100.]) #Allen use 100, but how about train config.jso setting??
+    #lambda_regs = sorted([1., 3., 10.,100.]) #Allen use 100, but how about train config.jso setting??
+    lambda_regs = sorted([10.])
     ann_vars    = list()
     lambda_strs = list()
     for lambda_reg_ in lambda_regs:
