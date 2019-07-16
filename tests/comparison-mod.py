@@ -192,7 +192,7 @@ def main (args):
     # Remove unused variables
     study_vars=DECORRELATION_VARIABLES+WEIGHT_VARIABLES+DECORRELATION_VARIABLES_AUX
     used_variables = set(tagger_features + ann_vars + study_vars)
-    all_variables=set(used_variables+INPUT_VARIABLES)
+    all_variables = set(tagger_features + ann_vars + study_vars + INPUT_VARIABLES)
     unused_variables = [var for var in list(data) if var not in used_variables]
     data.drop(columns=unused_variables)
     gc.collect() #important!
