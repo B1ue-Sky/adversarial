@@ -10,6 +10,7 @@ import time
 import inspect
 from inspect import currentframe, getframeinfo, getouterframes
 from functools import wraps
+import os,psutil
 
 
 class Profile:
@@ -88,7 +89,8 @@ class Profile:
         # Print summary        
         title = self.__title or "%s:L%d-%d" % (self.__filename, self.__startline, self.__endline)
         left  = self.prefix() + "Time elapsed in \033[1m{title}\033[0m: ".format(title=title)
-        right = '\033[1m{:.1f}s\033[0m'.format(duration)
+        mem=(psutil.Process(os.getpid()).memory_info().rss)/(1024*1024)
+        right = '\033[1m{:.1f}s, {}MB\033[0m'.format(duration,mem)
         
         # '-2' due to icon in 'prefix'
         # '+indent' due to choice of non-standard '·' character

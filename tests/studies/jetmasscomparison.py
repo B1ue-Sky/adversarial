@@ -92,7 +92,7 @@ def plot (*argv):
         style.SetHatchesLineWidth(1)
 
         # Canvas
-        c = rp.canvas(batch=not args.show, num_pads=(2,3))
+        c = rp.canvas(batch=not args.show, num_pads=(2,2))
 
         # Plots
         # -- Dummy, for proper axes
@@ -145,6 +145,9 @@ def plot (*argv):
             offsety =  0.20 * ((2 - (ipad // 2)) / float(2.))
             pad.legend(width=0.25, xmin=0.68 - offsetx, ymax=0.80 - offsety)
             pad.latex("Tagged multijets:", NDC=True, x=0.93 - offsetx, y=0.84 - offsety, textcolor=ROOT.kGray + 3, textsize=style.GetLegendTextSize() * 0.8, align=31)
+            try:
+                print len(pad._legends)
+                print pad._legends
             pad._legends[-1].SetMargin(0.35)
             pad._legends[-1].SetTextSize(style.GetLegendTextSize())
             pass
