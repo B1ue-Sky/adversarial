@@ -29,6 +29,7 @@ from adversarial.constants import *
 from run.adversarial.common import initialise_config
 from .studies.common import *
 import studies
+import os
 
 # Custom import(s)
 import rootplotting as rp
@@ -54,9 +55,6 @@ def main (args):
     # Project import(s)
     from adversarial.models import classifier_model, adversary_model, combined_model, decorrelation_model
 
-    # Load data
-    data, features, _ = load_data(args.input + 'data.h5', test=True)
-    #DATA, _, _ = load_data(args.input + 'data.h5')
 
 
     # Common definitions
@@ -127,6 +125,16 @@ def main (args):
     #tagger_features = ['Tau21','Tau21DDT', 'D2', kNN_var, 'D2', 'D2CSS', 'NN', ann_var, 'Adaboost', uboost_var]
     tagger_features = ['NN', ann_var,mv_var,sc_var]
 
+    # Load data
+    tempFile = args.output + "/test.h5"
+    if True and os.path.exists(tempFile):
+        data = pd.read_hdf(tempFile, "dataset")
+        perform_studies(data, args, tagger_features, ann_vars)
+        return 0
+
+    else:
+        data, features, _ = load_data(args.input + 'data.h5', test=True)
+    # DATA, _, _ = load_data(args.input + 'data.h5')
 
     # Add variables
     # --------------------------------------------------------------------------
@@ -197,9 +205,9 @@ def main (args):
     used_variables = set(tagger_features + study_vars + flag_vars)
     all_variables = set(list(used_variables) + INPUT_VARIABLES)
     unused_variables = [var for var in list(data) if var not in used_variables]
-    data.drop(columns=unused_variables)
+    data=data.drop(columns=unused_variables)
     gc.collect() #important!!
-    data.to_hdf(args.output+"/test.h5","dataset",mode="w",format="fixed")
+    data.to_hdf(tempFile,"dataset",mode="w",format="fixed")
     return 0
     # Perform performance studies
     perform_studies (data, args, tagger_features, ann_vars)
