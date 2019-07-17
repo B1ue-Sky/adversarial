@@ -96,7 +96,7 @@ def plot (*argv):
 
         # Plots
         # -- Dummy, for proper axes
-        for ipad, pad in enumerate(c.pads()[1:], 1):
+        for ipad, pad in enumerate(c.pads()[1:], 1): #? 1,2,3?? not 0?
             pad.hist([ymin], bins=[50, 300], linestyle=0, fillstyle=0, option=('Y+' if ipad % 2 else ''))
             pass
 
@@ -135,7 +135,7 @@ def plot (*argv):
             cfg.update(opts)
             msk = (data['signal'] == False) & msks_pass[feat]
             print 1 + ifeat//2
-            pad = c.pads()[1 + ifeat//2]
+            pad = c.pads()[1 + ifeat//2] #???
             # pad.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, label=" " + latex(feat, ROOT=True), **cfg)
             pad.hist(data.loc[msk, M].values, label=" " + latex(feat, ROOT=True), **cfg)
             pass
@@ -148,11 +148,13 @@ def plot (*argv):
         for ipad, pad in enumerate(c.pads()[1:], 1):
             offsetx = (0.20 if ipad % 2 else 0.05)
             offsety =  0.20 * ((2 - (ipad // 2)) / float(2.))
+            print 0.68 - offsetx,0.80 - offsety
             pad.legend(width=0.25, xmin=0.68 - offsetx, ymax=0.80 - offsety)
             pad.latex("Tagged multijets:", NDC=True, x=0.93 - offsetx, y=0.84 - offsety, textcolor=ROOT.kGray + 3, textsize=style.GetLegendTextSize() * 0.8, align=31)
             try:
                 print len(pad._legends)
                 print pad._legends
+                print pad
             except Exception as e:
                 print e
             pad._legends[-1].SetMargin(0.35)

@@ -56,7 +56,7 @@ def main (args):
 
     # Load data
     data, features, _ = load_data(args.input + 'data.h5', test=True)
-    DATA, _, _ = load_data(args.input + 'data.h5')
+    #DATA, _, _ = load_data(args.input + 'data.h5')
 
 
     # Common definitions
@@ -120,6 +120,8 @@ def main (args):
               "sjetVRGT2_GhostBHadronsFinalCount","sjetVRGT2_GhostCHadronsFinalCount",
               "sjetVRGT3_GhostBHadronsFinalCount","sjetVRGT3_GhostCHadronsFinalCount",]
 
+    # -- Flag indormation
+    flag_vars=["signal","train"]
 
     # Tagger feature collection
     #tagger_features = ['Tau21','Tau21DDT', 'D2', kNN_var, 'D2', 'D2CSS', 'NN', ann_var, 'Adaboost', uboost_var]
@@ -191,15 +193,17 @@ def main (args):
 
     # Remove unused variables
     study_vars=DECORRELATION_VARIABLES+WEIGHT_VARIABLES+DECORRELATION_VARIABLES_AUX
-    used_variables = set(tagger_features + ann_vars + study_vars)
-    all_variables = set(tagger_features + ann_vars + study_vars + INPUT_VARIABLES)
+    # used_variables = set(tagger_features + ann_vars + study_vars)
+    used_variables = set(tagger_features + study_vars + flag_vars)
+    all_variables = set(list(used_variables) + INPUT_VARIABLES)
     unused_variables = [var for var in list(data) if var not in used_variables]
     data.drop(columns=unused_variables)
-    gc.collect() #important!
-
+    gc.collect() #important!!
+    data.to_hdf(args.output+"/test.h5","dataset",mode="w",format="fixed")
+    return 0
     # Perform performance studies
     perform_studies (data, args, tagger_features, ann_vars)
-    exam_samples(DATA, args,all_variables)
+    #exam_samples(DATA, args,all_variables)
 
     return 0
 
