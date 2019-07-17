@@ -177,7 +177,7 @@ def main (args):
 
         # MV2C10
         with Profile("MV2C10"):
-            data[mv_var] = pd.concat([data[var] for var in mv_vars], axis=1).min(axis=1)
+            data[mv_var] = pd.concat([data[var] for var in mv_vars], axis=1).min(axis=1).fillna(value=0) #missing b-jet => set MV2c10=0
             pass
 
         # # Adaboost/uBoost
@@ -207,6 +207,7 @@ def main (args):
     unused_variables = [var for var in list(data) if var not in used_variables]
     data=data.drop(columns=unused_variables)
     gc.collect() #important!!
+    data=data.dropna() #drop all missing value in all study vars
     data.to_hdf(tempFile,"dataset",mode="w",format="fixed")
     return 0
     # Perform performance studies
