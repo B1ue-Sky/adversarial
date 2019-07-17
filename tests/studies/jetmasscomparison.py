@@ -97,6 +97,7 @@ def plot (*argv):
         # Plots
         # -- Dummy, for proper axes
         for ipad, pad in enumerate(c.pads()[1:], 1): #? 1,2,3?? not 0?
+            print "hist1",ipad
             pad.hist([ymin], bins=[50, 300], linestyle=0, fillstyle=0, option=('Y+' if ipad % 2 else ''))
             pass
 
@@ -106,6 +107,7 @@ def plot (*argv):
             msk = data['signal'] == signal
             histstyle[signal].update(base)
             for ipad, pad in enumerate(c.pads()[1:], 1):
+                print "hist2",ipad
                 histstyle[signal]['option'] = 'HIST'
                 # pad.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, **histstyle[signal])
                 pad.hist(data.loc[msk, M].values,  **histstyle[signal])
@@ -126,6 +128,7 @@ def plot (*argv):
         # -- Tagged
         base['linewidth'] = 2
         for ifeat, feat in enumerate(features):
+            print "feat",ifeat
             opts = dict(
                 linecolor = rp.colours[(ifeat // 2)],
                 linestyle = 1 + (ifeat % 2),
@@ -134,27 +137,31 @@ def plot (*argv):
             cfg = dict(**base)
             cfg.update(opts)
             msk = (data['signal'] == False) & msks_pass[feat]
-            print 1 + ifeat//2
+            print "pad",(1 + ifeat//2)
             pad = c.pads()[1 + ifeat//2] #???
             # pad.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, label=" " + latex(feat, ROOT=True), **cfg)
             pad.hist(data.loc[msk, M].values, label=" " + latex(feat, ROOT=True), **cfg)
             pass
         try:
-            print len(c.pads())
             print c.pads()
         except Exception as e:
             print e
         # -- Legend(s)
         for ipad, pad in enumerate(c.pads()[1:], 1):
+            print "lengend set",ipad
+            try:
+                print pad
+                print pad._legends
+            except Exception as e:
+                print e
             offsetx = (0.20 if ipad % 2 else 0.05)
             offsety =  0.20 * ((2 - (ipad // 2)) / float(2.))
             print 0.68 - offsetx,0.80 - offsety
             pad.legend(width=0.25, xmin=0.68 - offsetx, ymax=0.80 - offsety)
             pad.latex("Tagged multijets:", NDC=True, x=0.93 - offsetx, y=0.84 - offsety, textcolor=ROOT.kGray + 3, textsize=style.GetLegendTextSize() * 0.8, align=31)
             try:
-                print len(pad._legends)
-                print pad._legends
                 print pad
+                print pad._legends
             except Exception as e:
                 print e
             pad._legends[-1].SetMargin(0.35)
@@ -164,6 +171,7 @@ def plot (*argv):
         # Formatting pads
         margin = 0.2
         for ipad, pad in enumerate(c.pads()):
+            print "axis set pad",ipad
             tpad = pad._bare()  # ROOT.TPad
             right = ipad % 2
             f = (ipad // 2) / float(len(c.pads()) // 2 - 1)
