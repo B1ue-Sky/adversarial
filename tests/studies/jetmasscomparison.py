@@ -32,12 +32,14 @@ def jetmasscomparison (data, args, features, eff_sig=50):
     """
 
     # Define masks and direction-dependent cut value
+    #features is ['NN', ann_var,mv_var,sc_var]
     msk_sig = data['signal'] == True
     cuts, msks_pass = dict(), dict()
     for feat in features:
         eff_cut = eff_sig if signal_low(feat) else 100 - eff_sig #default is high tagger output->more like sig; or shouled correct here
         # cut = wpercentile(data.loc[msk_sig, feat].values, eff_cut, weights=data.loc[msk_sig, 'weight_test'].values)
         cut = wpercentile(data.loc[msk_sig, feat].values, eff_cut)
+        print feat,"cut",cut
         msks_pass[feat] = data[feat] > cut
 
         # Ensure correct cut direction
@@ -98,12 +100,12 @@ def plot (*argv):
         # -- Dummy, for proper axes
         for ipad, pad in enumerate(c.pads()[1:], 1): #? 1,2,3?? not 0?
             print "hist1",ipad
-            pad.hist([ymin], bins=[50, 300], linestyle=0, fillstyle=0, option=('Y+' if ipad % 2 else ''))
+            pad.hist([ymin], bins=[50*GeV, 300*GeV], linestyle=0, fillstyle=0, option=('Y+' if ipad % 2 else ''))
             pass
 
         # -- Inclusive
         base = dict(bins=MASSBINS, normalise=True, linewidth=2)
-        for signal, name in zip([False, True], ['bkg', 'sig']):
+        for signal, name in zip([0, 1], ['bkg', 'sig']):
             msk = data['signal'] == signal
             histstyle[signal].update(base)
             for ipad, pad in enumerate(c.pads()[1:], 1):
@@ -114,7 +116,7 @@ def plot (*argv):
                 pass
             pass
 
-        for sig in [True, False]:
+        for sig in [1, 0]:
             histstyle[sig]['option'] = 'FL'
             pass
 
@@ -294,11 +296,11 @@ def plot_individual (*argv):
 
                 # Plots
                 # -- Dummy, for proper axes
-                c.hist([ymin], bins=[50, 300], linestyle=0, fillstyle=0)
+                c.hist([ymin], bins=[50*GeV, 300*GeV], linestyle=0, fillstyle=0)
 
                 # -- Inclusive
                 base = dict(bins=MASSBINS, normalise=True)
-                for signal, name in zip([False, True], ['bkg', 'sig']):
+                for signal, name in zip([0, 1], ['bkg', 'sig']):
                     msk = data['signal'] == signal
                     histstyle[signal].update(base)
                     histstyle[signal]['option'] = 'HIST'
@@ -306,7 +308,7 @@ def plot_individual (*argv):
                     c.hist(data.loc[msk, M].values, **histstyle[signal])
                     pass
 
-                for sig in [True, False]:
+                for sig in [1, 0]:
                     histstyle[sig]['option'] = 'FL'
                     pass
 
@@ -319,7 +321,7 @@ def plot_individual (*argv):
                         )
                     cfg = dict(**base)
                     cfg.update(opts)
-                    msk = (data['signal'] == False) & msks_pass[feat]
+                    msk = (data['signal'] == 0) & msks_pass[feat]
                     # c.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, label=" " + latex(feat, ROOT=True), **cfg)
                     c.hist(data.loc[msk, M].values, label=" " + latex(feat, ROOT=True), **cfg)
                     pass

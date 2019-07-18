@@ -4,12 +4,13 @@
 import numpy as np
 from scipy.stats import entropy
 from sklearn.metrics import roc_curve
+from tests.studies.common import GeV
 
 # Project imports
 from adversarial.utils import garbage_collect
 
 # Global variable definition(s)
-MASSBINS = np.linspace(50, 300, (300 - 50) // 5 + 1, endpoint=True)
+MASSBINS = np.linspace(50*GeV, 300*GeV, ((300 - 50) // 5 + 1)*GeV, endpoint=True)
 
 
 def signal_low (feat):

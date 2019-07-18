@@ -552,4 +552,5 @@ def load_data (path, name='dataset', train=None, test=None, signal=None, backgro
         # no replace means one element can only be selected once
         pass
     # Return
+    print data.dtype
     return data, features_input, features_decorrelation
