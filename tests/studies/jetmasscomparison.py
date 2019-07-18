@@ -126,7 +126,7 @@ def plot (*argv):
         c.pads()[0]._legends[-1].SetMargin(0.35)
 
         # -- Tagged
-        padDict={}
+        padDict={0:1,1:1,2:2,3:3}
         base['linewidth'] = 2
         for ifeat, feat in enumerate(features):
             print "feat",ifeat
@@ -140,7 +140,7 @@ def plot (*argv):
             msk = (data['signal'] == False) & msks_pass[feat]
             # print "pad",(1 + ifeat//2)
             # pad = c.pads()[1 + ifeat//2] #???
-            pad = c.pads()[1+ifeat]  # ???
+            pad = c.pads()[padDict[ifeat]]  # ???
             # pad.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, label=" " + latex(feat, ROOT=True), **cfg)
             pad.hist(data.loc[msk, M].values, label=" " + latex(feat, ROOT=True), **cfg)
             pass
