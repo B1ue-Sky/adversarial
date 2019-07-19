@@ -17,7 +17,7 @@ import rootplotting as rp
 #Now test with no test_weight
 
 @showsave
-def jetmasscomparison (data, args, features, eff_sig=50):
+def jetmasscomparison (data, args, features, eff_sig=99):
     """
     Perform study of jet mass distributions before and after subtructure cut for
     different substructure taggers.
@@ -52,7 +52,7 @@ def jetmasscomparison (data, args, features, eff_sig=50):
     c = plot(data, args, features, msks_pass, eff_sig)
 
     # Perform plotting on individual figures
-    plot_individual(data, args, features, msks_pass, eff_sig)
+    #plot_individual(data, args, features, msks_pass, eff_sig)
 
     # Output
     path = 'figures/jetmasscomparison__eff_sig_{:d}.pdf'.format(int(eff_sig))
@@ -105,12 +105,15 @@ def plot (*argv):
 
         # -- Inclusive
         base = dict(bins=MASSBINS, normalise=True, linewidth=2)
+	print "base",MASSBINS,len(MASSBINS)
         for signal, name in zip([0, 1], ['bkg', 'sig']):
             msk = data['signal'] == signal
+            print name,msk.sum()
             histstyle[signal].update(base)
             for ipad, pad in enumerate(c.pads()[1:], 1):
                 print "hist2",ipad
                 histstyle[signal]['option'] = 'HIST'
+                print "style",histstyle[signal]
                 # pad.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, **histstyle[signal])
                 pad.hist(data.loc[msk, M].values,  **histstyle[signal])
                 pass
@@ -140,24 +143,18 @@ def plot (*argv):
             cfg = dict(**base)
             cfg.update(opts)
             msk = (data['signal'] == False) & msks_pass[feat]
+            print feat,msk.sum()
+            print feat, latex(feat, ROOT=True)
             # print "pad",(1 + ifeat//2)
             # pad = c.pads()[1 + ifeat//2] #???
             pad = c.pads()[padDict[ifeat]]  # ???
+            print "style",cfg
             # pad.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, label=" " + latex(feat, ROOT=True), **cfg)
             pad.hist(data.loc[msk, M].values, label=" " + latex(feat, ROOT=True), **cfg)
             pass
-        try:
-            print c.pads()
-        except Exception as e:
-            print e
         # -- Legend(s)
         for ipad, pad in enumerate(c.pads()[1:], 1):
             print "lengend set",ipad
-            try:
-                print pad
-                print pad._legends
-            except Exception as e:
-                print e
             offsetx = (0.20 if ipad % 2 else 0.05)
             offsety =  0.20 * ((2 - (ipad // 2)) / float(2.))
             print 0.68 - offsetx,0.80 - offsety
