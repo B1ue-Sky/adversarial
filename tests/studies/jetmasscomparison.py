@@ -16,7 +16,7 @@ import rootplotting as rp
 
 #Now test with no test_weight
 
-@showsave
+#@showsave #debug disa
 def jetmasscomparison (data, args, features, eff_sig=99):
     """
     Perform study of jet mass distributions before and after subtructure cut for
