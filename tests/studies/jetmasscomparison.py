@@ -124,8 +124,8 @@ def plot (*argv):
             pass
 
         c.pads()[0].legend(header='Inclusive selection:', categories=[
-            ("Multijets",   histstyle[False]),
-            ("#it{W} jets", histstyle[True])
+            ("Dijets",   histstyle[False]),
+            ("#it{Hbb} Signals", histstyle[True])
             ], xmin=0.18, width= 0.60, ymax=0.28 + 0.07, ymin=0.001 + 0.07, columns=2)
         c.pads()[0]._legends[-1].SetTextSize(style.GetLegendTextSize())
         c.pads()[0]._legends[-1].SetMargin(0.35)
@@ -159,7 +159,7 @@ def plot (*argv):
             offsety =  0.20 * ((2 - (ipad // 2)) / float(2.))
             print 0.68 - offsetx,0.80 - offsety
             pad.legend(width=0.25, xmin=0.68 - offsetx, ymax=0.80 - offsety)
-            pad.latex("Tagged multijets:", NDC=True, x=0.93 - offsetx, y=0.84 - offsety, textcolor=ROOT.kGray + 3, textsize=style.GetLegendTextSize() * 0.8, align=31)
+            pad.latex("Tagged Dijets:", NDC=True, x=0.93 - offsetx, y=0.84 - offsety, textcolor=ROOT.kGray + 3, textsize=style.GetLegendTextSize() * 0.8, align=31)
             try:
                 print pad
                 print pad._legends
@@ -206,7 +206,7 @@ def plot (*argv):
         c.pads()[2].ylabel("#splitline{#splitline{#splitline{#splitline{Fraction of jets}{}}{}}{}}{#splitline{#splitline{}{}}{#splitline{#splitline{}{}}{#splitline{}{}}}}")
         # I have written a _lot_ of ugly code, but this ^ is probably the worst.
 
-        c.pads()[0].text(["#sqrt{s} = 13 TeV,  #it{W} jet tagging",
+        c.pads()[0].text(["dataset p3652, test@1M+1M,  #it{Hbb} tagging",
                     "Cuts at #varepsilon_{sig}^{rel} = %.0f%%" % eff_sig,
                     ], xmin=0.2, ymax=0.72, qualifier=QUALIFIER)
 
@@ -273,8 +273,8 @@ def plot_individual (*argv):
             if first:
                 opts = dict(xmin=0.185, width=0.60, columns=2)
                 c.legend(header=' ', categories=[
-                            ("Multijets",   histstyle[False]),
-                            ("#it{W} jets", histstyle[True])
+                            ("Dijets",   histstyle[False]),
+                            ("#it{Hbb}", histstyle[True])
                         ], ymax=0.45, **opts)
                 c.legend(header='Inclusive selection:',
                          ymax=0.40, **opts)
