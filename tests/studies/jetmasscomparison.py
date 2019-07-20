@@ -45,9 +45,13 @@ def jetmasscomparison (data, args, features, eff_sig=99):
         # Ensure correct cut direction
         if signal_low(feat):
             msks_pass[feat] = ~msks_pass[feat]
+            print "signal_low",feat
             pass
         pass
-
+        print feat, msks_pass.sum(), msks_pass, size
+        msk = (data['signal'] == 0) & msks_pass[feat]
+        print "&& Bkg", msk.size, msk.sum()
+    return
     # Perform plotting
     c = plot(data, args, features, msks_pass, eff_sig)
 
@@ -103,7 +107,7 @@ def plot (*argv):
             pad.hist([ymin], bins=[50*GeV, 300*GeV], linestyle=0, fillstyle=0, option=('Y+' if ipad % 2 else ''))
             pass
 
-        # -- Inclusive
+        # -- Inclusive #Plot sig&bkg all
         base = dict(bins=MASSBINS, normalise=True, linewidth=2)
 	print "base",MASSBINS,len(MASSBINS)
         for signal, name in zip([0, 1], ['bkg', 'sig']):
@@ -142,8 +146,9 @@ def plot (*argv):
                 )
             cfg = dict(**base)
             cfg.update(opts)
-            msk = (data['signal'] == False) & msks_pass[feat]
-            print feat,msk.sum()
+            print feat,msks_pass.sum(),msks_pass,size
+            msk = (data['signal'] == 0) & msks_pass[feat]
+            print "&& Bkg", msk.size, msk.sum()
             print feat, latex(feat, ROOT=True)
             # print "pad",(1 + ifeat//2)
             # pad = c.pads()[1 + ifeat//2] #???
