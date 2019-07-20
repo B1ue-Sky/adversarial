@@ -253,6 +253,15 @@ def perform_studies (data, args, tagger_features, ann_vars):
     #     pass
 
     # Perform jet mass distribution comparison study
+
+    #debug
+    for eff in range(0,100,10):
+        with Profile("Study: Jet mass comparison"):
+            studies.jetmasscomparison(data, args, tagger_features)
+            pass
+    return
+
+
     with Profile("Study: Jet mass comparison"):
         studies.jetmasscomparison(data, args, tagger_features)
         pass
