@@ -49,9 +49,9 @@ def jetmasscomparison (data, args, features, eff_sig=99):
             pass
         pass
         print "eff",eff_sig
-        print feat, msks_pass[feat].sum(), msks_pass[feat], size
+        print feat, msks_pass[feat].sum(), msks_pass[feat].size
         msk = (data['signal'] == 0) & msks_pass[feat]
-        print "&& Bkg", msk.size, msk.sum()
+        print "&& Bkg", msk.sum(), msk.size
     return
     # Perform plotting
     c = plot(data, args, features, msks_pass, eff_sig)
@@ -147,9 +147,9 @@ def plot (*argv):
                 )
             cfg = dict(**base)
             cfg.update(opts)
-            print feat,msks_pass.sum(),msks_pass,size
+            print feat,msks_pass.sum(),msks_pass.size
             msk = (data['signal'] == 0) & msks_pass[feat]
-            print "&& Bkg", msk.size, msk.sum()
+            print "&& Bkg", msk.sum(),msk.size
             print feat, latex(feat, ROOT=True)
             # print "pad",(1 + ifeat//2)
             # pad = c.pads()[1 + ifeat//2] #???
