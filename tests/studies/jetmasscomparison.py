@@ -33,12 +33,13 @@ def jetmasscomparison (data, args, features, eff_sig=99):
 
     # Define masks and direction-dependent cut value
     #features is ['NN', ann_var,mv_var,sc_var]
-    msk_sig = data['signal'] == True
+    msk_sig = data['signal'] == 1
     cuts, msks_pass = dict(), dict()
     for feat in features:
         eff_cut = eff_sig if signal_low(feat) else 100 - eff_sig #default is high tagger output->more like sig; or shouled correct here
         # cut = wpercentile(data.loc[msk_sig, feat].values, eff_cut, weights=data.loc[msk_sig, 'weight_test'].values)
-        cut = wpercentile(data.loc[msk_sig, feat].values, eff_cut)
+        #cut = wpercentile(data.loc[msk_sig, feat].values, eff_cut)
+        cut=np.percentile(data.loc[msk_sig, feat].values, eff_cut)
         print feat,"cut",cut
         msks_pass[feat] = data[feat] > cut
 
@@ -49,9 +50,11 @@ def jetmasscomparison (data, args, features, eff_sig=99):
             pass
         pass
         print "eff",eff_sig
-        print feat, msks_pass[feat].sum(), msks_pass[feat].size
+        print feat, msks_pass[feat].sum(), msks_pass[feat].size,1.0*msks_pass[feat].sum()/msks_pass[feat].size
+        msk = (data['signal'] == 1) & msks_pass[feat]
+        print "&& Sig", msk.sum(), msk.size,1.0*msk.sum()/msk.size
         msk = (data['signal'] == 0) & msks_pass[feat]
-        print "&& Bkg", msk.sum(), msk.size
+        print "&& Bkg", msk.sum(), msk.size,1.0*msk.sum()/msk.size
     return
     # Perform plotting
     c = plot(data, args, features, msks_pass, eff_sig)
