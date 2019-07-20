@@ -256,7 +256,7 @@ def perform_studies (data, args, tagger_features, ann_vars):
 
     #debug
     for eff in range(0,100,10):
-        with Profile("Study: Jet mass comparison"):
+        with Profile("Study: Jet mass comparison::debug"):
             studies.jetmasscomparison(data, args, tagger_features)
             pass
     return

@@ -48,7 +48,8 @@ def jetmasscomparison (data, args, features, eff_sig=99):
             print "signal_low",feat
             pass
         pass
-        print feat, msks_pass.sum(), msks_pass, size
+        print "eff",eff_sig
+        print feat, msks_pass[feat].sum(), msks_pass[feat], size
         msk = (data['signal'] == 0) & msks_pass[feat]
         print "&& Bkg", msk.size, msk.sum()
     return
