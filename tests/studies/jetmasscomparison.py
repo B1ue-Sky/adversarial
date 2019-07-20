@@ -50,11 +50,13 @@ def jetmasscomparison (data, args, features, eff_sig=99):
             pass
         pass
         print "eff",eff_sig
-        print feat, msks_pass[feat].sum(), msks_pass[feat].size,1.0*msks_pass[feat].sum()/msks_pass[feat].size
+        print feat, msks_pass[feat].sum(), msks_pass[feat].size
         msk = (data['signal'] == 1) & msks_pass[feat]
-        print "&& Sig", msk.sum(), msk.size,1.0*msk.sum()/msk.size
+        MSK=data['signal'] == 1
+        print "&& Sig", msk.sum(),MSK.sum(),1.0*msk.sum(),MSK.sum()
         msk = (data['signal'] == 0) & msks_pass[feat]
-        print "&& Bkg", msk.sum(), msk.size,1.0*msk.sum()/msk.size
+        MSK = data['signal'] == 0
+        print "&& Bkg", msk.sum(),MSK.sum(),1.0*msk.sum(),MSK.sum()
     return
     # Perform plotting
     c = plot(data, args, features, msks_pass, eff_sig)
