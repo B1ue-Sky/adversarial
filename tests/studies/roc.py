@@ -138,7 +138,7 @@ def plot (*argv):
     for is_simple in [True, False]:
 
         # Split the legend into simple- and MVA taggers
-        for ifeat, feat in filter(lambda t: is_simple == signal_low(t[1]), enumerate(features)):
+        for ifeat, feat in filter(lambda t: is_simple == signal_low(t[1]), enumerate(features)):# Now all tagger are MVA
             eff_sig, eff_bkg = ROCs[feat]
             c.graph(np.power(eff_bkg, -1.), bins=eff_sig, linestyle=1 + (ifeat % 2), linecolor=rp.colours[(ifeat // 2) % len(rp.colours)], linewidth=2, label=latex(feat, ROOT=True), option='L')
             pass
@@ -153,8 +153,8 @@ def plot (*argv):
     c.xlabel("Signal efficiency #varepsilon_{sig}^{rel}")
     c.ylabel("Background rejection 1/#varepsilon_{bkg}^{rel}")
     c.text([], xmin=0.15, ymax=0.96, qualifier=QUALIFIER)
-    c.text(["#sqrt{s} = 13 TeV",
-            "#it{W} jet tagging"] + (
+    c.text(["dataset p3652, train 2M, test 1M",
+            "#it{Hbb} tagging"] + (
                 ["p_{{T}} #in  [{:.0f}, {:.0f}] GeV".format(pt_range[0], pt_range[1])] if pt_range is not None else []
             ) + (
                 ["Cut: m #in  [60, 100] GeV"] if masscut else []

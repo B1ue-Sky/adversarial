@@ -46,9 +46,24 @@ def latex (variable_name, ROOT=True):
     if 'boost' in name or re.search('nn$', name) or re.search('^nn', name) or 'ann' in name:
         name = '\\textit{z}_{%s}' % variable_name
         pass
+    #XbbScore tagger
+    if 'Score' in name or re.search('score', name,re.I):
+        ScoreType = re.search("^(.+)_(.+)Score(.*)$", name).group(2)
+        ScoreObj = re.search("^(.+)_(.+)Score(.*)$", name).group(3)
+        if ScoreType is "Xbb":
+            name = '\\textit{XbbScore}_{%s}' % ScoreObj
+        elif ScoreType is "Hbb":
+            name = '\\textit{HbbScore}'
+        else:
+            name = '\\textit{%sScore}' % ScoreType
+        pass
+
+    #XbbScore tagger
+    if 'MV2c10' in name:
+        name = '\\textit{MV2c10}'
+        pass
 
     name = re.sub('(\(.*\))([}]*)$', '\\2^{\\1}', name)
-
     # Remove duplicate superscripts
     name = re.sub("(\^.*)}\^{", "\\1", name)
 

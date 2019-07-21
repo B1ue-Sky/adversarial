@@ -105,8 +105,8 @@ def main (args):
     mv_var="MV2c10"
 
     # -- HbbScore tagger
-    sc_vars=["fjet_XbbScoreHiggs","fjet_HbbScore","fjet_XbbScoreTop","fjet_XbbScoreQCD","fjet_JSSTopScore"]
-    sc_var=sc_vars[0]
+    sc_vars=["fjet_HbbScore","fjet_XbbScoreHiggs","fjet_XbbScoreTop","fjet_XbbScoreQCD","fjet_JSSTopScore"]
+    sc_var=sc_vars[1]
 
     # -- Truth information (for backup)
     tru_vars=["fjet_GhostBHadronsFinalCount","fjet_GhostCHadronsFinalCount","fjet_GhostTQuarksFinalCount",
