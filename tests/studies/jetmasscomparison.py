@@ -16,7 +16,7 @@ import rootplotting as rp
 
 #Now test with no test_weight
 
-#@showsave #debug disa
+@showsave
 def jetmasscomparison (data, args, features, eff_sig=99):
     """
     Perform study of jet mass distributions before and after subtructure cut for
@@ -41,28 +41,27 @@ def jetmasscomparison (data, args, features, eff_sig=99):
         #cut = wpercentile(data.loc[msk_sig, feat].values, eff_cut)
         cut=np.percentile(data.loc[msk_sig, feat].values, eff_cut)
         print feat,"cut",cut
-        msks_pass[feat] = data[feat] > cut
+        msks_pass[feat] = data[feat] > cut # pass cut means tagged as sig
 
         # Ensure correct cut direction
         if signal_low(feat):
             msks_pass[feat] = ~msks_pass[feat]
-            print "signal_low",feat
+            print "Use cut <xxx",feat
             pass
         pass
-        print "eff",eff_sig
+        print "eff",eff_sig,"cut",cut
         print feat, msks_pass[feat].sum(), msks_pass[feat].size
         msk = (data['signal'] == 1) & msks_pass[feat]
         MSK=data['signal'] == 1
-        print "&& Sig", msk.sum(),MSK.sum(),1.0*msk.sum()/MSK.sum()
+        print "For Sig", msk.sum(),MSK.sum(),1.0*msk.sum()/MSK.sum()
         msk = (data['signal'] == 0) & msks_pass[feat]
         MSK = data['signal'] == 0
-        print "&& Bkg", msk.sum(),MSK.sum(),1.0*msk.sum()/MSK.sum()
-    return
+        print "For Bkg", msk.sum(),MSK.sum(),1.0*msk.sum()/MSK.sum()
     # Perform plotting
     c = plot(data, args, features, msks_pass, eff_sig)
 
     # Perform plotting on individual figures
-    #plot_individual(data, args, features, msks_pass, eff_sig)
+    plot_individual(data, args, features, msks_pass, eff_sig)
 
     # Output
     path = 'figures/jetmasscomparison__eff_sig_{:d}.pdf'.format(int(eff_sig))
@@ -118,7 +117,7 @@ def plot (*argv):
 	print "base",MASSBINS,len(MASSBINS)
         for signal, name in zip([0, 1], ['bkg', 'sig']):
             msk = data['signal'] == signal
-            print name,msk.sum()
+            # print name,msk.sum()
             histstyle[signal].update(base)
             for ipad, pad in enumerate(c.pads()[1:], 1):
                 print "hist2",ipad
@@ -144,7 +143,6 @@ def plot (*argv):
         padDict={0:1,1:1,2:2,3:3}
         base['linewidth'] = 2
         for ifeat, feat in enumerate(features):
-            print "feat",ifeat
             opts = dict(
                 linecolor = rp.colours[(ifeat // 2)],
                 linestyle = 1 + (ifeat % 2),
@@ -152,9 +150,7 @@ def plot (*argv):
                 )
             cfg = dict(**base)
             cfg.update(opts)
-            print feat,msks_pass.sum(),msks_pass.size
             msk = (data['signal'] == 0) & msks_pass[feat]
-            print "&& Bkg", msk.sum(),msk.size
             print feat, latex(feat, ROOT=True)
             # print "pad",(1 + ifeat//2)
             # pad = c.pads()[1 + ifeat//2] #???
@@ -171,11 +167,11 @@ def plot (*argv):
             print 0.68 - offsetx,0.80 - offsety
             pad.legend(width=0.25, xmin=0.68 - offsetx, ymax=0.80 - offsety)
             pad.latex("Tagged Dijets:", NDC=True, x=0.93 - offsetx, y=0.84 - offsety, textcolor=ROOT.kGray + 3, textsize=style.GetLegendTextSize() * 0.8, align=31)
-            try:
-                print pad
-                print pad._legends
-            except Exception as e:
-                print e
+            # try:
+            #     print pad
+            #     print pad._legends
+            # except Exception as e:
+            #     print e
             pad._legends[-1].SetMargin(0.35)
             pad._legends[-1].SetTextSize(style.GetLegendTextSize())
             pass
@@ -217,7 +213,7 @@ def plot (*argv):
         c.pads()[2].ylabel("#splitline{#splitline{#splitline{#splitline{Fraction of jets}{}}{}}{}}{#splitline{#splitline{}{}}{#splitline{#splitline{}{}}{#splitline{}{}}}}")
         # I have written a _lot_ of ugly code, but this ^ is probably the worst.
 
-        c.pads()[0].text(["dataset p3652, test@1M+1M,  #it{Hbb} tagging",
+        c.pads()[0].text(["dataset p3652, train 2M, test 1M,  #it{Hbb} tagging",
                     "Cuts at #varepsilon_{sig}^{rel} = %.0f%%" % eff_sig,
                     ], xmin=0.2, ymax=0.72, qualifier=QUALIFIER)
 
@@ -294,7 +290,7 @@ def plot_individual (*argv):
                 c.pad()._legends[-2].SetMargin(0.35)
                 c.pad()._legends[-1].SetMargin(0.35)
 
-                c.text(["#sqrt{s} = 13 TeV,  #it{W} jet tagging",
+                c.text(["#it{Hbb} tagging",
                         "Cuts at #varepsilon_{sig}^{rel} = %.0f%%" % eff_sig,
                         ], xmin=0.2, ymax=0.80, qualifier=QUALIFIER)
 
@@ -338,7 +334,7 @@ def plot_individual (*argv):
                 y =  0.46  if first else 0.68
                 dy = 0.025 if first else 0.04
                 c.legend(width=0.25, xmin=0.63, ymax=y)
-                c.latex("Tagged multijets:", NDC=True, x=0.87, y=y + dy, textcolor=ROOT.kGray + 3, textsize=style.GetLegendTextSize() * 0.9, align=31)
+                c.latex("Tagged Dijets:", NDC=True, x=0.87, y=y + dy, textcolor=ROOT.kGray + 3, textsize=style.GetLegendTextSize() * 0.9, align=31)
                 c.pad()._legends[-1].SetMargin(0.35)
                 c.pad()._legends[-1].SetTextSize(style.GetLegendTextSize())
 

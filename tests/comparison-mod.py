@@ -256,15 +256,15 @@ def perform_studies (data, args, tagger_features, ann_vars):
 
     #debug
     for eff in range(0,110,10):
-        with Profile("Study: Jet mass comparison::debug"):
+        with Profile("Study: Jet mass comparison:eff={}%".format(eff)):
             studies.jetmasscomparison(data, args, tagger_features,eff)
             pass
     return
 
 
-    with Profile("Study: Jet mass comparison"):
-        studies.jetmasscomparison(data, args, tagger_features)
-        pass
+    # with Profile("Study: Jet mass comparison"):
+    #     studies.jetmasscomparison(data, args, tagger_features)
+    #     pass
 
     # # Perform summary plot study
     # with Profile("Study: Summary plot"):
