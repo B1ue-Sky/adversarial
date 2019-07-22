@@ -81,7 +81,8 @@ def metrics (data, feat, target_tpr=0.5, cut=None, masscut=False, verbose=False)
 
     # Compute ROC curve efficiencies
     # fpr, tpr, thresholds = roc_curve(data.loc[msk, 'signal'], pred[msk], sample_weight=data.loc[msk, 'weight_test'])
-    fpr, tpr, thresholds = roc_curve(data.loc[msk, 'signal'], pred[msk])
+    # print type(data.loc[msk, 'signal']),data.loc[msk, 'signal'].sum(),data.loc[msk, 'signal'].size
+    fpr, tpr, thresholds = roc_curve(data.loc[msk, 'signal'].values, pred[msk])
 
     if masscut:
         tpr_mass = np.mean(msk[data['signal'] == 1])
