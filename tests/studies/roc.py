@@ -93,7 +93,8 @@ def roc (data_, args, features, masscut=False, pt_range=(200*GeV, 2000*GeV)):
         pass
 
     # Report scores
-    print "\n== pT range: {:s}".format('inclusive' if pt_range is None else "[{:.0f}, {:.0f}] Gev".format(*pt_range))
+    # print "\n== pT range: {:s}".format('inclusive' if pt_range is None else "[{:.0f}, {:.0f}] Gev".format(*pt_range))
+    print "\n== pT range: {:s}".format('inclusive' if pt_range is None else "[{:.0f}, {:.0f}] Gev".format(pt_range[0]/GeV,pt_range[1]/GeV))
     print "\n== {} masscut".format("With" if masscut else "Without")
     for feat in features:
         effsig = ROCs[feat][0]
@@ -108,7 +109,7 @@ def roc (data_, args, features, masscut=False, pt_range=(200*GeV, 2000*GeV)):
     c = plot(args, data, features, ROCs, AUCs, masscut, pt_range)
 
     # Output
-    path = 'figures/roc{}{:s}.pdf'.format('__pT{:.0f}_{:.0f}'.format(pt_range[0], pt_range[1]) if pt_range is not None else '', '__masscut' if masscut else '')
+    path = 'figures/roc{}{:s}.pdf'.format('__pT{:.0f}_{:.0f}'.format(pt_range[0]/GeV, pt_range[1]/GeV) if pt_range is not None else '', '__masscut' if masscut else '')
 
     return c, args, path
 
