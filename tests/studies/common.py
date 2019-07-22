@@ -42,7 +42,7 @@ HISTSTYLE = {  # key = signal / passing
         }
     }
 
-TEXT = ["#sqrt{s} = 13 TeV",
+TEXT = ["data p3652",
         ]
 
 # Global ROOT TStyle settings
@@ -128,11 +128,15 @@ def jsd_limit (data, frac, num_bootstrap=5, sigma=None):
         # Manual garbage collection
         gc.collect()
 
-        df1 = data.loc[msk, ['m', 'weight_test']].sample(frac=     frac, replace=True)
-        df2 = data.loc[msk, ['m', 'weight_test']].sample(frac=1. - frac, replace=True)
+        # df1 = data.loc[msk, [M, 'weight_test']].sample(frac=     frac, replace=True)
+        # df2 = data.loc[msk, [M, 'weight_test']].sample(frac=1. - frac, replace=True)
+        df1 = data.loc[msk, M].sample(frac=     frac, replace=True)
+        df2 = data.loc[msk, M].sample(frac=1. - frac, replace=True)
 
-        p, _ = np.histogram(df1['m'].values, bins=MASSBINS, weights=df1['weight_test'].values, density=1.)
-        f, _ = np.histogram(df2['m'].values, bins=MASSBINS, weights=df2['weight_test'].values, density=1.)
+        # p, _ = np.histogram(df1[M].values, bins=MASSBINS, weights=df1['weight_test'].values, density=1.)
+        # f, _ = np.histogram(df2[M].values, bins=MASSBINS, weights=df2['weight_test'].values, density=1.)
+        p, _ = np.histogram(df1[M].values, bins=MASSBINS, density=1.)
+        f, _ = np.histogram(df2[M].values, bins=MASSBINS, density=1.)
 
         jsd.append(JSD(p, f))
         pass
