@@ -20,6 +20,14 @@ from adversarial.utils import mkdir, garbage_collect, JSD, MASSBINS
 import rootplotting as rp
 rp.colours.pop(3)  # To remove unused colour from list
 
+
+
+#Global data field import
+from adversarial.utils import M,PT
+
+
+
+
 # Global variable definition(s)
 HISTSTYLE = {  # key = signal / passing
     True: {
@@ -44,10 +52,10 @@ ROOT.gStyle.SetHatchesLineWidth(3)
 ROOT.gStyle.SetTitleOffset(1.6, 'y')
 
 ####################################################################################
-from adversarial.utils import DECORRELATION_VARIABLES, WEIGHT_VARIABLES, DECORRELATION_VARIABLES_AUX,INPUT_VARIABLES
-PT=DECORRELATION_VARIABLES_AUX[0]
-M=DECORRELATION_VARIABLES[0]
-GeV=1000.0
+# from adversarial.utils import DECORRELATION_VARIABLES, WEIGHT_VARIABLES, DECORRELATION_VARIABLES_AUX,INPUT_VARIABLES
+# PT=DECORRELATION_VARIABLES_AUX[0]
+# M=DECORRELATION_VARIABLES[0]
+# GeV=1000.0
 ####################################################################################
 class TemporaryStyle ():
     """

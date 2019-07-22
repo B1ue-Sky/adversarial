@@ -4,7 +4,7 @@
 import numpy as np
 from scipy.stats import entropy
 from sklearn.metrics import roc_curve
-from tests.studies.common import GeV, PT, M
+from .setup import PT,M,GeV
 
 
 # Project imports
