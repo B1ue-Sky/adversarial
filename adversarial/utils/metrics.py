@@ -67,7 +67,8 @@ def metrics (data, feat, target_tpr=0.5, cut=None, masscut=False, verbose=False)
     # (Opt.) mass cut mask
     if masscut:
         print "metrics: Applying mass cut."
-        msk = (data[M] > 60.*GeV) & (data[M] < 100.*GeV) if masscut else np.ones_like(data['signal']).astype(bool)
+        # msk = (data[M] > 60.*GeV) & (data[M] < 100.*GeV) if masscut else np.ones_like(data['signal']).astype(bool)
+        msk = (data[M] > 80.*GeV) & (data[M] < 140.*GeV) if masscut else np.ones_like(data['signal']).astype(bool) # mass cut From Weo
         pass
 
     # scikit-learn assumes signal towards 1, background towards 0
@@ -123,11 +124,12 @@ def metrics (data, feat, target_tpr=0.5, cut=None, masscut=False, verbose=False)
     # f, _ = np.histogram(data.loc[~msk_pass & msk_bkg, M].values, bins=MASSBINS, weights=data.loc[~msk_pass & msk_bkg, 'weight_test'].values, density=1.)
     p, _ = np.histogram(data.loc[msk_pass & msk_bkg, M].values, bins=MASSBINS, density=1.)
     f, _ = np.histogram(data.loc[~msk_pass & msk_bkg, M].values, bins=MASSBINS, density=1.)
+    print p,f
 
     jsd = JSD(p, f)
 
     # Return metrics
-    print eff, rej, 1./jsd
+    print eff, rej, jsd
     return eff, rej, 1./jsd
 
 

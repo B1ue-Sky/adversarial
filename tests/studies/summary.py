@@ -57,6 +57,10 @@ def summary (data_, args, features, scan_features, target_tpr=0.5, num_bootstrap
 
     # Compute metrics for all features
     points = list()
+    if args.debug:
+        print "features",features
+        print "scan_features",scan_features
+        print features + map(lambda t: t[0], [it for gr in scan_features.itervalues() for it in gr])
     for feat in features + map(lambda t: t[0], [it for gr in scan_features.itervalues() for it in gr]):
         print  "-- {}".format(feat)
 
@@ -219,8 +223,8 @@ def plot (*argv):
         if args.debug:
             print points
         for i in range(3):
-            x1, y1, _ = points[2 * i + 0]
-            x2, y2, _ = points[2 * i + 1]
+            x1, y1, _ = points[2 * i + 0] #0,2,4
+            x2, y2, _ = points[2 * i + 1] #1,3,5
             colour = rp.colours[i]
             c.graph([y1, y2], bins=[x1, x2], linecolor=colour, linestyle=2, option='L')
             pass
