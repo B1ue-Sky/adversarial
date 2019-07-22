@@ -4,7 +4,10 @@
 import numpy as np
 from scipy.stats import entropy
 from sklearn.metrics import roc_curve
-from .setup import PT,M,GeV
+from .setup import DECORRELATION_VARIABLES, WEIGHT_VARIABLES, DECORRELATION_VARIABLES_AUX,INPUT_VARIABLES
+PT=DECORRELATION_VARIABLES_AUX[0]
+M=DECORRELATION_VARIABLES[0]
+GeV=1000.0
 
 
 # Project imports
