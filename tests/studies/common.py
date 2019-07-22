@@ -24,9 +24,8 @@ rp.colours.pop(3)  # To remove unused colour from list
 
 #Global data field import
 from adversarial.utils import M,PT
-
-
-
+M=M
+PT=PT
 
 # Global variable definition(s)
 HISTSTYLE = {  # key = signal / passing
