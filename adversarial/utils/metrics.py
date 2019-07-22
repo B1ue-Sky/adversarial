@@ -4,8 +4,8 @@
 import numpy as np
 from scipy.stats import entropy
 from sklearn.metrics import roc_curve
-#from tests.studies.common import GeV
-GeV=1000.0
+from tests.studies.common import GeV, PT, M
+
 
 # Project imports
 from adversarial.utils import garbage_collect
@@ -65,7 +65,7 @@ def metrics (data, feat, target_tpr=0.5, cut=None, masscut=False, verbose=False)
     if masscut:
         print "metrics: Applying mass cut."
         pass
-    msk = (data['m'] > 60.) & (data['m'] < 100.) if masscut else np.ones_like(data['signal']).astype(bool)
+    msk = (data[M] > 60.) & (data[M] < 100.) if masscut else np.ones_like(data['signal']).astype(bool)
 
     # scikit-learn assumes signal towards 1, background towards 0
     pred = data[feat].values.copy()
@@ -77,7 +77,8 @@ def metrics (data, feat, target_tpr=0.5, cut=None, masscut=False, verbose=False)
         pass
 
     # Compute ROC curve efficiencies
-    fpr, tpr, thresholds = roc_curve(data.loc[msk, 'signal'], pred[msk], sample_weight=data.loc[msk, 'weight_test'])
+    # fpr, tpr, thresholds = roc_curve(data.loc[msk, 'signal'], pred[msk], sample_weight=data.loc[msk, 'weight_test'])
+    fpr, tpr, thresholds = roc_curve(data.loc[msk, 'signal'], pred[msk])
 
     if masscut:
         tpr_mass = np.mean(msk[data['signal'] == 1])
@@ -110,8 +111,10 @@ def metrics (data, feat, target_tpr=0.5, cut=None, masscut=False, verbose=False)
     msk_pass = pred > cut
     msk_bkg  = data['signal'] == 0
 
-    p, _ = np.histogram(data.loc[ msk_pass & msk_bkg, 'm'].values, bins=MASSBINS, weights=data.loc[ msk_pass & msk_bkg, 'weight_test'].values, density=1.)
-    f, _ = np.histogram(data.loc[~msk_pass & msk_bkg, 'm'].values, bins=MASSBINS, weights=data.loc[~msk_pass & msk_bkg, 'weight_test'].values, density=1.)
+    # p, _ = np.histogram(data.loc[ msk_pass & msk_bkg, M].values, bins=MASSBINS, weights=data.loc[ msk_pass & msk_bkg, 'weight_test'].values, density=1.)
+    # f, _ = np.histogram(data.loc[~msk_pass & msk_bkg, M].values, bins=MASSBINS, weights=data.loc[~msk_pass & msk_bkg, 'weight_test'].values, density=1.)
+    p, _ = np.histogram(data.loc[msk_pass & msk_bkg, M].values, bins=MASSBINS, density=1.)
+    f, _ = np.histogram(data.loc[~msk_pass & msk_bkg, M].values, bins=MASSBINS, density=1.)
 
     jsd = JSD(p, f)
 
