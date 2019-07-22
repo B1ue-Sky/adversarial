@@ -127,6 +127,7 @@ def metrics (data, feat, target_tpr=0.5, cut=None, masscut=False, verbose=False)
     jsd = JSD(p, f)
 
     # Return metrics
+    print eff, rej, 1./jsd
     return eff, rej, 1./jsd
 
 

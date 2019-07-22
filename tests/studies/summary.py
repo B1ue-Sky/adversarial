@@ -86,7 +86,7 @@ def summary (data_, args, features, scan_features, target_tpr=0.5, num_bootstrap
     c = plot(data, args, features, scan_features, points, jsd_limits, masscut, pt_range)
 
     # Output
-    path = 'figures/summary{}{}.pdf'.format('__pT{:.0f}_{:.0f}'.format(pt_range[0], pt_range[1]) if pt_range is not None else '', '__masscut' if masscut else '')
+    path = 'figures/summary{}{}.pdf'.format('__pT{:.0f}_{:.0f}'.format(pt_range[0]/GeV, pt_range[1]/GeV) if pt_range is not None else '', '__masscut' if masscut else '')
 
     return c, args, path
 
@@ -216,6 +216,8 @@ def plot (*argv):
             pass
 
         # Connecting lines (simple)
+        if args.debug:
+            print points
         for i in range(3):
             x1, y1, _ = points[2 * i + 0]
             x2, y2, _ = points[2 * i + 1]
