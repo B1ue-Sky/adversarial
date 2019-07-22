@@ -47,19 +47,19 @@ def latex (variable_name, ROOT=True):
         name = '\\textit{z}_{%s}' % variable_name
         pass
     #XbbScore tagger
-    if 'Score' in name or re.search('score', name,re.I):
-        ScoreType = re.search("^(.+)_(.+)Score(.*)$", name).group(2)
-        ScoreObj = re.search("^(.+)_(.+)Score(.*)$", name).group(3)
-        if ScoreType is "Xbb":
+    if 'score' in name and re.search("^(.+)_(.+)score(.*)$", name):
+        ScoreType = re.search("^(.+)_(.+)score(.*)$", name).group(2)
+        ScoreObj = re.search("^(.+)_(.+)score(.*)$", name).group(3)
+        if ScoreType is "xbb":
             name = '\\textit{XbbScore}_{%s}' % ScoreObj
-        elif ScoreType is "Hbb":
+        elif ScoreType is "hbb":
             name = '\\textit{HbbScore}'
         else:
             name = '\\textit{%sScore}' % ScoreType
         pass
 
     #XbbScore tagger
-    if 'MV2c10' in name:
+    if 'mv2c10' in name:
         name = '\\textit{MV2c10}'
         pass
 
