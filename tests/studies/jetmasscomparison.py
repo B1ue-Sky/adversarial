@@ -17,7 +17,7 @@ import rootplotting as rp
 #Now test with no test_weight
 
 @showsave
-def jetmasscomparison (data, args, features, eff_sig=99):
+def jetmasscomparison (data, args, features, eff_sig=99,debug=False):
     """
     Perform study of jet mass distributions before and after subtructure cut for
     different substructure taggers.
@@ -61,7 +61,8 @@ def jetmasscomparison (data, args, features, eff_sig=99):
     c = plot(data, args, features, msks_pass, eff_sig)
 
     # Perform plotting on individual figures
-    plot_individual(data, args, features, msks_pass, eff_sig)
+    if not debug:
+        plot_individual(data, args, features, msks_pass, eff_sig)
 
     # Output
     path = 'figures/jetmasscomparison__eff_sig_{:d}.pdf'.format(int(eff_sig))

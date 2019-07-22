@@ -17,7 +17,7 @@ import rootplotting as rp
 
 
 @showsave
-def summary (data_, args, features, scan_features, target_tpr=0.5, num_bootstrap=5, masscut=False, pt_range=(200, 2000)):
+def summary (data_, args, features, scan_features, target_tpr=0.5, num_bootstrap=5, masscut=False, pt_range=(200*GeV, 2000*GeV)):
     """
     Perform study of combined classification- and decorrelation performance.
 
@@ -47,7 +47,7 @@ def summary (data_, args, features, scan_features, target_tpr=0.5, num_bootstrap
 
     # Select pT-range
     if pt_range is not None:
-        data = data_.loc[(data_['pt'] > pt_range[0]) & (data_['pt'] < pt_range[1])]
+        data = data_.loc[(data_[PT] > pt_range[0]) & (data_[PT] < pt_range[1])]
     else:
         data = data_
         pass
@@ -147,7 +147,7 @@ def plot (*argv):
 
 
         # Markers
-        for is_simple in [True, False]:
+        for is_simple in [False]: # Now have no simple/Analytical tagger
 
             # Split the legend into simple- and MVA taggers
             for ifeat, feat in filter(lambda t: is_simple == signal_low(t[1]), enumerate(features)):
@@ -158,7 +158,7 @@ def plot (*argv):
 
                 # Overwrite default name of parameter-scan classifier
                 label = 'ANN'    if label.startswith('ANN') else label
-                label = 'uBoost' if label.startswith('uBoost') else label
+                # label = 'uBoost' if label.startswith('uBoost') else label
 
                 # Style
                 colour      = rp.colours[(ifeat // 2) % len(rp.colours)]
@@ -242,8 +242,8 @@ def plot (*argv):
         #c.text(TEXT + ["#it{W} jet tagging"], xmin=0.24, qualifier=QUALIFIER)
         c.text([], xmin=0.15, ymax=0.96, qualifier=QUALIFIER)
         c.text(TEXT + \
-               ["#it{W} jet tagging"] + (
-                    ["p_{{T}} #in  [{:.0f}, {:.0f}] GeV".format(pt_range[0], pt_range[1])] if pt_range is not None else []
+               ["#it{Hbb} tagging"] + (
+                    ["p_{{T}} #in  [{:.0f}, {:.0f}] GeV".format(pt_range[0]/GeV, pt_range[1]/GeV)] if pt_range is not None else []
                 ) + (
                     ['Cut: m #in  [60, 100] GeV'] if masscut else []
                 ),

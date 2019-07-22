@@ -135,10 +135,9 @@ def plot (*argv):
     c.hist(np.power(centres, -1.), bins=edges, linecolor=ROOT.kGray + 2, fillcolor=ROOT.kBlack, alpha=0.05, linewidth=1, option='HISTC')
 
     # -- ROCs
-    for is_simple in [True, False]:
-
+    for is_simple in [False]: # Now all tagger are MVA
         # Split the legend into simple- and MVA taggers
-        for ifeat, feat in filter(lambda t: is_simple == signal_low(t[1]), enumerate(features)):# Now all tagger are MVA
+        for ifeat, feat in filter(lambda t: is_simple == signal_low(t[1]), enumerate(features)):
             eff_sig, eff_bkg = ROCs[feat]
             c.graph(np.power(eff_bkg, -1.), bins=eff_sig, linestyle=1 + (ifeat % 2), linecolor=rp.colours[(ifeat // 2) % len(rp.colours)], linewidth=2, label=latex(feat, ROOT=True), option='L')
             pass

@@ -54,11 +54,11 @@ def efficiency (data, args, feat):
         profile = ROOT.TProfile('profile_{}_{}'.format(feat, cut), "",
                                 len(MASSBINS) - 1, MASSBINS)
 
-        M = np.vstack((data.loc[msk, 'm'].values, msk_pass[msk])).T
-        weights = data.loc[msk, 'weight_test'].values
+        mass = np.vstack((data.loc[msk, M].values, msk_pass[msk])).T
+        # weights = data.loc[msk, 'weight_test'].values
 
         # root_numpy.fill_profile(profile, M, weights=weights)
-        root_numpy.fill_profile(profile, M)
+        root_numpy.fill_profile(profile, mass)
 
         # Add to list
         profiles.append(profile)
@@ -100,7 +100,7 @@ def plot (*argv):
         # Decorations
         c.xlabel("Large-#it{R} jet mass [GeV]")
         c.ylabel("Background efficiency, #varepsilon_{bkg}^{rel}")
-        c.text(["#sqrt{s} = 13 TeV,  Multijets",
+        c.text(["data p3652,  Dijets",
                 #"#it{W} jet tagging",
                 "Cuts on {}".format(latex(feat, ROOT=True)),
                 ],

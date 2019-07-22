@@ -16,11 +16,11 @@ import rootplotting as rp
 
 
 # Global variable definition(s)
-HISTSTYLE[True] ['label'] = "#it{W} jets"
-HISTSTYLE[False]['label'] = "Multijets"
+HISTSTYLE[True] ['label'] = "#it{Hbb} jets"
+HISTSTYLE[False]['label'] = "Dijets"
 
 
-@garbage_collect
+@garbage_collect #not enough due to python's limit. might use multi-thread to release the mem.
 @showsave
 def distribution (data_, args, feat, pt_range, mass_range):
     """
@@ -92,7 +92,7 @@ def plot (*argv):
     base = dict(bins=bins, alpha=0.5, normalise=True, linewidth=3)
 
     # Plots
-    for signal in [False,True]:
+    for signal in [0,1]: #Note: HDF's native bool type is not easy. so bool when write to hdf will become to int8. 8x waste, fine.
         msk = (data['signal'] == signal)
         histstyle[signal].update(base)
         # c.hist(data.loc[msk, feat].values, weights=data.loc[msk, 'weight_test'].values, **histstyle[signal])
@@ -103,7 +103,7 @@ def plot (*argv):
     c.xlabel("Large-#it{R} jet " + latex(feat, ROOT=True))
     c.ylabel("Fraction of jets")
     c.text(TEXT + [
-        "#it{W} jet tagging"] + (
+        "#it{Hbb} tagging"] + (
         ["p_{{T}} #in  [{:.0f}, {:.0f}] GeV".format(pt_range[0], pt_range[1])] if pt_range is not None else []
         ) + (
         ["m #in  [{:.0f}, {:.0f}] GeV".format(mass_range[0], mass_range[1]),] if mass_range is not None else []

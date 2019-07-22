@@ -87,6 +87,8 @@ def main (args):
         pass
 
     ann_var = ann_vars[lambda_regs.index(lambda_reg)]
+    if args.debug:
+        ann_vars=[ann_var]
 
     # # -- uBoost scan
 
@@ -255,13 +257,40 @@ def perform_studies (data, args, tagger_features, ann_vars):
     # Perform jet mass distribution comparison study
 
     #debug
-    for eff in range(0,110,10):
-        with Profile("Study: Jet mass comparison:eff={}%".format(eff)):
-            studies.jetmasscomparison(data, args, tagger_features,eff)
+
+    with Profile("Study: Jet mass comparison:debug"):
+        for eff in set(range(0,110,10)+range(90,100,1)):
+            studies.jetmasscomparison(data, args, tagger_features,eff,True)
             pass
-    with Profile("Study: ROC"):
+    with Profile("Study: Efficiency:debug"):
+        for feat in tagger_features:
+            studies.efficiency(data, args, feat)
+            pass
+        pass
+    with Profile("Study: ROC:debug"):
         for masscut, pt_range in itertools.product(masscuts, pt_ranges):
             studies.roc(data, args, tagger_features, masscut=masscut, pt_range=pt_range)
+            pass
+        pass
+    with Profile("Study: Substructure tagger distributions"):
+        mass_ranges = np.linspace(50 * GeV, 300 * GeV, 5 + 1, endpoint=True)
+        mass_ranges = [None] + zip(mass_ranges[:-1], mass_ranges[1:])
+        for feat, pt_range, mass_range in itertools.product(tagger_features, pt_ranges, mass_ranges):  # tagger_features
+            studies.distribution(data, args, feat, pt_range, mass_range)
+            pass
+        pass
+    with Profile("Study: Summary plot"):
+        regex_nn = re.compile('\#lambda=[\d\.]+')
+        # regex_ub = re.compile('\#alpha=[\d\.]+')
+
+        # scan_features = {'NN':       map(lambda feat: (feat, regex_nn.search(feat).group(0)), ann_vars),
+        #                  'Adaboost': map(lambda feat: (feat, regex_ub.search(feat).group(0)), uboost_vars)
+        #                  }
+        scan_features = {'NN': map(lambda feat: (feat, regex_nn.search(feat).group(0)), ann_vars),
+                         }
+
+        for masscut, pt_range in itertools.product(masscuts, pt_ranges):
+            studies.summary(data, args, tagger_features, scan_features, masscut=masscut, pt_range=pt_range)
             pass
         pass
 
@@ -274,21 +303,21 @@ def perform_studies (data, args, tagger_features, ann_vars):
     #     studies.jetmasscomparison(data, args, tagger_features)
     #     pass
 
-    # # Perform summary plot study
-    # with Profile("Study: Summary plot"):
-    #     regex_nn = re.compile('\#lambda=[\d\.]+')
-    #     regex_ub = re.compile('\#alpha=[\d\.]+')
-    #
-    #     # scan_features = {'NN':       map(lambda feat: (feat, regex_nn.search(feat).group(0)), ann_vars),
-    #     #                  'Adaboost': map(lambda feat: (feat, regex_ub.search(feat).group(0)), uboost_vars)
-    #     #                  }
-    #     scan_features = {'NN': map(lambda feat: (feat, regex_nn.search(feat).group(0)), ann_vars),
-    #                      }
-    #
-    #     for masscut, pt_range in itertools.product(masscuts, pt_ranges):
-    #         studies.summary(data, args, tagger_features, scan_features, masscut=masscut, pt_range=pt_range)
-    #         pass
-    #     pass
+    # Perform summary plot study
+    with Profile("Study: Summary plot"):
+        regex_nn = re.compile('\#lambda=[\d\.]+')
+        regex_ub = re.compile('\#alpha=[\d\.]+')
+
+        # scan_features = {'NN':       map(lambda feat: (feat, regex_nn.search(feat).group(0)), ann_vars),
+        #                  'Adaboost': map(lambda feat: (feat, regex_ub.search(feat).group(0)), uboost_vars)
+        #                  }
+        scan_features = {'NN': map(lambda feat: (feat, regex_nn.search(feat).group(0)), ann_vars),
+                         }
+
+        for masscut, pt_range in itertools.product(masscuts, pt_ranges):
+            studies.summary(data, args, tagger_features, scan_features, masscut=masscut, pt_range=pt_range)
+            pass
+        pass
 
     # Perform distributions study (now tyr to use exam_samples
     with Profile("Study: Substructure tagger distributions"):

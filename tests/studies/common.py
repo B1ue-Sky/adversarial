@@ -213,6 +213,8 @@ def showsave (f):
             if len(suffix) < 4:
                 base = '.'.join(path.split('.')[:-1])
                 c.save(base + '.eps')
+                # if not args.debug:
+                #     pass
                 c.save(base + '.pdf')
                 c.save(base + '.C')
             else:
