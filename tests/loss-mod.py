@@ -101,12 +101,13 @@ def plot_classifier_training_loss (num_folds=None, basedir='models/adversarial/c
     # Plots
     categories = list()
 
-    for name, key, colour, linestyle in zip(['Training'], ['train'], [rp.colours[4], rp.colours[1]], [1,2]):
+    for name, key, colour, linestyle in zip(['Training'], ['train'], [rp.colours[4]], [1]):
 
         # Histograms
         loss_mean = np.nanmean(losses[key], axis=0)
         loss_std  = np.nanstd (losses[key], axis=0)
         hist = ROOT.TH1F(key + '_loss', "", len(histbins) - 1, histbins)
+        if args.debug: print "loss_mean",loss_mean
         for idx in range(len(loss_mean)):
             hist.SetBinContent(idx + 1, loss_mean[idx])
             hist.SetBinError  (idx + 1, loss_std [idx])
@@ -129,7 +130,7 @@ def plot_classifier_training_loss (num_folds=None, basedir='models/adversarial/c
     c.xlim(0, max(bins))
     c.ylim(0.3, 0.5)
     c.legend(categories=categories, width=0.25)  # ..., xmin=0.475
-    c.text(TEXT + ["#it{Hbb}tagging", "Neural network (NN) classifier"],
+    c.text(TEXT + ["#it{Hbb} tagging", "Neural network (NN) classifier"],
            qualifier=QUALIFIER)
     # Save
     mkdir('figures/')
@@ -212,6 +213,7 @@ def plot_adversarial_training_loss (lambda_reg=10., num_folds=None, pretrain_epo
                 loss_mean = np.nanmean(losses[key], axis=0)
                 loss_std  = np.nanstd (losses[key], axis=0)
                 hist = ROOT.TH1F(key, "", len(histbins) - 1, histbins)
+                if args.debug: print "loss_mean",loss_mean
                 for ibin in range(len(loss_mean)):
                     hist.SetBinContent(ibin + 1, loss_mean[ibin])
                     hist.SetBinError  (ibin + 1, loss_std [ibin])
@@ -250,6 +252,7 @@ def plot_adversarial_training_loss (lambda_reg=10., num_folds=None, pretrain_epo
             pass
 
         ymin, ymax = list(), list()
+        if args.debug: print "hist",hist
         for hist in pad._primitives:
             if not isinstance(hist, ROOT.TGraph):
                 ymin.append(get_min(hist))
@@ -260,10 +263,10 @@ def plot_adversarial_training_loss (lambda_reg=10., num_folds=None, pretrain_epo
         # Get reference-line value
         clf_opt_val = clf_opt_val or c.pads()[0]._primitives[1].GetBinContent(1)
         ref = clf_opt_val if ipad == 0 else (H_prior if ipad == 1 else clf_opt_val - lambda_reg * H_prior)
-
+        if args.debug: print "ymin", ymin
         ymin = min(ymin + [ref])
         ymax = max(ymax + [ref])
-        if args.debug: print ymax,ymin
+        if args.debug: print "ymax,ymin",ymax,ymin
         ydiff = ymax - ymin
         ymin -= ydiff * 0.2
         ymax += ydiff * (0.7 if ipad == 0 else (0.7 if ipad == 1 else 0.2))
