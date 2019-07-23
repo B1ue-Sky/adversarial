@@ -109,7 +109,7 @@ def plot (*argv):
         # Plots
         # -- Dummy, for proper axes
         for ipad, pad in enumerate(c.pads()[1:], 1): #? 1,2,3?? not 0?
-            print "hist1",ipad
+            if args.debug: "hist1",ipad
             pad.hist([ymin], bins=[50*GeV, 300*GeV], linestyle=0, fillstyle=0, option=('Y+' if ipad % 2 else ''))
             pass
 
@@ -123,7 +123,7 @@ def plot (*argv):
             for ipad, pad in enumerate(c.pads()[1:], 1):
                 print "hist2",ipad
                 histstyle[signal]['option'] = 'HIST'
-                print "style",histstyle[signal]
+                if args.debug: print "style",histstyle[signal]
                 # pad.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, **histstyle[signal])
                 pad.hist(data.loc[msk, M].values,  **histstyle[signal])
                 pass
@@ -156,7 +156,7 @@ def plot (*argv):
             # print "pad",(1 + ifeat//2)
             # pad = c.pads()[1 + ifeat//2] #???
             pad = c.pads()[padDict[ifeat]]  # ???
-            print "style",cfg
+            if args.debug: print "style",cfg
             # pad.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, label=" " + latex(feat, ROOT=True), **cfg)
             pad.hist(data.loc[msk, M].values, label=" " + latex(feat, ROOT=True), **cfg)
             pass
