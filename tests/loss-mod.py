@@ -38,7 +38,7 @@ def main (args):
     args, cfg = initialise(args)
 
     # Common definitions
-    num_folds   = 3
+    num_folds   = None
 
     # Perform classifier loss study
     plot_classifier_training_loss(num_folds)
@@ -46,25 +46,25 @@ def main (args):
     # Compute entropy of decorrelation variable posterior
     data, _, _ = load_data(args.input + 'data.h5', train=True, background=True)
     decorrelation = get_decorrelation_variables(data)
-    H_prior = entropy(decorrelation, weights=data['weight_adv'])
-    print "Entropy of prior: {}".format(H_prior)
+    # H_prior = entropy(decorrelation, weights=data['weight_adv'])
+    # print "Entropy of prior: {}".format(H_prior)
 
     # Perform adversarial loss study
-    for lambda_reg in [10, 100]:
-        plot_adversarial_training_loss(lambda_reg, num_folds, 10, H_prior)
+    for lambda_reg in [10]:
+        plot_adversarial_training_loss(lambda_reg, num_folds, 10)
         pass
 
     return 0
 
 
 @profile
-def plot_classifier_training_loss (num_folds=1, basedir='models/adversarial/classifier/full/'):
+def plot_classifier_training_loss (num_folds=None, basedir='models/adversarial/classifier/full/'):
     """
     Plot the classifier training loss.
     """
 
     # Check(s)
-    assert num_folds==1
+    assert num_folds is None
     if not basedir.endswith('/'):
         basedir += '/'
         pass
