@@ -138,7 +138,7 @@ def plot_classifier_training_loss (num_folds=None, basedir='models/adversarial/c
 
 
 @profile
-def plot_adversarial_training_loss (lambda_reg=10., num_folds=None, pretrain_epochs, H_prior=None, basedir='models/adversarial/combined/full/'):
+def plot_adversarial_training_loss (lambda_reg=10., num_folds=None, pretrain_epochs=10, H_prior=None, basedir='models/adversarial/combined/full/'):
     """
     Plot the classifier, adversary, and combined losses for the adversarial
     training of the jet classifier.
