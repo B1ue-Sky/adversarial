@@ -136,7 +136,7 @@ def main (args):
 
     else:
         data, features, _ = load_data(args.input + 'data.h5', test=True)
-    #DATA, _, _ = load_data(args.input + 'data.h5')
+    DATA, _, _ = load_data(args.input + 'data.h5')
 
     # Add variables
     # --------------------------------------------------------------------------
@@ -207,7 +207,6 @@ def main (args):
     used_variables = set(tagger_features + study_vars + flag_vars)
     all_variables = set(list(used_variables) + INPUT_VARIABLES)
     unused_variables = [var for var in list(data) if var not in used_variables]
-    exam_samples(data,args)
     data=data.drop(columns=unused_variables)
     gc.collect() #important!!
     data=data.dropna() #drop all missing value in all study vars
@@ -215,18 +214,20 @@ def main (args):
         data.to_hdf(tempFile,"dataset",mode="w",format="fixed")
     # return 0
     # Perform performance studies
+    exam_samples(data, args,True)
+    exam_samples(DATA, args,False)
     perform_studies (data, args, tagger_features, ann_vars)
 
 
     return 0
 
 
-def exam_samples(data, args, features=None):
+def exam_samples(data, args, testOnly=True,features=None):
         """
         Method exam samples.
         """
         #masscuts = [True, False]
-        trains=[None,True,False]
+        trains=[None] if testOnly else [None,True,False]
         pt_ranges = [None, (200 * GeV, 500 * GeV), (500 * GeV, 1000 * GeV), (1000 * GeV, 2000 * GeV)]
         pt_ranges = [None] #debug
         if features is None:
