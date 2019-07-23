@@ -136,7 +136,7 @@ def main (args):
 
     else:
         data, features, _ = load_data(args.input + 'data.h5', test=True)
-    DATA, _, _ = load_data(args.input + 'data.h5')
+    #DATA, _, _ = load_data(args.input + 'data.h5')
 
     # Add variables
     # --------------------------------------------------------------------------
