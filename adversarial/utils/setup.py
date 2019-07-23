@@ -354,7 +354,7 @@ DECORRELATION_VARIABLES_AUX=['fjet_pt']
 INPUT_VARIABLES =[  'fjet_eta', 'fjet_Angularity', 'fjet_Aplanarity',
                     'fjet_C2', 'fjet_D2', 'fjet_FoxWolfram20', 'fjet_KtDR', 'fjet_Qw',
                     'fjet_PlanarFlow', 'fjet_Split12', 'fjet_Split23', 'fjet_Tau21_wta',
-                    'fjet_Tau32_wta', 'fjet_ZCut12', 'fjet_e3', 'fjet_mcEventWeight',
+                    'fjet_Tau32_wta', 'fjet_ZCut12', 'fjet_e3',
                     'sjetVR1_IP2D_pb', 'sjetVR1_IP2D_pc', 'sjetVR1_IP2D_pu', 'sjetVR1_IP3D_pb',
                     'sjetVR1_IP3D_pc', 'sjetVR1_IP3D_pu', 'sjetVR1_JetFitter_N2Tpair',
                     'sjetVR1_JetFitter_dRFlightDir', 'sjetVR1_JetFitter_deltaeta',
@@ -396,7 +396,7 @@ INPUT_VARIABLES =[  'fjet_eta', 'fjet_Angularity', 'fjet_Aplanarity',
 # INPUT_VARIABLES =[  'fjet_eta', 'fjet_Angularity', 'fjet_Aplanarity',
 #                     'fjet_C2', 'fjet_D2', 'fjet_FoxWolfram20', 'fjet_KtDR', 'fjet_Qw',
 #                     'fjet_PlanarFlow', 'fjet_Split12', 'fjet_Split23', 'fjet_Tau21_wta',
-#                     'fjet_Tau32_wta', 'fjet_ZCut12', 'fjet_e3', 'fjet_mcEventWeight',
+#                     'fjet_Tau32_wta', 'fjet_ZCut12', 'fjet_e3',
 #                     'sjetVRGT1_IP2D_pb', 'sjetVRGT1_IP2D_pc', 'sjetVRGT1_IP2D_pu', 'sjetVRGT1_IP3D_pb',
 #                     'sjetVRGT1_IP3D_pc', 'sjetVRGT1_IP3D_pu', 'sjetVRGT1_JetFitter_N2Tpair',
 #                     'sjetVRGT1_JetFitter_dRFlightDir', 'sjetVRGT1_JetFitter_deltaeta',
@@ -553,5 +553,5 @@ def load_data (path, name='dataset', train=None, test=None, signal=None, backgro
         # no replace means one element can only be selected once
         pass
     # Return
-    print data.dtype
+    print data.dtypes
     return data, features_input, features_decorrelation
