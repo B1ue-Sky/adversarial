@@ -210,7 +210,7 @@ def main (args):
     data=data.drop(columns=unused_variables)
     gc.collect() #important!!
     data=data.dropna() #drop all missing value in all study vars
-    if agrs.debug:
+    if args.debug:
         data.to_hdf(tempFile,"dataset",mode="w",format="fixed")
     # return 0
     # Perform performance studies
