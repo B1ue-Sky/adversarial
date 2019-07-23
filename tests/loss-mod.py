@@ -127,8 +127,8 @@ def plot_classifier_training_loss (num_folds=None, basedir='models/adversarial/c
     c.pads()[0]._yaxis().SetNdivisions(505)
     c.xlabel("Training epoch")
     c.ylabel("standalone classifier loss, L_{clf}")
-    c.xlim(0, max(bins))
-    c.ylim(0.3, 0.5)
+    #c.xlim(0, max(bins))
+    #c.ylim(0.3, 0.5)
     c.legend(categories=categories, width=0.25)  # ..., xmin=0.475
     c.text(TEXT + ["#it{Hbb} tagging", "Neural network (NN) classifier"],
            qualifier=QUALIFIER)
@@ -264,6 +264,7 @@ def plot_adversarial_training_loss (lambda_reg=10., num_folds=None, pretrain_epo
         clf_opt_val = clf_opt_val or c.pads()[0]._primitives[1].GetBinContent(1)
         ref = clf_opt_val if ipad == 0 else (H_prior if ipad == 1 else clf_opt_val - lambda_reg * H_prior)
         if args.debug: print "ymin", ymin
+        if args.debug: print "ref", ref
         ymin = min(ymin + [ref])
         ymax = max(ymax + [ref])
         if args.debug: print "ymax,ymin",ymax,ymin
