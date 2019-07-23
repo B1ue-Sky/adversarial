@@ -68,8 +68,10 @@ def metrics (data, feat, target_tpr=0.5, cut=None, masscut=False, verbose=False)
     if masscut:
         print "metrics: Applying mass cut."
         # msk = (data[M] > 60.*GeV) & (data[M] < 100.*GeV) if masscut else np.ones_like(data['signal']).astype(bool)
-        msk = (data[M] > 80.*GeV) & (data[M] < 140.*GeV) if masscut else np.ones_like(data['signal']).astype(bool) # mass cut From Weo
         pass
+
+    msk = (data[M] > 80.*GeV) & (data[M] < 140.*GeV) if masscut else np.ones_like(data['signal']).astype(bool) # mass cut From Weo
+
 
     # scikit-learn assumes signal towards 1, background towards 0
     pred = data[feat].values.copy()
