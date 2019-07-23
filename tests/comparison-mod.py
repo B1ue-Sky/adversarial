@@ -131,12 +131,12 @@ def main (args):
     tempFile = args.output + "/test.h5"
     if args.debug and os.path.exists(tempFile):
         data = pd.read_hdf(tempFile, "dataset")
-        perform_studies(data, args, tagger_features, ann_vars)
-        return 0
+        # perform_studies(data, args, tagger_features, ann_vars)
+        # return 0
 
     else:
         data, features, _ = load_data(args.input + 'data.h5', test=True)
-    # DATA, _, _ = load_data(args.input + 'data.h5')
+    DATA, _, _ = load_data(args.input + 'data.h5')
 
     # Add variables
     # --------------------------------------------------------------------------
@@ -207,14 +207,16 @@ def main (args):
     used_variables = set(tagger_features + study_vars + flag_vars)
     all_variables = set(list(used_variables) + INPUT_VARIABLES)
     unused_variables = [var for var in list(data) if var not in used_variables]
+    exam_samples(data)
     data=data.drop(columns=unused_variables)
     gc.collect() #important!!
     data=data.dropna() #drop all missing value in all study vars
-    data.to_hdf(tempFile,"dataset",mode="w",format="fixed")
-    return 0
+    if agrs.debug:
+        data.to_hdf(tempFile,"dataset",mode="w",format="fixed")
+    # return 0
     # Perform performance studies
     perform_studies (data, args, tagger_features, ann_vars)
-    #exam_samples(DATA, args,all_variables)
+
 
     return 0
 
@@ -223,15 +225,19 @@ def exam_samples(data, args, features=None):
         """
         Method exam samples.
         """
-        masscuts = [True, False]
+        #masscuts = [True, False]
         trains=[None,True,False]
         pt_ranges = [None, (200 * GeV, 500 * GeV), (500 * GeV, 1000 * GeV), (1000 * GeV, 2000 * GeV)]
+        pt_ranges = [None] #debug
         if features is None:
-            features=set(INPUT_VARIABLES,DECORRELATION_VARIABLES,
-                         WEIGHT_VARIABLES,DECORRELATION_VARIABLES_AUX)
+            # features=set(INPUT_VARIABLES,DECORRELATION_VARIABLES,
+            #              WEIGHT_VARIABLES,DECORRELATION_VARIABLES_AUX)
+            features=list(data)
+        data=data[features].dropna()
         with Profile("Study: samples variables"):
-            mass_ranges = np.linspace(50*GeV, 300*GeV, (5 + 1)*GeV, endpoint=True)
+            mass_ranges = np.linspace(50*GeV, 300*GeV, 5 + 1, endpoint=True)
             mass_ranges = [None] + zip(mass_ranges[:-1], mass_ranges[1:])
+            mass_ranges =[None] #debug
             for feat, pt_range, mass_range,train in itertools.product(features, pt_ranges,
                                                                 mass_ranges,trains):
                 studies.samplesexam(data, args, feat, pt_range, mass_range,train)

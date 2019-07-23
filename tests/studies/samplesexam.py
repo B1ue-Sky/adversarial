@@ -17,8 +17,8 @@ import rootplotting as rp
 
 
 # Global variable definition(s)
-HISTSTYLE[True] ['label'] = "#it{W} jets"
-HISTSTYLE[False]['label'] = "Multijets"
+HISTSTYLE[True] ['label'] = "#it{Hbb} "
+HISTSTYLE[False]['label'] = "Dijets"
 
 
 @garbage_collect
@@ -115,7 +115,7 @@ def plot (*argv):
     c.xlabel("Large-#it{R} jet " + latex(feat, ROOT=True))
     c.ylabel("Fraction of jets")
     c.text(TEXT + [
-        "#it{W} jet tagging"] + (
+        "#it{Hbb} tagging"] + (
         ["p_{{T}} #in  [{:.0f}, {:.0f}] GeV".format(pt_range[0], pt_range[1])] if pt_range is not None else []
         ) + (
         ["m #in  [{:.0f}, {:.0f}] GeV".format(mass_range[0], mass_range[1]),] if mass_range is not None else []

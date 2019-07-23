@@ -44,14 +44,15 @@ def main (args):
     plot_classifier_training_loss(num_folds)
 
     # Compute entropy of decorrelation variable posterior
-    #data, _, _ = load_data(args.input + 'data.h5', train=True, background=True)
-    #decorrelation = get_decorrelation_variables(data)
+    data, _, _ = load_data(args.input + 'data.h5', train=True, background=True)
+    decorrelation = get_decorrelation_variables(data)
     # H_prior = entropy(decorrelation, weights=data['weight_adv'])
-    # print "Entropy of prior: {}".format(H_prior)
+    H_prior = entropy(decorrelation)
+    print "Entropy of prior: {}".format(H_prior)
 
     # Perform adversarial loss study
     for lambda_reg in [10]:
-        plot_adversarial_training_loss(lambda_reg, num_folds, 10)
+        plot_adversarial_training_loss(lambda_reg, num_folds, 10,H_prior)
         pass
 
     return 0
@@ -127,7 +128,7 @@ def plot_classifier_training_loss (num_folds=None, basedir='models/adversarial/c
     c.pads()[0]._yaxis().SetNdivisions(505)
     c.xlabel("Training epoch")
     c.ylabel("standalone classifier loss, L_{clf}")
-    #c.xlim(0, max(bins))
+    c.xlim(0, max(bins))
     #c.ylim(0.3, 0.5)
     c.legend(categories=categories, width=0.25)  # ..., xmin=0.475
     c.text(TEXT + ["#it{Hbb} tagging", "Neural network (NN) classifier"],
@@ -265,6 +266,7 @@ def plot_adversarial_training_loss (lambda_reg=10., num_folds=None, pretrain_epo
         ref = clf_opt_val if ipad == 0 else (H_prior if ipad == 1 else clf_opt_val - lambda_reg * H_prior)
         if args.debug: print "ymin", ymin
         if args.debug: print "ref", ref
+        assert ref is not None
         ymin = min(ymin + [ref])
         ymax = max(ymax + [ref])
         if args.debug: print "ymax,ymin",ymax,ymin
