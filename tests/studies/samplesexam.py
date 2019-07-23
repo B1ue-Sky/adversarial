@@ -60,6 +60,7 @@ def samplesexam (data_, args, feat, pt_range=None, mass_range=None,train=None):
     # Define bins
     # xmin = wpercentile (data[feat].values,  1, weights=data['weight_test'].values)
     # xmax = wpercentile (data[feat].values, 99, weights=data['weight_test'].values)
+    print "sample exam",feat,data[feat].size
     xmin = wpercentile (data[feat].values,  1)
     xmax = wpercentile (data[feat].values, 99)
 

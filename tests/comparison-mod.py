@@ -207,7 +207,7 @@ def main (args):
     used_variables = set(tagger_features + study_vars + flag_vars)
     all_variables = set(list(used_variables) + INPUT_VARIABLES)
     unused_variables = [var for var in list(data) if var not in used_variables]
-    exam_samples(data)
+    exam_samples(data,args)
     data=data.drop(columns=unused_variables)
     gc.collect() #important!!
     data=data.dropna() #drop all missing value in all study vars
