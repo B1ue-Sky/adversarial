@@ -44,8 +44,8 @@ def main (args):
     plot_classifier_training_loss(num_folds)
 
     # Compute entropy of decorrelation variable posterior
-    data, _, _ = load_data(args.input + 'data.h5', train=True, background=True)
-    decorrelation = get_decorrelation_variables(data)
+    #data, _, _ = load_data(args.input + 'data.h5', train=True, background=True)
+    #decorrelation = get_decorrelation_variables(data)
     # H_prior = entropy(decorrelation, weights=data['weight_adv'])
     # print "Entropy of prior: {}".format(H_prior)
 
