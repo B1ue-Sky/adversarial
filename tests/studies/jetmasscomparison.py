@@ -214,7 +214,7 @@ def plot (*argv):
         c.pads()[2].ylabel("#splitline{#splitline{#splitline{#splitline{Fraction of jets}{}}{}}{}}{#splitline{#splitline{}{}}{#splitline{#splitline{}{}}{#splitline{}{}}}}")
         # I have written a _lot_ of ugly code, but this ^ is probably the worst.
 
-        c.pads()[0].text(["dataset p3652, train 2M, test 1M,  #it{Hbb} tagging",
+        c.pads()[0].text(["dataset p3652,  #it{Hbb} tagging",
                     "Cuts at #varepsilon_{sig}^{rel} = %.0f%%" % eff_sig,
                     ], xmin=0.2, ymax=0.72, qualifier=QUALIFIER)
 

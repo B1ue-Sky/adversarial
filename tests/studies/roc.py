@@ -153,7 +153,7 @@ def plot (*argv):
     c.xlabel("Signal efficiency #varepsilon_{sig}^{rel}")
     c.ylabel("Background rejection 1/#varepsilon_{bkg}^{rel}")
     c.text([], xmin=0.15, ymax=0.96, qualifier=QUALIFIER)
-    c.text(["dataset p3652, train 2M, test 1M",
+    c.text(["dataset p3652,",
             "#it{Hbb} tagging"] + (
                 ["p_{{T}} #in  [{:.0f}, {:.0f}] GeV".format(pt_range[0], pt_range[1])] if pt_range is not None else []
             ) + (
