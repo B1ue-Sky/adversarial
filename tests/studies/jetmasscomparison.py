@@ -141,7 +141,7 @@ def plot (*argv):
         c.pads()[0]._legends[-1].SetMargin(0.35)
 
         # -- Tagged
-        padDict={0:1,1:1,2:2,3:3}
+        padDict={0:1,1:1,2:2,3:2,4:3,5:3}
         base['linewidth'] = 2
         for ifeat, feat in enumerate(features):
             opts = dict(
@@ -162,7 +162,7 @@ def plot (*argv):
             pass
         # -- Legend(s)
         for ipad, pad in enumerate(c.pads()[1:], 1):
-            print "lengend set",ipad
+            print "legend set",ipad
             offsetx = (0.20 if ipad % 2 else 0.05)
             offsety =  0.20 * ((2 - (ipad // 2)) / float(2.))
             print 0.68 - offsetx,0.80 - offsety

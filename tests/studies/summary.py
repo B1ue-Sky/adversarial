@@ -62,6 +62,7 @@ def summary (data_, args, features, scan_features, target_tpr=0.5, num_bootstrap
         print "scan_features",scan_features
         print features + map(lambda t: t[0], [it for gr in scan_features.itervalues() for it in gr])
     for feat in features + map(lambda t: t[0], [it for gr in scan_features.itervalues() for it in gr]):
+        #NN, ANN, MV2c10, Xbb score.
         print  "-- {}".format(feat)
 
         # Check for duplicates
@@ -74,6 +75,7 @@ def summary (data_, args, features, scan_features, target_tpr=0.5, num_bootstrap
 
         # Add point to array
         points.append((rej, jsd, feat))
+        assert not np.isnan(rej) and not np.isnan(jsd)
         pass
 
     # Compute meaningful limit for 1/JSD based on bootstrapping
@@ -222,7 +224,7 @@ def plot (*argv):
         # Connecting lines (simple)
         if args.debug:
             print points
-        for i in range(3):
+        for i in range(3): #at least 6 items???
             x1, y1, _ = points[2 * i + 0] #0,2,4
             x2, y2, _ = points[2 * i + 1] #1,3,5
             colour = rp.colours[i]

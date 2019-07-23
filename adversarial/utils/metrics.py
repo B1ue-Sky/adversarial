@@ -130,7 +130,7 @@ def metrics (data, feat, target_tpr=0.5, cut=None, masscut=False, verbose=False)
 
     # Return metrics
     print eff, rej, jsd
-    return eff, rej, 1./jsd
+    return eff, rej, 1./jsd #??
 
 
 @garbage_collect

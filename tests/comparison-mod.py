@@ -125,11 +125,11 @@ def main (args):
 
     # Tagger feature collection
     #tagger_features = ['Tau21','Tau21DDT', 'D2', kNN_var, 'D2', 'D2CSS', 'NN', ann_var, 'Adaboost', uboost_var]
-    tagger_features = ['NN', ann_var,mv_var,sc_var]
+    tagger_features = ['NN', ann_var,mv_var,ann_var,sc_var, ann_var]
 
     # Load data
     tempFile = args.output + "/test.h5"
-    if True and os.path.exists(tempFile):
+    if args.debug and os.path.exists(tempFile):
         data = pd.read_hdf(tempFile, "dataset")
         perform_studies(data, args, tagger_features, ann_vars)
         return 0
@@ -258,28 +258,28 @@ def perform_studies (data, args, tagger_features, ann_vars):
 
     #debug
 
-    # with Profile("Study: Jet mass comparison:debug"):
-    #     for eff in set(range(0,110,10)+range(90,100,1)):
-    #         studies.jetmasscomparison(data, args, tagger_features,eff,True)
-    #         pass
-    # with Profile("Study: Efficiency:debug"):
-    #     for feat in tagger_features:
-    #         studies.efficiency(data, args, feat)
-    #         pass
-    #     pass
-    # with Profile("Study: ROC:debug"):
-    #     for masscut, pt_range in itertools.product(masscuts, pt_ranges):
-    #         studies.roc(data, args, tagger_features, masscut=masscut, pt_range=pt_range)
-    #         pass
-    #     pass
-    # with Profile("Study: Substructure tagger distributions"):
-    #     mass_ranges = np.linspace(50 * GeV, 300 * GeV, 5 + 1, endpoint=True)
-    #     mass_ranges = [None] + zip(mass_ranges[:-1], mass_ranges[1:])
-    #     for feat, pt_range, mass_range in itertools.product(tagger_features, pt_ranges, mass_ranges):  # tagger_features
-    #         studies.distribution(data, args, feat, pt_range, mass_range)
-    #         pass
-    #     pass
-    with Profile("Study: Summary plot"):
+    with Profile("Study: Jet mass comparison:debug"):
+        for eff in set(range(0,110,10)+range(90,100,1)):
+            studies.jetmasscomparison(data, args, tagger_features,eff,True)
+            pass
+    with Profile("Study: Efficiency:debug"):
+        for feat in tagger_features:
+            studies.efficiency(data, args, feat)
+            pass
+        pass
+    with Profile("Study: ROC:debug"):
+        for masscut, pt_range in itertools.product(masscuts, pt_ranges):
+            studies.roc(data, args, tagger_features, masscut=masscut, pt_range=pt_range)
+            pass
+        pass
+    with Profile("Study: Substructure tagger distributions"):
+        mass_ranges = np.linspace(50 * GeV, 300 * GeV, 5 + 1, endpoint=True)
+        mass_ranges = [None] + zip(mass_ranges[:-1], mass_ranges[1:])
+        for feat, pt_range, mass_range in itertools.product(tagger_features, pt_ranges, mass_ranges):  # tagger_features
+            studies.distribution(data, args, feat, pt_range, mass_range)
+            pass
+        pass
+    with Profile("Study: Summary plot:debug"):
         regex_nn = re.compile('\#lambda=[\d\.]+')
         # regex_ub = re.compile('\#alpha=[\d\.]+')
 
@@ -304,20 +304,20 @@ def perform_studies (data, args, tagger_features, ann_vars):
     #     pass
 
     # Perform summary plot study
-    with Profile("Study: Summary plot"):
-        regex_nn = re.compile('\#lambda=[\d\.]+')
-        regex_ub = re.compile('\#alpha=[\d\.]+')
-
-        # scan_features = {'NN':       map(lambda feat: (feat, regex_nn.search(feat).group(0)), ann_vars),
-        #                  'Adaboost': map(lambda feat: (feat, regex_ub.search(feat).group(0)), uboost_vars)
-        #                  }
-        scan_features = {'NN': map(lambda feat: (feat, regex_nn.search(feat).group(0)), ann_vars),
-                         }
-
-        for masscut, pt_range in itertools.product(masscuts, pt_ranges):
-            studies.summary(data, args, tagger_features, scan_features, masscut=masscut, pt_range=pt_range)
-            pass
-        pass
+    # with Profile("Study: Summary plot"):
+    #     regex_nn = re.compile('\#lambda=[\d\.]+')
+    #     regex_ub = re.compile('\#alpha=[\d\.]+')
+    #
+    #     # scan_features = {'NN':       map(lambda feat: (feat, regex_nn.search(feat).group(0)), ann_vars),
+    #     #                  'Adaboost': map(lambda feat: (feat, regex_ub.search(feat).group(0)), uboost_vars)
+    #     #                  }
+    #     scan_features = {'NN': map(lambda feat: (feat, regex_nn.search(feat).group(0)), ann_vars),
+    #                      }
+    #
+    #     for masscut, pt_range in itertools.product(masscuts, pt_ranges):
+    #         studies.summary(data, args, tagger_features, scan_features, masscut=masscut, pt_range=pt_range)
+    #         pass
+    #     pass
 
     # Perform distributions study (now tyr to use exam_samples
     with Profile("Study: Substructure tagger distributions"):
