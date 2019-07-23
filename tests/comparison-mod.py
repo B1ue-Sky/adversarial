@@ -233,7 +233,8 @@ def exam_samples(data, args, features=None):
             # features=set(INPUT_VARIABLES,DECORRELATION_VARIABLES,
             #              WEIGHT_VARIABLES,DECORRELATION_VARIABLES_AUX)
             features=list(data)
-        data=data[features].dropna()
+        # data=data[features].dropna()
+        data = data.dropna()
         with Profile("Study: samples variables"):
             mass_ranges = np.linspace(50*GeV, 300*GeV, 5 + 1, endpoint=True)
             mass_ranges = [None] + zip(mass_ranges[:-1], mass_ranges[1:])

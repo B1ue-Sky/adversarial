@@ -35,12 +35,13 @@ def samplesexam (data_, args, feat, pt_range=None, mass_range=None,train=None):
         feat: Feature for which to plot.
     """
 
+    print list(data_)
     if train is not None:
         if train:
-            data = data_[data_['train']==True]
+            data = data_[data_['train']==1]
             pass
         else:
-            data = data_[data_['train']==False]
+            data = data_[data_['train']==0]
             pass
     else:
         data=data_
@@ -61,6 +62,7 @@ def samplesexam (data_, args, feat, pt_range=None, mass_range=None,train=None):
     # xmin = wpercentile (data[feat].values,  1, weights=data['weight_test'].values)
     # xmax = wpercentile (data[feat].values, 99, weights=data['weight_test'].values)
     print "sample exam",feat,data[feat].size
+    print list(data)
     xmin = wpercentile (data[feat].values,  1)
     xmax = wpercentile (data[feat].values, 99)
 
