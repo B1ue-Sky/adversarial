@@ -263,7 +263,7 @@ def plot_adversarial_training_loss (lambda_reg=10., num_folds=None, pretrain_epo
 
         ymin = min(ymin + [ref])
         ymax = max(ymax + [ref])
-
+        if args.debug: print ymax,ymin
         ydiff = ymax - ymin
         ymin -= ydiff * 0.2
         ymax += ydiff * (0.7 if ipad == 0 else (0.7 if ipad == 1 else 0.2))
