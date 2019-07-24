@@ -125,7 +125,8 @@ def main (args):
 
     # Tagger feature collection
     #tagger_features = ['Tau21','Tau21DDT', 'D2', kNN_var, 'D2', 'D2CSS', 'NN', ann_var, 'Adaboost', uboost_var]
-    tagger_features = ['NN', ann_var,mv_var,ann_var,sc_var, ann_var]
+    # tagger_features = ['NN', ann_var,mv_var,ann_var,sc_var, ann_var]
+    tagger_features = ['NN', ann_var, mv_var, sc_var]
 
     # Load data
     tempFile = args.output + "/test.h5"
