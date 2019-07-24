@@ -84,7 +84,8 @@ def samplesexam (data_, args, feat, pt_range=None, mass_range=None,train=None):
     c = plot(args, data, feat, bins, pt_range, mass_range)
 
     # Output
-    path = 'figures/samples/{}-{}_{}{}.pdf'.format(standardise(feat), "train" if train else "test",'__pT{:.0f}_{:.0f}'.format(pt_range[0], pt_range[1]) if pt_range is not None else '', '__mass{:.0f}_{:.0f}'.format(mass_range[0], mass_range[1]) if mass_range is not None else '')
+    outPath=args.output.rstrip("/")
+    path = outPath+'/samples/{}-{}_{}{}.pdf'.format(standardise(feat), "all" if train is None else ("test" if train else "test"),'__pT{:.0f}_{:.0f}'.format(pt_range[0], pt_range[1]) if pt_range is not None else '', '__mass{:.0f}_{:.0f}'.format(mass_range[0], mass_range[1]) if mass_range is not None else '')
 
     return c, args, path
 
