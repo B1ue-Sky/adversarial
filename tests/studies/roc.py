@@ -44,7 +44,7 @@ def roc (data_, args, features, masscut=False, pt_range=(200*GeV, 2000*GeV)):
         pass
 
     # (Opt.) masscut | @NOTE: Duplication with adversarial/utils/metrics.py
-    msk = (data[M] > 60.*GeV) & (data[M] < 100.*GeV) if masscut else np.ones_like(data['signal']).astype(bool)
+    msk = (data[M] > 80.*GeV) & (data[M] < 140.*GeV) if masscut else np.ones_like(data['signal']).astype(bool)
 
     # Computing ROC curves
     ROCs = dict()
@@ -155,9 +155,9 @@ def plot (*argv):
     c.text([], xmin=0.15, ymax=0.96, qualifier=QUALIFIER)
     c.text(["dataset p3652,",
             "#it{Hbb} tagging"] + (
-                ["p_{{T}} #in  [{:.0f}, {:.0f}] GeV".format(pt_range[0], pt_range[1])] if pt_range is not None else []
+                ["p_{{T}} #in  [{:.0f}, {:.0f}] GeV".format(pt_range[0]/GeV, pt_range[1]/GeV)] if pt_range is not None else []
             ) + (
-                ["Cut: m #in  [60, 100] GeV"] if masscut else []
+                ["Cut: m #in  [80, 140] GeV"] if masscut else []
             ),
            ATLAS=False)
 

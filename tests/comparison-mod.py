@@ -330,7 +330,7 @@ def perform_studies (data, args, tagger_features, ann_vars):
 
     # Perform distributions study (now tyr to use exam_samples
     with Profile("Study: Substructure tagger distributions"):
-        mass_ranges = np.linspace(50 * GeV, 300 * GeV, (5 + 1) * GeV, endpoint=True)
+        mass_ranges = np.linspace(50 * GeV, 300 * GeV, 5 + 1, endpoint=True)
         mass_ranges = [None] + zip(mass_ranges[:-1], mass_ranges[1:])
         for feat, pt_range, mass_range in itertools.product(tagger_features, pt_ranges, mass_ranges):  # tagger_features
             studies.distribution(data, args, feat, pt_range, mass_range)

@@ -141,7 +141,8 @@ def plot (*argv):
         c.pads()[0]._legends[-1].SetMargin(0.35)
 
         # -- Tagged
-        padDict={0:1,1:1,2:2,3:2,4:3,5:3}
+        # padDict={0:1,1:1,2:2,3:2,4:3,5:3}
+        padDict = {0: 1, 1: 1, 2: 3, 3: 4}
         base['linewidth'] = 2
         for ifeat, feat in enumerate(features):
             opts = dict(
