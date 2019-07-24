@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # ROOT import(s)
-import ROOT
+# import ROOT
 
 # Project import(s)
 from .common import *

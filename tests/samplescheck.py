@@ -4,9 +4,9 @@
 """Script for performing comparison studies."""
 
 # Basic import(s)
-import re
-import gc
-import gzip
+# import re
+# import gc
+# import gzip
 import itertools
 
 # Get ROOT to stop hogging the command-line options
@@ -14,25 +14,25 @@ import ROOT
 ROOT.PyConfig.IgnoreCommandLineOptions = True
 
 # Scientific import(s)
-import numpy as np
-import pandas as pd
-import pickle
-import root_numpy
-from array import array
-from scipy.stats import entropy
-from sklearn.metrics import roc_curve, roc_auc_score
+# import numpy as np
+# import pandas as pd
+# import pickle
+# import root_numpy
+# from array import array
+# from scipy.stats import entropy
+# from sklearn.metrics import roc_curve, roc_auc_score
 
 # Project import(s)
 from adversarial.utils import initialise, initialise_backend, parse_args, load_data, mkdir, wpercentile, latex
 from adversarial.profile import profile, Profile
-from adversarial.constants import *
+# from adversarial.constants import *
 from run.adversarial.common import initialise_config
 from .studies.common import *
 import studies
-import os
+# import os
 
 # Custom import(s)
-import rootplotting as rp
+# import rootplotting as rp
 
 #now all keep 4 test and addition samplesexame(), all without weight!
 # Main function definition
@@ -40,13 +40,13 @@ import rootplotting as rp
 def main (args):
 
     # Initialise
-    args, cfg = initialise(args)
+    args, _ = initialise(args)
 
     # Initialise Keras backend
-    initialise_backend(args)
+    # initialise_backend(args)
 
     # Neural network-specific initialisation of the configuration dict
-    initialise_config(args, cfg)
+    # initialise_config(args, cfg)
 
     # # Keras import(s)
     # import keras.backend as K
