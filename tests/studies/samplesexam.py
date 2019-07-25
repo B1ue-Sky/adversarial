@@ -55,8 +55,12 @@ def samplesexam (data_, args, feat, pt_range=None, mass_range=None,train=None,fi
         data = data[(data[M] > mass_range[0]) & (data[M] < mass_range[1])]
 
     if fillna:
-        print "fill N/A",feat,data[feat].isna().sum()
-        data[feat].fillna(value=INPUT_DEFAULTS,inplace=True)
+        if data[feat].isna().sum() == 0:
+            print "No need fillna",feat
+            return
+        else:
+            print "fill N/A",feat,data[feat].isna().sum()
+            data[feat].fillna(value=INPUT_DEFAULTS,inplace=True)
 
     # Define bins
     # xmin = wpercentile (data[feat].values,  1, weights=data['weight_test'].values)
