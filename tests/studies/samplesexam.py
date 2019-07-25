@@ -49,7 +49,7 @@ def samplesexam (data_, args, feat, pt_range=None, mass_range=None,train=None,fi
         data=data_
         print "select all", feat, data.size
         pass
-
+    assert data.is_copy
     # Select data
     if pt_range is not None:
         data = data[(data[PT] > pt_range[0]) & (data[PT] < pt_range[1])]
@@ -63,7 +63,8 @@ def samplesexam (data_, args, feat, pt_range=None, mass_range=None,train=None,fi
             return
         else:
             print "fill N/A",feat,data[feat].isna().sum()
-            data[feat].fillna(value=INPUT_DEFAULTS,inplace=True)
+            #data[feat].fillna(value=INPUT_DEFAULTS,inplace=True) #inplace is annoying in python...
+            data=data.fillna(value=INPUT_DEFAULTS)
 
     # Define bins
     # xmin = wpercentile (data[feat].values,  1, weights=data['weight_test'].values)
