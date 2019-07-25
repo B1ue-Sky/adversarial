@@ -23,7 +23,7 @@ ROOT.PyConfig.IgnoreCommandLineOptions = True
 # from sklearn.metrics import roc_curve, roc_auc_score
 
 # Project import(s)
-from adversarial.utils import initialise, initialise_backend, parse_args, load_data, mkdir, wpercentile, latex
+from adversarial.utils import initialise, initialise_backend, parse_args, load_data,load_data_raw, mkdir, wpercentile, latex
 from adversarial.profile import profile, Profile
 # from adversarial.constants import *
 from run.adversarial.common import initialise_config
@@ -137,7 +137,7 @@ def main (args):
     #
     # else:
     #     data, features, _ = load_data(args.input + 'data.h5', test=True)
-    DATA, _, _ = load_data(args.input + 'data.h5')
+    DATA, _, _ = load_data_raw(args.input + 'data.h5')
 
     # Add variables
     # --------------------------------------------------------------------------
@@ -241,9 +241,10 @@ def exam_samples(data, args, testOnly=False,features=None):
             mass_ranges = np.linspace(50*GeV, 300*GeV, 5 + 1, endpoint=True)
             mass_ranges = [None] + zip(mass_ranges[:-1], mass_ranges[1:])
             mass_ranges =[None] #debug
-            for feat, pt_range, mass_range,train in itertools.product(features, pt_ranges,
-                                                                mass_ranges,trains):
-                studies.samplesexam(data, args, feat, pt_range, mass_range,train)
+            fillnas=[False,True]
+            for feat, pt_range, mass_range,train,fillna in itertools.product(features, pt_ranges,
+                                                                mass_ranges,trains,fillnas):
+                studies.samplesexam(data, args, feat, pt_range, mass_range,train,fillna)
                 pass
             pass
 

@@ -8,6 +8,7 @@
 from .common import *
 from adversarial.utils import mkdir, latex, wpercentile, garbage_collect
 from adversarial.constants import *
+from adversarial.utils.setup import INPUT_DEFAULTS
 
 # Custom import(s)
 import rootplotting as rp
@@ -23,7 +24,7 @@ HISTSTYLE[False]['label'] = "Dijets"
 
 @garbage_collect
 @showsave
-def samplesexam (data_, args, feat, pt_range=None, mass_range=None,train=None):
+def samplesexam (data_, args, feat, pt_range=None, mass_range=None,train=None,fillna=True):
     """
     Perform study of substructure variable distributions.
 
@@ -37,10 +38,10 @@ def samplesexam (data_, args, feat, pt_range=None, mass_range=None,train=None):
 
     if train is not None:
         if train:
-            data = data_[data_['train']==1]
+            data = data_[data_['train']==False] #note train =1/0, compare with True/False is ok.
             pass
         else:
-            data = data_[data_['train']==0]
+            data = data_[data_['train']==True]
             pass
     else:
         data=data_
@@ -49,13 +50,13 @@ def samplesexam (data_, args, feat, pt_range=None, mass_range=None,train=None):
     # Select data
     if pt_range is not None:
         data = data[(data[PT] > pt_range[0]) & (data[PT] < pt_range[1])]
-    else:
-        # data = data
-        pass
 
     if mass_range is not None:
         data = data[(data[M] > mass_range[0]) & (data[M] < mass_range[1])]
-        pass
+
+    if fillna:
+        print "fill N/A",feat,data[feat].isna().sum()
+        data[feat].fillna(value=INPUT_DEFAULTS,inplace=True)
 
     # Define bins
     # xmin = wpercentile (data[feat].values,  1, weights=data['weight_test'].values)
@@ -63,6 +64,10 @@ def samplesexam (data_, args, feat, pt_range=None, mass_range=None,train=None):
     print "sample exam",feat,pt_range, mass_range,train,data[feat].size
     xmin = wpercentile (data[feat].values,  1)
     xmax = wpercentile (data[feat].values, 99)
+    if not xmax>xmin: #wrong values or nan
+        print "Error",feat
+        return #return empty so that no saving
+
 
     # if   feat == 'D2-k#minusNN':
     #     print "distribution: kNN feature '{}'".format(feat)
@@ -85,7 +90,7 @@ def samplesexam (data_, args, feat, pt_range=None, mass_range=None,train=None):
 
     # Output
     outPath=args.output.rstrip("/")
-    path = outPath+'/samples/{}-{}_{}{}.pdf'.format(standardise(feat), "all" if train is None else ("test" if train else "test"),'__pT{:.0f}_{:.0f}'.format(pt_range[0], pt_range[1]) if pt_range is not None else '', '__mass{:.0f}_{:.0f}'.format(mass_range[0], mass_range[1]) if mass_range is not None else '')
+    path = outPath+'/samples/{}-{}_{}{}{}.pdf'.format(standardise(feat), "all" if train is None else ("train" if train else "test"),'__pT{:.0f}_{:.0f}'.format(pt_range[0], pt_range[1]) if pt_range is not None else '', '__mass{:.0f}_{:.0f}'.format(mass_range[0], mass_range[1]) if mass_range is not None else '',"_raw" if not fillna else "")
 
     return c, args, path
 

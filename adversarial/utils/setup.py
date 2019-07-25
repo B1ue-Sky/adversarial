@@ -462,7 +462,6 @@ def get_decorrelation_variables (data,bWithAux=False,bAuxLog=True):
 
 @garbage_collect
 @profile
-
 def load_data (path, name='dataset', train=None, test=None, signal=None, background=None, sample=None, seed=21, replace=True):
     """
     General script to load data, common to all run scripts.
@@ -490,6 +489,101 @@ def load_data (path, name='dataset', train=None, test=None, signal=None, backgro
 
     # Read data from HDF5 file
     data = pd.read_hdf(path, name).fillna(value=INPUT_DEFAULTS)
+
+    # Subsample signal by x10 for testing: 1E+07 -> 1E+06?????????
+    np.random.seed(7)
+    try:
+        msk_test  = data['train'].astype(bool)
+        msk_train = ~msk_test #train/test disting
+        msk_bkg = data['signal'].astype(bool)
+        msk_sig = ~msk_bkg  #signal/bkg
+
+        # idx_sig = np.where(msk_sig)[0]
+        # idx_sig = np.random.choice(idx_sig, int(msk_sig.sum() * 0.1), replace=False) #select 10%
+        # msk_sig = np.zeros_like(msk_bkg).astype(bool)
+        # msk_sig[idx_sig] = True #reset selected sig
+        # data = data[msk_train | (msk_test & (msk_sig | msk_bkg))]
+        pass
+    except:
+        log.warning("Some of the keys ['train', 'signal'] were not present in file {}".format(path))
+        pass
+
+    # Logging
+    try:
+        for sig, name in zip([True, False], ['signal', 'background']):
+            log.info("Found {:8.0f} training and {:8.0f} test samples for {}".format(
+                sum((data['signal'] == sig) & (data['train'] == True)),
+                sum((data['signal'] == sig) & (data['train'] == False)),
+                name
+                ))
+            pass
+    except KeyError:
+        log.info("Some key(s) in data were not found")
+        pass
+
+    # Define feature collections to use
+    features_input         = INPUT_VARIABLES
+    features_decorrelation = DECORRELATION_VARIABLES
+
+    # Split data, for different usage
+    if train:
+        log.info("load_data: Selecting only training data.")
+        data = data[data['train']  == True]
+        pass
+
+    if test:
+        log.info("load_data: Selecting only testing data.")
+        data = data[data['train']  == False]
+        pass
+
+    if signal:
+        log.info("load_data: Selecting only signal data.")
+        data = data[data['signal'] == True]
+        pass
+
+    if background:
+        log.info("load_data: Selecting only background data.")
+        data = data[data['signal'] == False]
+        pass
+
+    if sample:
+        log.info("load_data: Selecting a random fraction {:.2f} of data (replace = {}, seed = {}).".format(sample, replace, seed))
+        data = data.sample(frac=sample, random_state=seed, replace=False) #dataframe.sample
+        # no replace means one element can only be selected once
+        pass
+    # Return
+    print data.dtypes
+    return data, features_input, features_decorrelation
+
+@garbage_collect
+@profile
+def load_data_raw (path, name='dataset', train=None, test=None, signal=None, background=None, sample=None, seed=21, replace=True):
+    """
+    General script to load data, common to all run scripts. Without fill NaN
+
+    Arguments:
+        path: The path to the HDF5 file, from which data should be loaded.
+        name: Name of the dataset, as stored in the HDF5 file.
+        ...
+
+    Returns:
+        Tuple of pandas.DataFrame containing the loaded; list of loaded features
+        to be used for training; and list of features to be used for mass-
+        decorrelation.
+
+    Raises:
+        IOError: If no HDF5 file exists at the specified `path`.
+        KeyError: If the HDF5 does not contained a dataset named `name`.
+        KeyError: If any of the necessary features are not present in the loaded
+            dataset.
+    """
+
+    # Check(s)
+    assert False not in [train, test, signal, background]
+    if sample: assert 0 < sample and sample < 1.
+
+    # Read data from HDF5 file
+    data = pd.read_hdf(path, name)
 
     # Subsample signal by x10 for testing: 1E+07 -> 1E+06?????????
     np.random.seed(7)
