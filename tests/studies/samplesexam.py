@@ -38,13 +38,16 @@ def samplesexam (data_, args, feat, pt_range=None, mass_range=None,train=None,fi
 
     if train is not None:
         if train:
-            data = data_[data_['train']==False] #note train =1/0, compare with True/False is ok.
+            data = data_[data_['train']==True] #note train =1/0, compare with True/False is ok.
+            print "select train",feat,data.size
             pass
         else:
-            data = data_[data_['train']==True]
+            data = data_[data_['train']==False]
+            print "select test", feat, data.size
             pass
     else:
         data=data_
+        print "select all", feat, data.size
         pass
 
     # Select data
