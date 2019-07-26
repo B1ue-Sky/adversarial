@@ -246,10 +246,9 @@ def exam_samples(data, args, testOnly=False,features=None):
             # for feat, pt_range, mass_range,train,fillna in itertools.product(features, pt_ranges,
             #                                                     mass_ranges,trains,fillnas):
             #     # studies.samplesexam(data, args, feat, pt_range, mass_range,train,fillna)
-                pass
+            #     pass
             argsBatch=itertools.product(features, pt_ranges,mass_ranges,trains,fillnas)
             run_batched(studies.samplesChecker,argsBatch,2)
-
             pass
 
 
