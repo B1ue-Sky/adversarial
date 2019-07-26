@@ -53,7 +53,7 @@ class samplesChecker (multiprocessing.Process):
     def run (self):
         print "Start process"
         # self.samplesexam(self.__vargs[0],self.__vargs[1],self.__vargs[2],self.__vargs[3] if len(self.__vargs)>3 else [])
-        print "vArgs",self.__vargs
+        print "vArgs",len(self.__vargs)
         self.samplesexam(*self.__vargs)
         # self.samplesexam(self.__data,self.__args,self.__feat,self.__pt_range,self.__mass_range,self.__train,self.__fillna)
         #now test sample wrapper, if possible, complete class it!!
