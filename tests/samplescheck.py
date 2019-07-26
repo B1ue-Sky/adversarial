@@ -245,7 +245,7 @@ def exam_samples(data, args, testOnly=False,features=None):
             fillnas=[False,True]
             for feat, pt_range, mass_range,train,fillna in itertools.product(features, pt_ranges,
                                                                 mass_ranges,trains,fillnas):
-                run_batched(studies.samplesChecker,[data, args, feat, pt_range, mass_range,train,fillna],10)
+                run_batched(studies.samplesChecker,[data, args, feat, pt_range, mass_range,train,fillna],2)
                 # studies.samplesexam(data, args, feat, pt_range, mass_range,train,fillna)
                 pass
             pass
