@@ -34,31 +34,34 @@ class samplesChecker (multiprocessing.Process):
         """
 
         # Unpack input arguments
-        data_, args, feat, *aux = vargs
+        # data_, args, feat, *aux = vargs #not work on python2!!!
         #pt_range = None, mass_range = None, train = None, fillna = True
+        self.__vargs=vargs
 
         # Base class constructor
         super(samplesChecker, self).__init__()
 
         # Member variable(s)
-        self.__data = data_
-        self.__args = args
-        self.__feat = feat
-        self.__pt_range = aux[0] if aux else None
-        self.__mass_range = aux[1] if len(aux)>1 else None
-        self.__train = aux[2] if len(aux)>2 else None
-        self.__fillna = aux[3] if len(aux)>3 else True
+        # self.__data = data_
+        # self.__args = args
+        # self.__feat = feat
+        # self.__pt_range = aux[0] if aux else None
+        # self.__mass_range = aux[1] if len(aux)>1 else None
+        # self.__train = aux[2] if len(aux)>2 else None
+        # self.__fillna = aux[3] if len(aux)>3 else True
         return
     def run (self):
         print "Start process"
-        self.samplesexam(self.__data,self.__args,self.__feat,self.__pt_range,self.__mass_range,self.__train,self.__fillna)
+        # self.samplesexam(self.__vargs[0],self.__vargs[1],self.__vargs[2],self.__vargs[3] if len(self.__vargs)>3 else [])
+        self.samplesexam(*self.__vargs)
+        # self.samplesexam(self.__data,self.__args,self.__feat,self.__pt_range,self.__mass_range,self.__train,self.__fillna)
         #now test sample wrapper, if possible, complete class it!!
         print "End process"
         return
 
     @garbage_collect
     @showsave
-    def samplesexam(self,data_, args, feat, pt_range=None, mass_range=None, train=None, fillna=True):
+    def samplesexam(self,data_, args, feat, pt_range = None, mass_range = None, train = None, fillna = True):
         """
         Perform study of substructure variable distributions.
 
@@ -69,6 +72,7 @@ class samplesChecker (multiprocessing.Process):
             args: Namespace holding command-line arguments.
             feat: Feature for which to plot.
         """
+
         if train is not None:
             if train:
                 data = data_[data_['train'] == True]  # note train =1/0, compare with True/False is ok.
