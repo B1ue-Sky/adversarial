@@ -59,21 +59,22 @@ def samplesexam (data_, args, feat, pt_range=None, mass_range=None,train=None,fi
 
     if fillna:
         if data[feat].isna().sum() == 0:
-            print "No need fillna",feat
+            print "No need fillna,exit.",feat
             return
         else:
             print "fill N/A",feat,data[feat].isna().sum()
-            #data[feat].fillna(value=INPUT_DEFAULTS,inplace=True) #inplace is annoying in python...
+            #data[feat].fillna(value=INPUT_DEFAULTS,inplace=True) #inplace is annoying in python...pay attention to copy!!
             data=data.fillna(value=INPUT_DEFAULTS)
 
     # Define bins
     # xmin = wpercentile (data[feat].values,  1, weights=data['weight_test'].values)
     # xmax = wpercentile (data[feat].values, 99, weights=data['weight_test'].values)
-    print "sample exam",feat,pt_range, mass_range,train,data[feat].size
+    print ">>sample exam",feat,pt_range, mass_range,train,data[feat].size
     xmin = wpercentile (data[feat].values,  1)
     xmax = wpercentile (data[feat].values, 99)
+    if args.debug: print "xmin,xmax",xmin,xmax
     if not xmax>xmin: #wrong values or nan
-        print "Error",feat
+        print "Error, xmax xmin is not valid, exit.",feat
         return #return empty so that no saving
 
 
@@ -99,7 +100,7 @@ def samplesexam (data_, args, feat, pt_range=None, mass_range=None,train=None,fi
     # Output
     outPath=args.output.rstrip("/")
     path = outPath+'/samples/{}-{}_{}{}{}.pdf'.format(standardise(feat), "all" if train is None else ("train" if train else "test"),'__pT{:.0f}_{:.0f}'.format(pt_range[0], pt_range[1]) if pt_range is not None else '', '__mass{:.0f}_{:.0f}'.format(mass_range[0], mass_range[1]) if mass_range is not None else '',"_raw" if not fillna else "")
-
+    if args.debug: print path
     return c, args, path
 
 
