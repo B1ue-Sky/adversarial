@@ -8,6 +8,7 @@
 # import gc
 # import gzip
 import itertools
+from prepro.common import run_batched
 
 # Get ROOT to stop hogging the command-line options
 import ROOT
@@ -28,7 +29,7 @@ from adversarial.profile import profile, Profile
 # from adversarial.constants import *
 from run.adversarial.common import initialise_config
 from .studies.common import *
-import studies
+import studies.samplesexam
 # import os
 
 # Custom import(s)
@@ -244,7 +245,8 @@ def exam_samples(data, args, testOnly=False,features=None):
             fillnas=[False,True]
             for feat, pt_range, mass_range,train,fillna in itertools.product(features, pt_ranges,
                                                                 mass_ranges,trains,fillnas):
-                studies.samplesexam(data, args, feat, pt_range, mass_range,train,fillna)
+                run_batched(studies.samplesChecker,[data, args, feat, pt_range, mass_range,train,fillna],10)
+                # studies.samplesexam(data, args, feat, pt_range, mass_range,train,fillna)
                 pass
             pass
 
