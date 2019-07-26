@@ -72,7 +72,7 @@ class samplesChecker (multiprocessing.Process):
             args: Namespace holding command-line arguments.
             feat: Feature for which to plot.
         """
-        if args.debug : print "Start child, Arg",data_, args, feat, pt_range, mass_range, train, fillna
+        if args.debug : print "Start child, Arg",data_.size, args, feat, pt_range, mass_range, train, fillna
         if train is not None:
             if train:
                 data = data_[data_['train'] == True]  # note train =1/0, compare with True/False is ok.
