@@ -11,7 +11,7 @@ from adversarial.utils import mkdir
 from adversarial.utils import garbage_collect
 
 
-def run_batched (process, args, max_processes, queue=None):
+def run_batched (process, args, max_processes=2, queue=None):
     """
     Generic method to run `process` in parallel on batches of `args`.
 
@@ -27,7 +27,13 @@ def run_batched (process, args, max_processes, queue=None):
     assert len(args)
 
     # Batch the function `args` as to never occupy more than `max_processes`.
-    batches = map(list, np.array_split(args, np.ceil(len(args) / float(max_processes))))
+    # batches = map(list, np.array_split(args, np.ceil(len(args) / float(max_processes)))) #must change!!!
+    batchNumber=np.ceil(len(args) / float(max_processes))
+    i=0
+    batches=[]
+    while i<len(args):
+        batches.append(args[i:i+max_processes])
+        i+=max_processes
 
     # Loop batches of args
     results = list()
