@@ -99,6 +99,7 @@ def parse_args (cmdline_args=sys.argv[1:], backend=False, adversarial=False, plo
         parser.add_argument('--show', action='store_true', help='Show plots')
         pass
     parser.add_argument('--debug', action='store_true', help='Global debug flag')
+    parser.add_argument('--max', action='store_true', help='Global multiprocess max')
     return parser.parse_args(cmdline_args)
 
 
