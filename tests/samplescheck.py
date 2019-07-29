@@ -249,7 +249,7 @@ def exam_samples(data, args, testOnly=False,features=None):
             #     pass
             argsBatch=itertools.product([data],[args],features, pt_ranges,mass_ranges,trains,fillnas)
             # if args.debug: print "batchArgs",len(list(argsBatch))
-            run_batched(studies.samplesChecker,list(argsBatch),2)
+            run_batched(studies.samplesChecker,list(argsBatch),args.max)
             pass
 
 
