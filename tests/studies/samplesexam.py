@@ -93,7 +93,7 @@ class samplesChecker (multiprocessing.Process):
             data = data[(data[PT] > pt_range[0]) & (data[PT] < pt_range[1])]
 
         if mass_range is not None:
-            data = data[(data[M] > mass_range[0]) & (data[M] < mass_range[1])]
+            data = data[(data[MASS] > mass_range[0]) & (data[MASS] < mass_range[1])]
 
         if fillna:
             if data[feat].isna().sum() == 0:
@@ -163,8 +163,12 @@ class samplesChecker (multiprocessing.Process):
         base = dict(bins=bins, alpha=0.5, normalise=True, linewidth=3)
 
         # Plots
+        sig=0;
+        bkg=0;
         for signal in [False, True]:
             msk = (data['signal'] == signal)
+            if signal:sig=msk.sum()
+            else:bkg=msk.sum()
             histstyle[signal].update(base)
             # c.hist(data.loc[msk, feat].values, weights=data.loc[msk, 'weight_test'].values, **histstyle[signal])
             c.hist(data.loc[msk, feat].values, **histstyle[signal])
@@ -174,7 +178,7 @@ class samplesChecker (multiprocessing.Process):
         c.xlabel("Large-#it{R} jet " + latex(feat, ROOT=True))
         c.ylabel("Fraction of jets")
         c.text(TEXT + [
-            "#it{Hbb} tagging"] + (
+            "#it{Hbb} tagging: sig {:.1f}M; bkg {:.1f}M".format(sig/M,bkg/M)] + (
                    ["p_{{T}} #in  [{:.0f}, {:.0f}] GeV".format(pt_range[0],
                                                                pt_range[1])] if pt_range is not None else []
                ) + (

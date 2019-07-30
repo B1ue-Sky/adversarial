@@ -18,9 +18,10 @@ from adversarial.utils import mkdir, garbage_collect, JSD, MASSBINS
 # Global data field name
 from adversarial.utils import DECORRELATION_VARIABLES, WEIGHT_VARIABLES, DECORRELATION_VARIABLES_AUX,INPUT_VARIABLES
 PT=DECORRELATION_VARIABLES_AUX[0]
-M=DECORRELATION_VARIABLES[0]
+MASS=DECORRELATION_VARIABLES[0]
 # Global unit
 GeV=1000.0
+M=1000000.0
 
 # Custom import(s)
 import rootplotting as rp
@@ -130,13 +131,13 @@ def jsd_limit (data, frac, num_bootstrap=5, sigma=None):
 
         # df1 = data.loc[msk, [M, 'weight_test']].sample(frac=     frac, replace=True)
         # df2 = data.loc[msk, [M, 'weight_test']].sample(frac=1. - frac, replace=True)
-        df1 = data.loc[msk, [M]].sample(frac=     frac, replace=True)
-        df2 = data.loc[msk, [M]].sample(frac=1. - frac, replace=True)
+        df1 = data.loc[msk, [MASS]].sample(frac=     frac, replace=True)
+        df2 = data.loc[msk, [MASS]].sample(frac=1. - frac, replace=True)
 
         # p, _ = np.histogram(df1[M].values, bins=MASSBINS, weights=df1['weight_test'].values, density=1.)
         # f, _ = np.histogram(df2[M].values, bins=MASSBINS, weights=df2['weight_test'].values, density=1.)
-        p, _ = np.histogram(df1[M].values, bins=MASSBINS, density=1.)
-        f, _ = np.histogram(df2[M].values, bins=MASSBINS, density=1.)
+        p, _ = np.histogram(df1[MASS].values, bins=MASSBINS, density=1.)
+        f, _ = np.histogram(df2[MASS].values, bins=MASSBINS, density=1.)
 
         jsd.append(JSD(p, f))
         pass
@@ -220,7 +221,7 @@ def showsave (f):
             dir = '/'.join(path.split('/')[:-1])
             mkdir(dir)
             suffix = path.split('.')[-1]
-            if len(suffix) < 4:
+            if len(suffix) < 4: #??
                 base = '.'.join(path.split('.')[:-1])
                 c.save(base + '.eps')
                 # if not args.debug:

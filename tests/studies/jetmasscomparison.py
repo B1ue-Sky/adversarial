@@ -125,7 +125,7 @@ def plot (*argv):
                 histstyle[signal]['option'] = 'HIST'
                 if args.debug: print "style",histstyle[signal]
                 # pad.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, **histstyle[signal])
-                pad.hist(data.loc[msk, M].values,  **histstyle[signal])
+                pad.hist(data.loc[msk, MASS].values, **histstyle[signal])
                 pass
             pass
 
@@ -159,7 +159,7 @@ def plot (*argv):
             pad = c.pads()[padDict[ifeat]]  # ???
             if args.debug: print "style",cfg
             # pad.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, label=" " + latex(feat, ROOT=True), **cfg)
-            pad.hist(data.loc[msk, M].values, label=" " + latex(feat, ROOT=True), **cfg)
+            pad.hist(data.loc[msk, MASS].values, label=" " + latex(feat, ROOT=True), **cfg)
             pass
         # -- Legend(s)
         for ipad, pad in enumerate(c.pads()[1:], 1):
@@ -311,7 +311,7 @@ def plot_individual (*argv):
                     histstyle[signal].update(base)
                     histstyle[signal]['option'] = 'HIST'
                     # c.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, **histstyle[signal])
-                    c.hist(data.loc[msk, M].values, **histstyle[signal])
+                    c.hist(data.loc[msk, MASS].values, **histstyle[signal])
                     pass
 
                 for sig in [1, 0]:
@@ -329,7 +329,7 @@ def plot_individual (*argv):
                     cfg.update(opts)
                     msk = (data['signal'] == 0) & msks_pass[feat]
                     # c.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, label=" " + latex(feat, ROOT=True), **cfg)
-                    c.hist(data.loc[msk, M].values, label=" " + latex(feat, ROOT=True), **cfg)
+                    c.hist(data.loc[msk, MASS].values, label=" " + latex(feat, ROOT=True), **cfg)
                     pass
 
                 # -- Legend(s)

@@ -42,7 +42,7 @@ def distribution (data_, args, feat, pt_range, mass_range):
         pass
 
     if mass_range is not None:
-        data = data[(data[M] > mass_range[0]) & (data[M] < mass_range[1])]
+        data = data[(data[MASS] > mass_range[0]) & (data[MASS] < mass_range[1])]
         pass
 
     # Define bins

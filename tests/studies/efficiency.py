@@ -54,7 +54,7 @@ def efficiency (data, args, feat):
         profile = ROOT.TProfile('profile_{}_{}'.format(feat, cut), "",
                                 len(MASSBINS) - 1, MASSBINS)
 
-        mass = np.vstack((data.loc[msk, M].values, msk_pass[msk])).T
+        mass = np.vstack((data.loc[msk, MASS].values, msk_pass[msk])).T
         # weights = data.loc[msk, 'weight_test'].values
 
         # root_numpy.fill_profile(profile, M, weights=weights)
