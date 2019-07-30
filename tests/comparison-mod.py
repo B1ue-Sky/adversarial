@@ -294,7 +294,7 @@ def perform_studies (data, args, tagger_features, ann_vars):
                 studies.jsd(data, args, tagger_features, pt_range)
                 pass
             pass
-    if True:
+    if False:
     # Later will finish thish part with different tagger 
         with Profile("Study: Summary plot:debug"):
             regex_nn = re.compile('\#lambda=[\d\.]+')

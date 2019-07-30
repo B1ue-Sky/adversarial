@@ -33,7 +33,7 @@ def jsd (data_, args, features, pt_range):
 
     # Select data
     if pt_range is not None:
-        data = data_[(data_['pt'] > pt_range[0]) & (data_['pt'] < pt_range[1])]
+        data = data_[(data_[PT] > pt_range[0]) & (data_[PT] < pt_range[1])]
     else:
         data = data_
         pass
@@ -56,7 +56,8 @@ def jsd (data_, args, features, pt_range):
         # Define cuts
         cuts = list()
         for eff in effs:
-            cut = wpercentile(data.loc[msk, feat].values, eff if signal_low(feat) else 100 - eff, weights=data.loc[msk, 'weight_test'].values)
+            # cut = wpercentile(data.loc[msk, feat].values, eff if signal_low(feat) else 100 - eff, weights=data.loc[msk, 'weight_test'].values)
+            cut = wpercentile(data.loc[msk, feat].values, eff if signal_low(feat) else 100 - eff)
             cuts.append(cut)
             pass
 
@@ -71,8 +72,14 @@ def jsd (data_, args, features, pt_range):
 
             # Get histograms / plot
             c = rp.canvas(batch=not args.show)
-            h_pass = c.hist(data.loc[ msk_pass & msk, 'm'].values, bins=MASSBINS, weights=data.loc[ msk_pass & msk, 'weight_test'].values, normalise=True, **histstyle[True])   #, display=False)
-            h_fail = c.hist(data.loc[~msk_pass & msk, 'm'].values, bins=MASSBINS, weights=data.loc[~msk_pass & msk, 'weight_test'].values, normalise=True, **histstyle[False])  #, display=False)
+            # h_pass = c.hist(data.loc[ msk_pass & msk, 'm'].values, bins=MASSBINS, weights=data.loc[ msk_pass & msk, 'weight_test'].values, normalise=True, **histstyle[True])   #, display=False)
+            # h_fail = c.hist(data.loc[~msk_pass & msk, 'm'].values, bins=MASSBINS, weights=data.loc[~msk_pass & msk, 'weight_test'].values, normalise=True, **histstyle[False])  #, display=False)
+            h_pass = c.hist(data.loc[msk_pass & msk, MASS].values, bins=MASSBINS,
+                            normalise=True,
+                            **histstyle[True])  # , display=False)
+            h_fail = c.hist(data.loc[~msk_pass & msk, MASS].values, bins=MASSBINS,
+                            normalise=True,
+                            **histstyle[False])  # , display=False)
 
             # Convert to numpy arrays
             p = root_numpy.hist2array(h_pass)
@@ -89,11 +96,11 @@ def jsd (data_, args, features, pt_range):
             c.text(TEXT + [
                 "{:s} {} {:.3f}".format(latex(feat, ROOT=True), '<' if signal_low(feat) else '>', cut),
                 "JSD = {:.4f}".format(jsd[feat][-1])] + \
-                (["p_{{T}} #in  [{:.0f}, {:.0f}] GeV".format(*pt_range)] if pt_range else []),
+                (["p_{{T}} #in  [{:.0f}, {:.0f}] GeV".format(pt_range[0]/GeV,pt_range[1]/GeV)] if pt_range else []),
                 qualifier=QUALIFIER)
 
             # -- Save
-            c.save('figures/temp_jsd_{:s}_{:.0f}{}.pdf'.format(feat, eff, '' if pt_range is None else '__pT{:.0f}_{:.0f}'.format(*pt_range)))
+            c.save('figures/temp_jsd_{:s}_{:.0f}{}.pdf'.format(feat, eff, '' if pt_range is None else '__pT{:.0f}_{:.0f}'.format(pt_range[0]/GeV,pt_range[1]/GeV)))
 
             pass
         pass
@@ -110,7 +117,7 @@ def jsd (data_, args, features, pt_range):
     c = plot(args, data, effs, jsd, jsd_limits, features, pt_range)
 
     # Output
-    path = 'figures/jsd{}.pdf'.format('' if pt_range is None else '__pT{:.0f}_{:.0f}'.format(*pt_range))
+    path = 'figures/jsd{}.pdf'.format('' if pt_range is None else '__pT{:.0f}_{:.0f}'.format(pt_range[0]/GeV,pt_range[1]/GeV))
 
     return c, args, path
 
@@ -169,8 +176,8 @@ def plot (*argv):
         c.xlabel("Background efficiency #varepsilon_{bkg}^{rel}")
         c.ylabel("Mass correlation, JSD")
         c.text([], xmin=0.15, ymax = 0.96, qualifier=QUALIFIER)
-        c.text(["#sqrt{s} = 13 TeV",  "Multijets"] + \
-              (["p_{T} [GeV] #in", "    [{:.0f}, {:.0f}]".format(*pt_range)] if pt_range else []),
+        c.text(["data p3652",  "Dijets"] + \
+              (["p_{T} [GeV] #in", "    [{:.0f}, {:.0f}]".format(pt_range[0]/GeV,pt_range[1]/GeV)] if pt_range else []),
                ymax=0.85, ATLAS=None)
 
         c.latex("Maximal sculpting", 0.065, 1.2, align=11, textsize=11, textcolor=ROOT.kGray + 2)
