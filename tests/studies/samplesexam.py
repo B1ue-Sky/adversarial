@@ -87,7 +87,7 @@ class samplesChecker (multiprocessing.Process):
             data = data_
             print "select all", feat, data.size
             pass
-        assert data.is_copy
+        # assert data.is_copy
         # Select data
         if pt_range is not None:
             data = data[(data[PT] > pt_range[0]) & (data[PT] < pt_range[1])]
