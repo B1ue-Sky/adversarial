@@ -97,7 +97,7 @@ class samplesChecker (multiprocessing.Process):
 
         if fillna:
             if data[feat].isna().sum() == 0:
-                print "No fill to fill, only plot _raw", feat
+                print "No N/A to fill, only plot _raw", feat
                 return
             else:
                 print "fill N/A", feat, data[feat].isna().sum()
