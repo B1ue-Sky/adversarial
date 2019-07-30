@@ -107,7 +107,7 @@ class samplesChecker (multiprocessing.Process):
         # Define bins
         # xmin = wpercentile (data[feat].values,  1, weights=data['weight_test'].values)
         # xmax = wpercentile (data[feat].values, 99, weights=data['weight_test'].values)
-        print ">>sample exam", feat, "pt_cut", pt_range,"mass_cut",  mass_range, "train/test",  train, data[feat].size
+        print ">>sample exam", feat, pt_range, mass_range, train, data[feat].size
         xmin = wpercentile(data[feat].values, 1)
         xmax = wpercentile(data[feat].values, 99)
         if args.debug: print "xmin,xmax", xmin, xmax
@@ -178,7 +178,8 @@ class samplesChecker (multiprocessing.Process):
         c.xlabel("Large-#it{R} jet " + latex(feat, ROOT=True))
         c.ylabel("Fraction of jets")
         c.text(TEXT + [
-            "#it{Hbb} tagging: sig {:.1f}M; bkg {:.1f}M".format(sig/M,bkg/M)] + (
+            "#it{{Hbb}} tagging: sig {:.1f}M; bkg {:.1f}M".format(sig/M,bkg/M)] + (
+            # if use .format, original {} must be {{}}!!
                    ["p_{{T}} #in  [{:.0f}, {:.0f}] GeV".format(pt_range[0],
                                                                pt_range[1])] if pt_range is not None else []
                ) + (

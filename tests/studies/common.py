@@ -212,7 +212,8 @@ def showsave (f):
         try:
             c, args, path = f(*args, **kwargs)
         except Exception as e:
-            print "No saving!!",e
+            print "No saving!!"
+            print e
             return
 
 
