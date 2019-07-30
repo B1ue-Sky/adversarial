@@ -23,7 +23,7 @@ from scipy.stats import entropy
 from sklearn.metrics import roc_curve, roc_auc_score
 
 # Project import(s)
-from adversarial.utils import initialise, initialise_backend, parse_args, load_data, mkdir, wpercentile, latex
+from adversarial.utils import initialise, initialise_backend, parse_args, load_data,load_data_raw, mkdir, wpercentile, latex
 from adversarial.profile import profile, Profile
 from adversarial.constants import *
 from run.adversarial.common import initialise_config
@@ -132,12 +132,11 @@ def main (args):
     tempFile = args.output + "/test.h5"
     if args.debug and os.path.exists(tempFile):
         data = pd.read_hdf(tempFile, "dataset")
-        # perform_studies(data, args, tagger_features, ann_vars)
-        # return 0
+        perform_studies(data, args, tagger_features, ann_vars)
+        return 0
 
     else:
         data, features, _ = load_data(args.input + 'data.h5', test=True)
-    DATA, _, _ = load_data(args.input + 'data.h5')
 
     # Add variables
     # --------------------------------------------------------------------------
@@ -210,42 +209,43 @@ def main (args):
     unused_variables = [var for var in list(data) if var not in used_variables]
     data=data.drop(columns=unused_variables)
     gc.collect() #important!!
-    data=data.dropna() #drop all missing value in all study vars
+    print "Now counts OUTPUT NA, dropped"
+    print data.isna().sum()
+    # print "All output NA are dropped, INPUT NA are filled"
+    data=data.dropna() #drop all missing value in all output vars, note: all input var are already fillna!
     if args.debug:
         data.to_hdf(tempFile,"dataset",mode="w",format="fixed")
     # return 0
     # Perform performance studies
-    exam_samples(data, args,True)
-    exam_samples(DATA, args,False)
     perform_studies (data, args, tagger_features, ann_vars)
 
 
     return 0
 
 
-def exam_samples(data, args, testOnly=True,features=None):
-        """
-        Method exam samples.
-        """
-        #masscuts = [True, False]
-        trains=[None] if testOnly else [None,True,False]
-        pt_ranges = [None, (200 * GeV, 500 * GeV), (500 * GeV, 1000 * GeV), (1000 * GeV, 2000 * GeV)]
-        pt_ranges = [None] #debug
-        if features is None:
-            # features=set(INPUT_VARIABLES,DECORRELATION_VARIABLES,
-            #              WEIGHT_VARIABLES,DECORRELATION_VARIABLES_AUX)
-            features=list(data)
-        # data=data[features].dropna()
-        data = data.dropna()
-        with Profile("Study: samples variables"):
-            mass_ranges = np.linspace(50*GeV, 300*GeV, 5 + 1, endpoint=True)
-            mass_ranges = [None] + zip(mass_ranges[:-1], mass_ranges[1:])
-            mass_ranges =[None] #debug
-            for feat, pt_range, mass_range,train in itertools.product(features, pt_ranges,
-                                                                mass_ranges,trains):
-                studies.samplesexam(data, args, feat, pt_range, mass_range,train)
-                pass
-            pass
+# def exam_samples(data, args, testOnly=True,features=None): #now move to standalone module
+#         """
+#         Method exam samples.
+#         """
+#         #masscuts = [True, False]
+#         trains=[None] if testOnly else [None,True,False]
+#         pt_ranges = [None, (200 * GeV, 500 * GeV), (500 * GeV, 1000 * GeV), (1000 * GeV, 2000 * GeV)]
+#         pt_ranges = [None] #debug
+#         if features is None:
+#             # features=set(INPUT_VARIABLES,DECORRELATION_VARIABLES,
+#             #              WEIGHT_VARIABLES,DECORRELATION_VARIABLES_AUX)
+#             features=list(data)
+#         # data=data[features].dropna()
+#         data = data.dropna()
+#         with Profile("Study: samples variables"):
+#             mass_ranges = np.linspace(50*GeV, 300*GeV, 5 + 1, endpoint=True)
+#             mass_ranges = [None] + zip(mass_ranges[:-1], mass_ranges[1:])
+#             mass_ranges =[None] #debug
+#             for feat, pt_range, mass_range,train in itertools.product(features, pt_ranges,
+#                                                                 mass_ranges,trains):
+#                 studies.samplesexam(data, args, feat, pt_range, mass_range,train)
+#                 pass
+#             pass
 
 
 def perform_studies (data, args, tagger_features, ann_vars):
@@ -256,107 +256,113 @@ def perform_studies (data, args, tagger_features, ann_vars):
     #pt_ranges = [None, (200, 500), (500, 1000), (1000, 2000)]
     pt_ranges = [None, (200*GeV, 500*GeV), (500*GeV, 1000*GeV), (1000*GeV, 2000*GeV)]
 
-    # # Perform combined robustness study
-    # with Profile("Study: Robustness"):
-    #     for masscut in masscuts:
-    #         studies.robustness_full(data, args, tagger_features, masscut=masscut)
-    #         pass
-    #     pass
-
-    # Perform jet mass distribution comparison study
-
-    #debug
-
-    with Profile("Study: Jet mass comparison:debug"):
-        for eff in set(range(0,110,10)+range(90,100,1)):
-            studies.jetmasscomparison(data, args, tagger_features,eff,True)
+    # debug>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    if True:
+        with Profile("Study: Robustness：debug"):
+            for masscut in masscuts:
+                studies.robustness_full(data, args, tagger_features, masscut=masscut)
+                pass
             pass
-    with Profile("Study: Efficiency:debug"):
-        for feat in tagger_features:
-            studies.efficiency(data, args, feat)
+    if True:
+        with Profile("Study: Jet mass comparison:debug"):
+            for eff in set(range(0,110,10)+range(90,100,1)):
+                studies.jetmasscomparison(data, args, tagger_features,eff,True)
+                pass
+    if True:
+        with Profile("Study: Efficiency:debug"):
+            for feat in tagger_features:
+                studies.efficiency(data, args, feat)
+                pass
             pass
-        pass
-    with Profile("Study: ROC:debug"):
-        for masscut, pt_range in itertools.product(masscuts, pt_ranges):
-            studies.roc(data, args, tagger_features, masscut=masscut, pt_range=pt_range)
+    if True:
+        with Profile("Study: ROC:debug"):
+            for masscut, pt_range in itertools.product(masscuts, pt_ranges):
+                studies.roc(data, args, tagger_features, masscut=masscut, pt_range=pt_range)
+                pass
             pass
-        pass
-    with Profile("Study: Substructure tagger distributions:debug"):
-        mass_ranges = np.linspace(50 * GeV, 300 * GeV, 5 + 1, endpoint=True)
-        mass_ranges = [None] + zip(mass_ranges[:-1], mass_ranges[1:])
-        for feat, pt_range, mass_range in itertools.product(tagger_features, pt_ranges, mass_ranges):  # tagger_features
-            studies.distribution(data, args, feat, pt_range, mass_range)
+    if True:
+        with Profile("Study: Substructure tagger distributions:debug"):
+            mass_ranges = np.linspace(50 * GeV, 300 * GeV, 5 + 1, endpoint=True)
+            mass_ranges = [None] + zip(mass_ranges[:-1], mass_ranges[1:])
+            for feat, pt_range, mass_range in itertools.product(tagger_features, pt_ranges, mass_ranges):  # tagger_features
+                studies.distribution(data, args, feat, pt_range, mass_range)
+                pass
             pass
-        pass
-    # with Profile("Study: Summary plot:debug"):
-    #     regex_nn = re.compile('\#lambda=[\d\.]+')
-    #     # regex_ub = re.compile('\#alpha=[\d\.]+')
-    #
-    #     # scan_features = {'NN':       map(lambda feat: (feat, regex_nn.search(feat).group(0)), ann_vars),
-    #     #                  'Adaboost': map(lambda feat: (feat, regex_ub.search(feat).group(0)), uboost_vars)
-    #     #                  }
-    #     scan_features = {'NN': map(lambda feat: (feat, regex_nn.search(feat).group(0)), ann_vars),
-    #                      }
-    #
-    #     for masscut, pt_range in itertools.product(masscuts, pt_ranges):
-    #         studies.summary(data, args, tagger_features, scan_features, masscut=masscut, pt_range=pt_range)
-    #         pass
-    #     pass
+    if True:
+        with Profile("Study: JSD:debug"):
+            for pt_range in pt_ranges:
+                studies.jsd(data, args, tagger_features, pt_range)
+                pass
+            pass
+    if True:
+    # Later will finish thish part with different tagger 
+        with Profile("Study: Summary plot:debug"):
+            regex_nn = re.compile('\#lambda=[\d\.]+')
+            # regex_ub = re.compile('\#alpha=[\d\.]+')
 
+            # scan_features = {'NN':       map(lambda feat: (feat, regex_nn.search(feat).group(0)), ann_vars),
+            #                  'Adaboost': map(lambda feat: (feat, regex_ub.search(feat).group(0)), uboost_vars)
+            #                  }
+            scan_features = {'NN': map(lambda feat: (feat, regex_nn.search(feat).group(0)), ann_vars),
+                             }
 
-
+            for masscut, pt_range in itertools.product(masscuts, pt_ranges):
+                studies.summary(data, args, tagger_features, scan_features, masscut=masscut, pt_range=pt_range)
+                pass
+            pass
+    # debug>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     return
 
 
-    # with Profile("Study: Jet mass comparison"):
-    #     studies.jetmasscomparison(data, args, tagger_features)
+    # # with Profile("Study: Jet mass comparison"):
+    # #     studies.jetmasscomparison(data, args, tagger_features)
+    # #     pass
+    #
+    # # Perform summary plot study
+    # # with Profile("Study: Summary plot"):
+    # #     regex_nn = re.compile('\#lambda=[\d\.]+')
+    # #     regex_ub = re.compile('\#alpha=[\d\.]+')
+    # #
+    # #     # scan_features = {'NN':       map(lambda feat: (feat, regex_nn.search(feat).group(0)), ann_vars),
+    # #     #                  'Adaboost': map(lambda feat: (feat, regex_ub.search(feat).group(0)), uboost_vars)
+    # #     #                  }
+    # #     scan_features = {'NN': map(lambda feat: (feat, regex_nn.search(feat).group(0)), ann_vars),
+    # #                      }
+    # #
+    # #     for masscut, pt_range in itertools.product(masscuts, pt_ranges):
+    # #         studies.summary(data, args, tagger_features, scan_features, masscut=masscut, pt_range=pt_range)
+    # #         pass
+    # #     pass
+    #
+    # # Perform distributions study (now tyr to use exam_samples
+    # with Profile("Study: Substructure tagger distributions"):
+    #     mass_ranges = np.linspace(50 * GeV, 300 * GeV, 5 + 1, endpoint=True)
+    #     mass_ranges = [None] + zip(mass_ranges[:-1], mass_ranges[1:])
+    #     for feat, pt_range, mass_range in itertools.product(tagger_features, pt_ranges, mass_ranges):  # tagger_features
+    #         studies.distribution(data, args, feat, pt_range, mass_range)
+    #         pass
     #     pass
-
-    # Perform summary plot study
-    # with Profile("Study: Summary plot"):
-    #     regex_nn = re.compile('\#lambda=[\d\.]+')
-    #     regex_ub = re.compile('\#alpha=[\d\.]+')
     #
-    #     # scan_features = {'NN':       map(lambda feat: (feat, regex_nn.search(feat).group(0)), ann_vars),
-    #     #                  'Adaboost': map(lambda feat: (feat, regex_ub.search(feat).group(0)), uboost_vars)
-    #     #                  }
-    #     scan_features = {'NN': map(lambda feat: (feat, regex_nn.search(feat).group(0)), ann_vars),
-    #                      }
-    #
+    # # Perform ROC study
+    # with Profile("Study: ROC"):
     #     for masscut, pt_range in itertools.product(masscuts, pt_ranges):
-    #         studies.summary(data, args, tagger_features, scan_features, masscut=masscut, pt_range=pt_range)
+    #         studies.roc(data, args, tagger_features, masscut=masscut, pt_range=pt_range)
     #         pass
     #     pass
-
-    # Perform distributions study (now tyr to use exam_samples
-    with Profile("Study: Substructure tagger distributions"):
-        mass_ranges = np.linspace(50 * GeV, 300 * GeV, 5 + 1, endpoint=True)
-        mass_ranges = [None] + zip(mass_ranges[:-1], mass_ranges[1:])
-        for feat, pt_range, mass_range in itertools.product(tagger_features, pt_ranges, mass_ranges):  # tagger_features
-            studies.distribution(data, args, feat, pt_range, mass_range)
-            pass
-        pass
-
-    # Perform ROC study
-    with Profile("Study: ROC"):
-        for masscut, pt_range in itertools.product(masscuts, pt_ranges):
-            studies.roc(data, args, tagger_features, masscut=masscut, pt_range=pt_range)
-            pass
-        pass
-
-    # # Perform JSD study
-    # with Profile("Study: JSD"):
-    #     for pt_range in pt_ranges:
-    #         studies.jsd(data, args, tagger_features, pt_range)
+    #
+    # # # Perform JSD study
+    # # with Profile("Study: JSD"):
+    # #     for pt_range in pt_ranges:
+    # #         studies.jsd(data, args, tagger_features, pt_range)
+    # #         pass
+    # #     pass
+    #
+    # # Perform efficiency study
+    # with Profile("Study: Efficiency"):
+    #     for feat in tagger_features:
+    #         studies.efficiency(data, args, feat)
     #         pass
     #     pass
-
-    # Perform efficiency study
-    with Profile("Study: Efficiency"):
-        for feat in tagger_features:
-            studies.efficiency(data, args, feat)
-            pass
-        pass
 
     return
 
