@@ -76,11 +76,11 @@ class samplesChecker (multiprocessing.Process):
         if args.debug:print "Start child, Arg",data_.size, args, feat, pt_range, mass_range, train, fillna
         if train is not None:
             if train:
-                data = data_[data_['train'] == True]  # note train =1/0, compare with True/False is ok.
+                data = data_[data_['train'] == 1]  # note train =1/0, compare with True/False is ok.
                 print "select train", feat, data.size
                 pass
             else:
-                data = data_[data_['train'] == False]
+                data = data_[data_['train'] == 0]
                 print "select test", feat, data.size
                 pass
         else:
@@ -97,7 +97,7 @@ class samplesChecker (multiprocessing.Process):
 
         if fillna:
             if data[feat].isna().sum() == 0:
-                print "No need fillna,exit.", feat
+                print "No fill to fill, only plot _raw", feat
                 return
             else:
                 print "fill N/A", feat, data[feat].isna().sum()
@@ -107,7 +107,7 @@ class samplesChecker (multiprocessing.Process):
         # Define bins
         # xmin = wpercentile (data[feat].values,  1, weights=data['weight_test'].values)
         # xmax = wpercentile (data[feat].values, 99, weights=data['weight_test'].values)
-        print ">>sample exam", feat, pt_range, mass_range, train, data[feat].size
+        print ">>sample exam", feat, "pt_cut", pt_range,"mass_cut",  mass_range, "train/test",  train, data[feat].size
         xmin = wpercentile(data[feat].values, 1)
         xmax = wpercentile(data[feat].values, 99)
         if args.debug: print "xmin,xmax", xmin, xmax
@@ -143,7 +143,7 @@ class samplesChecker (multiprocessing.Process):
                                                             '__mass{:.0f}_{:.0f}'.format(mass_range[0], mass_range[
                                                                 1]) if mass_range is not None else '',
                                                             "_raw" if not fillna else "")
-        if args.debug: print path
+        # if args.debug: print path #move to save wrapper
         return c, args, path
 
     # @staticmethod

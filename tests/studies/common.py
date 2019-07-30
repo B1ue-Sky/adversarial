@@ -212,17 +212,21 @@ def showsave (f):
         try:
             c, args, path = f(*args, **kwargs)
         except Exception as e:
-            print "No saving",e
+            print "No saving!!",e
             return
 
 
         # Save
         if args.save:
+            if args.debug:
+                print "Saving", path
             dir = '/'.join(path.split('/')[:-1])
             mkdir(dir)
             suffix = path.split('.')[-1]
             if len(suffix) < 4: #??
                 base = '.'.join(path.split('.')[:-1])
+                if args.debug:
+                    print "Saved", base
                 c.save(base + '.eps')
                 # if not args.debug:
                 #     pass

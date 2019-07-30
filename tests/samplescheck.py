@@ -64,7 +64,7 @@ def exam_samples(data, args, testOnly=False,features=None):
         # data = data.dropna() # Not drop Na here!
         with Profile("Study: samples variables"):
             mass_ranges = np.linspace(50*GeV, 300*GeV, 5 + 1, endpoint=True)
-            mass_ranges = [None] + zip(mass_ranges[:-1], mass_ranges[1:])
+            mass_ranges = [None,(80*GeV,140*GeV)] + zip(mass_ranges[:-1], mass_ranges[1:])
             if args.debug: mass_ranges =[None] #debug
             fillnas=[False,True]
             # for feat, pt_range, mass_range,train,fillna in itertools.product(features, pt_ranges,
