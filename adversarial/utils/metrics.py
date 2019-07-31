@@ -150,7 +150,8 @@ def bootstrap_metrics (data, feat, num_bootstrap=10, **kwargs):
     # Compute metrics using bootstrapping
     print "booststrap_metrics calu started..."
     bootstrap_eff, bootstrap_rej, bootstrap_jsd = list(), list(), list()
-    for _ in range(num_bootstrap):
+    for i in range(num_bootstrap):
+        print "round",i,"/",num_bootstrap
         idx = np.random.choice(data.shape[0], data.shape[0], replace=True)
         eff, rej, jsd = metrics(data.iloc[idx], feat, **kwargs)
         bootstrap_rej.append(rej)
