@@ -40,9 +40,9 @@ def robustness_full (data, args, features, masscut=False, num_bootstrap=5):
     plot_individual(data, args, features, bins, effs, rejs, jsds, meanx, jsd_limits, masscut)
 
     # Output
-    # path = 'figures/robustness{}.pdf'.format('_masscut' if masscut else '')
+    path = 'figures/robustness{}.pdf'.format('_masscut' if masscut else '')
 
-    return None, args, None
+    return None, args, path
 
     pass
 
