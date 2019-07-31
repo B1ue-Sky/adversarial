@@ -42,7 +42,7 @@ def robustness_full (data, args, features, masscut=False, num_bootstrap=5):
     # Output
     # path = 'figures/robustness{}.pdf'.format('_masscut' if masscut else '')
 
-    return None, args, path
+    return None, args, None
 
     pass
 
