@@ -178,7 +178,7 @@ class samplesChecker (multiprocessing.Process):
         c.xlabel("Large-#it{R} jet " + latex(feat, ROOT=True))
         c.ylabel("Fraction of jets")
         c.text(TEXT + [
-            "#it{{Hbb}} tagging: sig {:.1f}M; bkg {:.1f}M".format(sig/M,bkg/M)] + (
+            "sig:{:.1f}M; bkg:{:.1f}M".format(sig/M,bkg/M)] + (
             # if use .format, original {} must be {{}}!!
                    ["p_{{T}} #in  [{:.0f}, {:.0f}] GeV".format(pt_range[0],
                                                                pt_range[1])] if pt_range is not None else []
