@@ -34,6 +34,8 @@ def JSD (P, Q, base=2):
     Returns:
         Jensen-Shannon divergence of `P` and `Q`.
     """
+    if np.sum(P)==0 or np.sum(Q)==0 :
+        print "Error! JSD input is all 0"
     p = P / np.sum(P)
     q = Q / np.sum(Q)
     m = 0.5 * (p + q)
@@ -105,7 +107,7 @@ def metrics (data, feat, target_tpr=0.5, cut=None, masscut=False, verbose=False)
     if cut is None:
         idx = np.argmin(np.abs(tpr - target_tpr))
         cut = thresholds[idx]    
-        print "No manual cut","idx",idx,"cut",cut,"tpr,fpr@idx",tpr[idx],fpr[idx]
+        print "No manual cut: ","idx",idx,"cut",cut,"tpr,fpr@idx",tpr[idx],fpr[idx]
     else:
         print "metrics: Using manual cut of {:.2f} for {}".format(cut, feat)
         idx = np.argmin(np.abs(thresholds - cut))
@@ -119,11 +121,9 @@ def metrics (data, feat, target_tpr=0.5, cut=None, masscut=False, verbose=False)
 
     eff = tpr[idx]
     if fpr[idx]==0. :
-        print "fpr@{} where tpr==target_tpr is 0 -> set to eps, should check by yourself".format(idx)
-        print "fpr 0 counts", np.count_nonzero(fpr==0)
-        rej = np.inf
-    else:
-        rej = 1. / fpr[idx]
+        print "fpr@{} where tpr==target_tpr is 0!!".format(idx)
+        print "fpr==0 counts", np.count_nonzero(fpr==0),fpr.size
+    rej = 1. / fpr[idx]
 
 
     # JSD at `target_tpr` signal efficiency
@@ -154,7 +154,7 @@ def bootstrap_metrics (data, feat, num_bootstrap=10, **kwargs):
     ...
     """
     # Compute metrics using bootstrapping
-    print "booststrap_metrics calu started..."
+    print "booststrap_metrics calu started...",feat
     bootstrap_eff, bootstrap_rej, bootstrap_jsd = list(), list(), list()
     for i in range(num_bootstrap):
         print "round",i+1,"/",num_bootstrap
