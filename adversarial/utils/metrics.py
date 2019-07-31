@@ -123,9 +123,8 @@ def metrics (data, feat, target_tpr=0.5, cut=None, masscut=False, verbose=False)
     if fpr[idx]==0. :
         print "fpr@{} where tpr==target_tpr is 0!!".format(idx)
         print "fpr==0 counts", np.count_nonzero(fpr==0),fpr.size
-        rej=np.nan_to_num(np.inf)
-    else:
-        rej = 1. / fpr[idx]
+        # rej=np.nan_to_num(np.inf)
+    rej = 1. / fpr[idx]
 
 
     # JSD at `target_tpr` signal efficiency
@@ -165,6 +164,9 @@ def bootstrap_metrics (data, feat, num_bootstrap=10, **kwargs):
         print "round",i+1,"/",num_bootstrap
         idx = np.random.choice(data.shape[0], data.shape[0], replace=True)
         eff, rej, jsd = metrics(data.iloc[idx], feat, **kwargs)
+        if np.isfinite([eff,rej,jsd]):
+            print "Error in this round, skip!! pls check yourself"
+            continue
         bootstrap_eff.append(eff)
         bootstrap_rej.append(rej)
         bootstrap_jsd.append(jsd)
