@@ -123,7 +123,9 @@ def metrics (data, feat, target_tpr=0.5, cut=None, masscut=False, verbose=False)
     if fpr[idx]==0. :
         print "fpr@{} where tpr==target_tpr is 0!!".format(idx)
         print "fpr==0 counts", np.count_nonzero(fpr==0),fpr.size
-    rej = 1. / fpr[idx]
+        rej=np.nan_to_num(np.inf)
+    else:
+        rej = 1. / fpr[idx]
 
 
     # JSD at `target_tpr` signal efficiency
@@ -137,9 +139,12 @@ def metrics (data, feat, target_tpr=0.5, cut=None, masscut=False, verbose=False)
 
     # p, _ = np.histogram(data.loc[ msk_pass & msk_bkg, M].values, bins=MASSBINS, weights=data.loc[ msk_pass & msk_bkg, 'weight_test'].values, density=1.)
     # f, _ = np.histogram(data.loc[~msk_pass & msk_bkg, M].values, bins=MASSBINS, weights=data.loc[~msk_pass & msk_bkg, 'weight_test'].values, density=1.)
+    print "p data",data.loc[msk_pass & msk_bkg, MASS].values.sum(),data.loc[msk_pass & msk_bkg, MASS].values.size
+    print "f data",data.loc[~msk_pass & msk_bkg, MASS].values.sum(),data.loc[~msk_pass & msk_bkg, MASS].values.size
     p, _ = np.histogram(data.loc[msk_pass & msk_bkg, MASS].values, bins=MASSBINS, density=1.)
     f, _ = np.histogram(data.loc[~msk_pass & msk_bkg, MASS].values, bins=MASSBINS, density=1.)
-    #print p,f
+    print "p", p.sum(), p.size
+    print "f", f.sum(), f.size
 
     jsd = JSD(p, f)
 
