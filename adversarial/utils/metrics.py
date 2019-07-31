@@ -151,13 +151,13 @@ def bootstrap_metrics (data, feat, num_bootstrap=10, **kwargs):
     print "booststrap_metrics calu started..."
     bootstrap_eff, bootstrap_rej, bootstrap_jsd = list(), list(), list()
     for i in range(num_bootstrap):
-        print "round",i,"/",num_bootstrap
+        print "round",i+1,"/",num_bootstrap
         idx = np.random.choice(data.shape[0], data.shape[0], replace=True)
         eff, rej, jsd = metrics(data.iloc[idx], feat, **kwargs)
         bootstrap_rej.append(rej)
         bootstrap_jsd.append(jsd)
         pass
-
+    print "booststrap_metrics ok!",len(bootstrap_eff),len(bootstrap_rej),len(bootstrap_jsd)
     return (np.mean(bootstrap_eff), np.std(bootstrap_eff)), \
            (np.mean(bootstrap_rej), np.std(bootstrap_rej)), \
            (np.mean(bootstrap_jsd), np.std(bootstrap_jsd))
