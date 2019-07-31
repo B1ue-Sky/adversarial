@@ -154,6 +154,7 @@ def bootstrap_metrics (data, feat, num_bootstrap=10, **kwargs):
         print "round",i+1,"/",num_bootstrap
         idx = np.random.choice(data.shape[0], data.shape[0], replace=True)
         eff, rej, jsd = metrics(data.iloc[idx], feat, **kwargs)
+        bootstrap_eff.append(eff)
         bootstrap_rej.append(rej)
         bootstrap_jsd.append(jsd)
         pass
