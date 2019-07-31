@@ -113,6 +113,9 @@ def metrics (data, feat, target_tpr=0.5, cut=None, masscut=False, verbose=False)
                                                                                         fpr[idx] * 100.,
                                                                                         thresholds[idx])
 
+    # @FIXME
+    # here sometimes the fpr[idx] will become 0, don't know why.when masscut=True and cut=None
+
     eff = tpr[idx]
     rej = 1. / fpr[idx]
 
@@ -145,6 +148,7 @@ def bootstrap_metrics (data, feat, num_bootstrap=10, **kwargs):
     ...
     """
     # Compute metrics using bootstrapping
+    print "booststrap_metrics calu started..."
     bootstrap_eff, bootstrap_rej, bootstrap_jsd = list(), list(), list()
     for _ in range(num_bootstrap):
         idx = np.random.choice(data.shape[0], data.shape[0], replace=True)
