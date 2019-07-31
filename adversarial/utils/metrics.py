@@ -164,7 +164,7 @@ def bootstrap_metrics (data, feat, num_bootstrap=10, **kwargs):
         print "round",i+1,"/",num_bootstrap
         idx = np.random.choice(data.shape[0], data.shape[0], replace=True)
         eff, rej, jsd = metrics(data.iloc[idx], feat, **kwargs)
-        if np.isfinite([eff,rej,jsd]):
+        if not np.isfinite([eff,rej,jsd]).sum()==3:
             print "Error in this round, skip!! pls check yourself"
             continue
         bootstrap_eff.append(eff)
