@@ -60,7 +60,7 @@ def metrics (data, feat, target_tpr=0.5, cut=None, masscut=False, verbose=False)
         Tuple of (background rejection at `target_tpr`, JSD for background mass
         distributions at `target_tpr`).
     """
-
+    print "metrics calu started..."
     # Background rejection at `target_tpr` signal efficiency
     # ------------------------------------------------------
 
@@ -84,17 +84,18 @@ def metrics (data, feat, target_tpr=0.5, cut=None, masscut=False, verbose=False)
 
     # Compute ROC curve efficiencies
     # fpr, tpr, thresholds = roc_curve(data.loc[msk, 'signal'], pred[msk], sample_weight=data.loc[msk, 'weight_test'])
-    print "metrics"
-    print type(data.loc[msk, 'signal']),data.loc[msk, 'signal'].sum(),data.loc[msk, 'signal'].size
-    print type(data.loc[msk, 'signal'].values), data.loc[msk, 'signal'].values.sum(), data.loc[msk, 'signal'].values.size
-    print type(pred[msk]),pred[msk].sum(),pred[msk].size
-    print msk.sum(),msk.size
+    #print type(data.loc[msk, 'signal']),data.loc[msk, 'signal'].sum(),data.loc[msk, 'signal'].size
+    #print type(data.loc[msk, 'signal'].values), data.loc[msk, 'signal'].values.sum(), data.loc[msk, 'signal'].values.size
+    #print type(pred[msk]),pred[msk].sum(),pred[msk].size
+    print "msk",msk.sum(),msk.size
     fpr, tpr, thresholds = roc_curve(data.loc[msk, 'signal'].values, pred[msk])
-
+    #print "fpr",fpr,"tpr",tpr,"thre",thresholds
     if masscut:
         tpr_mass = np.mean(msk[data['signal'] == 1])
         fpr_mass = np.mean(msk[data['signal'] == 0])
 
+        print "tpr_mass",tpr_mass
+        print "fpr_mass",fpr_mass
         tpr *= tpr_mass
         fpr *= fpr_mass
         pass
@@ -103,13 +104,14 @@ def metrics (data, feat, target_tpr=0.5, cut=None, masscut=False, verbose=False)
     if cut is None:
         idx = np.argmin(np.abs(tpr - target_tpr))
         cut = thresholds[idx]    
+        print "None cut","idx",idx,"cut",cut,"tpr,fpr@idx",tpr[idx],fpr[idx]
     else:
         print "metrics: Using manual cut of {:.2f} for {}".format(cut, feat)
         idx = np.argmin(np.abs(thresholds - cut))
-        print "metrics:   effsig = {:.1f}%, effbkg = {:.1f}, threshold = {:.2f}".format(tpr[idx] * 100.,
+        print "idx",idx,"tpr,fpr@idx",tpr[idx],fpr[idx]
+    print "metrics:   effsig = {:.1f}%, effbkg = {:.1f}, threshold = {:.2f}".format(tpr[idx] * 100.,
                                                                                         fpr[idx] * 100.,
                                                                                         thresholds[idx])
-        pass
 
     eff = tpr[idx]
     rej = 1. / fpr[idx]
@@ -121,17 +123,19 @@ def metrics (data, feat, target_tpr=0.5, cut=None, masscut=False, verbose=False)
     # Get JSD(1/Npass dNpass/dm || 1/Nfail dNfail/dm)
     msk_pass = pred > cut
     msk_bkg  = data['signal'] == 0
+    print "msk_pass",msk_pass.sum(),msk_pass.size
+    print "msk_bkg",msk_bkg.sum(),msk_bkg.size
 
     # p, _ = np.histogram(data.loc[ msk_pass & msk_bkg, M].values, bins=MASSBINS, weights=data.loc[ msk_pass & msk_bkg, 'weight_test'].values, density=1.)
     # f, _ = np.histogram(data.loc[~msk_pass & msk_bkg, M].values, bins=MASSBINS, weights=data.loc[~msk_pass & msk_bkg, 'weight_test'].values, density=1.)
     p, _ = np.histogram(data.loc[msk_pass & msk_bkg, MASS].values, bins=MASSBINS, density=1.)
     f, _ = np.histogram(data.loc[~msk_pass & msk_bkg, MASS].values, bins=MASSBINS, density=1.)
-    print p,f
+    #print p,f
 
     jsd = JSD(p, f)
 
     # Return metrics
-    print eff, rej, jsd
+    print "eff",eff,"rej", rej,"jsd", jsd
     return eff, rej, 1./jsd #??
 
 
