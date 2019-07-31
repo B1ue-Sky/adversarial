@@ -70,7 +70,7 @@ def metrics (data, feat, target_tpr=0.5, cut=None, masscut=False, verbose=False)
         # msk = (data[M] > 60.*GeV) & (data[M] < 100.*GeV) if masscut else np.ones_like(data['signal']).astype(bool)
         pass
 
-    msk = (data[MASS] > 80. * GeV) & (data[MASS] < 140. * GeV) if masscut else np.ones_like(data['signal']).astype(bool) # mass cut From Weo
+    msk = (data[MASS] > 80. * GeV) & (data[MASS] < 140. * GeV) if masscut else np.ones_like(data['signal']).astype(bool) # mass cut From Wei
 
 
     # scikit-learn assumes signal towards 1, background towards 0
@@ -88,6 +88,7 @@ def metrics (data, feat, target_tpr=0.5, cut=None, masscut=False, verbose=False)
     #print type(data.loc[msk, 'signal'].values), data.loc[msk, 'signal'].values.sum(), data.loc[msk, 'signal'].values.size
     #print type(pred[msk]),pred[msk].sum(),pred[msk].size
     print "msk",msk.sum(),msk.size
+    print "data",data.loc[msk, 'signal'].values.sum(),"pred",pred[msk].sum()
     fpr, tpr, thresholds = roc_curve(data.loc[msk, 'signal'].values, pred[msk])
     #print "fpr",fpr,"tpr",tpr,"thre",thresholds
     if masscut:
@@ -104,7 +105,7 @@ def metrics (data, feat, target_tpr=0.5, cut=None, masscut=False, verbose=False)
     if cut is None:
         idx = np.argmin(np.abs(tpr - target_tpr))
         cut = thresholds[idx]    
-        print "None cut","idx",idx,"cut",cut,"tpr,fpr@idx",tpr[idx],fpr[idx]
+        print "No manual cut","idx",idx,"cut",cut,"tpr,fpr@idx",tpr[idx],fpr[idx]
     else:
         print "metrics: Using manual cut of {:.2f} for {}".format(cut, feat)
         idx = np.argmin(np.abs(thresholds - cut))
@@ -117,7 +118,12 @@ def metrics (data, feat, target_tpr=0.5, cut=None, masscut=False, verbose=False)
     # here sometimes the fpr[idx] will become 0, don't know why.when masscut=True and cut=None
 
     eff = tpr[idx]
-    rej = 1. / fpr[idx]
+    if fpr[idx]==0. :
+        print "fpr@{} where tpr==target_tpr is 0 -> set to eps, should check by yourself".format(idx)
+        print "fpr 0 counts", np.count_nonzero(fpr==0)
+        rej = np.inf
+    else:
+        rej = 1. / fpr[idx]
 
 
     # JSD at `target_tpr` signal efficiency
