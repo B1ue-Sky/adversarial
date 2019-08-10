@@ -267,7 +267,7 @@ def perform_studies (data, args, tagger_features, ann_vars):
             pass
     if True:
         with Profile("Study: Jet mass comparison:debug"):
-            for eff in set(range(0,110,10)+range(90,100,1)):
+            for eff in set(range(0,110,10)):
                 studies.jetmasscomparison(data, args, tagger_features,eff,True)
                 pass
     if True:

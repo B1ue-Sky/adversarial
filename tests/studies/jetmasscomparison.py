@@ -17,7 +17,7 @@ import rootplotting as rp
 #Now test with no test_weight
 
 @showsave
-def jetmasscomparison (data, args, features, eff_sig=99,debug=False):
+def jetmasscomparison (data, args, features, eff_sig=50,debug=False):
     """
     Perform study of jet mass distributions before and after subtructure cut for
     different substructure taggers.
@@ -142,7 +142,7 @@ def plot (*argv):
 
         # -- Tagged
         # padDict={0:1,1:1,2:2,3:2,4:3,5:3}
-        padDict = {0: 1, 1: 1, 2: 3, 3: 4}
+        padDict = {0: 1, 1: 1, 2: 2, 3: 3}
         base['linewidth'] = 2
         for ifeat, feat in enumerate(features):
             opts = dict(
