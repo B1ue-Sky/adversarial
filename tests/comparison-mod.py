@@ -109,6 +109,8 @@ def main (args):
     # -- HbbScore tagger
     sc_vars=["fjet_HbbScore","fjet_XbbScoreHiggs","fjet_XbbScoreTop","fjet_XbbScoreQCD","fjet_JSSTopScore"]
     sc_var=sc_vars[1]
+    sc_var2="Higgs/QCD"
+    sc_var3=sc_vars[0]
 
     # -- Truth information (for backup)
     tru_vars=["fjet_GhostBHadronsFinalCount","fjet_GhostCHadronsFinalCount","fjet_GhostTQuarksFinalCount",
@@ -257,30 +259,30 @@ def perform_studies (data, args, tagger_features, ann_vars):
     pt_ranges = [None, (200*GeV, 500*GeV), (500*GeV, 1000*GeV), (1000*GeV, 2000*GeV)]
 
     # debug>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    if True:
+    if False:
         with Profile("Study: Robustness：debug"):
             for masscut in masscuts:
                 studies.robustness_full(data, args, tagger_features, masscut=masscut)
                 pass
             pass
-    if False:
+    if True:
         with Profile("Study: Jet mass comparison:debug"):
             for eff in set(range(0,110,10)+range(90,100,1)):
                 studies.jetmasscomparison(data, args, tagger_features,eff,True)
                 pass
-    if False:
+    if True:
         with Profile("Study: Efficiency:debug"):
             for feat in tagger_features:
                 studies.efficiency(data, args, feat)
                 pass
             pass
-    if False:
+    if True:
         with Profile("Study: ROC:debug"):
             for masscut, pt_range in itertools.product(masscuts, pt_ranges):
                 studies.roc(data, args, tagger_features, masscut=masscut, pt_range=pt_range)
                 pass
             pass
-    if False:
+    if True:
         with Profile("Study: Substructure tagger distributions:debug"):
             mass_ranges = np.linspace(50 * GeV, 300 * GeV, 5 + 1, endpoint=True)
             mass_ranges = [None] + zip(mass_ranges[:-1], mass_ranges[1:])
@@ -288,7 +290,7 @@ def perform_studies (data, args, tagger_features, ann_vars):
                 studies.distribution(data, args, feat, pt_range, mass_range)
                 pass
             pass
-    if False:
+    if True:
         with Profile("Study: JSD:debug"):
             for pt_range in pt_ranges:
                 studies.jsd(data, args, tagger_features, pt_range)
