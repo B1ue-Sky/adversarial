@@ -115,7 +115,7 @@ def plot (*argv):
 
         # -- Inclusive #Plot sig&bkg all
         base = dict(bins=MASSBINS, normalise=True, linewidth=2)
-	print "base",MASSBINS,len(MASSBINS)
+	# print "base",MASSBINS,len(MASSBINS)
         for signal, name in zip([0, 1], ['bkg', 'sig']):
             msk = data['signal'] == signal
             # print name,msk.sum()
@@ -134,7 +134,7 @@ def plot (*argv):
             pass
 
         c.pads()[0].legend(header='Inclusive selection:', categories=[
-            ("Dijets",   histstyle[False]),
+            ("Bkg",   histstyle[False]),
             ("#it{Hbb} Signals", histstyle[True])
             ], xmin=0.18, width= 0.60, ymax=0.28 + 0.07, ymin=0.001 + 0.07, columns=2)
         c.pads()[0]._legends[-1].SetTextSize(style.GetLegendTextSize())
@@ -143,12 +143,14 @@ def plot (*argv):
         # -- Tagged
         # padDict={0:1,1:1,2:2,3:2,4:3,5:3}
         padDict = {0: 1, 1: 1, 2: 2, 3: 3}
+        textsizeDict={0: 16, 1: 16, 2: 16, 3: 12}
         base['linewidth'] = 2
         for ifeat, feat in enumerate(features):
             opts = dict(
                 linecolor = rp.colours[(ifeat // 2)],
                 linestyle = 1 + (ifeat % 2),
                 linewidth = 2,
+                textsize  = textsizeDict[ifeat] # see rootploting.pad.latex, all kwargs is wrapper from ROOT; might onr day turn to true ROOT.
                 )
             cfg = dict(**base)
             cfg.update(opts)
@@ -166,9 +168,9 @@ def plot (*argv):
             print "legend set",ipad
             offsetx = (0.20 if ipad % 2 else 0.05)
             offsety =  0.20 * ((2 - (ipad // 2)) / float(2.))
-            print 0.68 - offsetx,0.80 - offsety
+            print "leg Pos",0.68 - offsetx,0.80 - offsety
             pad.legend(width=0.25, xmin=0.68 - offsetx, ymax=0.80 - offsety)
-            pad.latex("Tagged Dijets:", NDC=True, x=0.93 - offsetx, y=0.84 - offsety, textcolor=ROOT.kGray + 3, textsize=style.GetLegendTextSize() * 0.8, align=31)
+            pad.latex("Tagged Bkg:", NDC=True, x=0.93 - offsetx, y=0.84 - offsety, textcolor=ROOT.kGray + 3, textsize=style.GetLegendTextSize() * 0.8, align=31)
             # try:
             #     print pad
             #     print pad._legends
@@ -282,7 +284,7 @@ def plot_individual (*argv):
             if first:
                 opts = dict(xmin=0.185, width=0.60, columns=2)
                 c.legend(header=' ', categories=[
-                            ("Dijets",   histstyle[False]),
+                            ("Bkg",   histstyle[False]),
                             ("#it{Hbb}", histstyle[True])
                         ], ymax=0.45, **opts)
                 c.legend(header='Inclusive selection:',
@@ -336,7 +338,7 @@ def plot_individual (*argv):
                 y =  0.46  if first else 0.68
                 dy = 0.025 if first else 0.04
                 c.legend(width=0.25, xmin=0.63, ymax=y)
-                c.latex("Tagged Dijets:", NDC=True, x=0.87, y=y + dy, textcolor=ROOT.kGray + 3, textsize=style.GetLegendTextSize() * 0.9, align=31)
+                c.latex("Tagged Bkg:", NDC=True, x=0.87, y=y + dy, textcolor=ROOT.kGray + 3, textsize=style.GetLegendTextSize() * 0.9, align=31)
                 c.pad()._legends[-1].SetMargin(0.35)
                 c.pad()._legends[-1].SetTextSize(style.GetLegendTextSize())
 
