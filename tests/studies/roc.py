@@ -164,9 +164,17 @@ def plot (*argv):
     ranges = int(pt_range is not None) + int(masscut)
     mult = 10. if ranges == 2 else (2. if ranges == 1 else 1.)
 
+    # ptRange None, massRange None -> ymax=500
+    # ptRange Yes , massRange None -> ymax=1000
+    # ptRange None, massRange Yes  -> ymax=1000
+    # ptRange Yes , massRange Yes  -> ymax=5000
+
+
+    if args.debug:
+        print "roc plot, ranges {}, mult {}".format(ranges,mult)
     c.latex("Random guessing", 0.4, 1./0.4 * 0.9, align=23, angle=-12 + 2 * ranges, textsize=13, textcolor=ROOT.kGray + 2)
     c.xlim(0.2, 1.)
-    c.ylim(1E+00, 5E+02 * mult)
+    # c.ylim(1E+00, 5E+02 * mult) #5000 or 1000 or 500?
     c.logy()
     c.legend()
 
