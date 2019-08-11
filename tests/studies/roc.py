@@ -63,7 +63,7 @@ def roc (data_, args, features, masscut=False, pt_range=(200*GeV, 2000*GeV)):
         if masscut:
             eff_sig_mass = np.mean(msk[data['signal'] == 1])
             eff_bkg_mass = np.mean(msk[data['signal'] == 0])
-
+            if args.debug : print "ROC masscut factor?",eff_sig_mass,eff_bkg_mass
             eff_sig *= eff_sig_mass
             eff_bkg *= eff_bkg_mass
             pass

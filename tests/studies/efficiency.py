@@ -68,7 +68,7 @@ def efficiency (data, args, feat):
     c = plot(args, data, feat, profiles, cuts, effs)
 
     # Output
-    path = 'figures/efficiency_{}.pdf'.format(standardise(feat))
+    path = 'figures/eff/efficiency_{}.pdf'.format(standardise(feat))
 
     return c, args, path
 
