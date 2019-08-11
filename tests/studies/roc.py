@@ -45,6 +45,8 @@ def roc (data_, args, features, masscut=False, pt_range=(200*GeV, 2000*GeV)):
 
     # (Opt.) masscut | @NOTE: Duplication with adversarial/utils/metrics.py
     msk = (data[MASS] > 80. * GeV) & (data[MASS] < 140. * GeV) if masscut else np.ones_like(data['signal']).astype(bool)
+    if args.debug:
+        print "ROC masscut",msk.sum(),msk.size
 
     # Computing ROC curves
     ROCs = dict()
@@ -80,9 +82,12 @@ def roc (data_, args, features, masscut=False, pt_range=(200*GeV, 2000*GeV)):
         # Store
         ROCs[feat] = (eff_sig, eff_bkg)
         pass
+    if args.debug:
+        print "Roc debug,sig,bkg",np.max(eff_sig),np.min(eff_sig),np.max(eff_bkg),np.min(eff_bkg)
+        if masscut: print  "with masscut"
 
     # Computing ROC AUCs
-    AUCs = dict()
+    AUCs = dict() #not used in fact in plot.
     for feat in features:
         sign = -1. if signal_low(feat) else 1.
         # AUCs[feat] = roc_auc_score(data['signal'].values,

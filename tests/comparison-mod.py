@@ -265,12 +265,12 @@ def perform_studies (data, args, tagger_features, ann_vars):
                 studies.robustness_full(data, args, tagger_features, masscut=masscut)
                 pass
             pass
-    if True:
+    if False:
         with Profile("Study: Jet mass comparison:debug"):
             for eff in set(range(0,110,20)):
                 studies.jetmasscomparison(data, args, tagger_features,eff,True)
                 pass
-    if True:
+    if False:
         with Profile("Study: Efficiency:debug"):
             for feat in tagger_features:
                 studies.efficiency(data, args, feat)
@@ -282,7 +282,7 @@ def perform_studies (data, args, tagger_features, ann_vars):
                 studies.roc(data, args, tagger_features, masscut=masscut, pt_range=pt_range)
                 pass
             pass
-    if True:
+    if False:
         with Profile("Study: Substructure tagger distributions:debug"):
             mass_ranges = np.linspace(50 * GeV, 300 * GeV, 5 + 1, endpoint=True)
             mass_ranges = [None] + zip(mass_ranges[:-1], mass_ranges[1:])
