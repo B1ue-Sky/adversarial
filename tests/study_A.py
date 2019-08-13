@@ -34,7 +34,7 @@ import studies
 import os
 
 # Custom import(s)
-from study_common import *
+# from study_common import *
 
 # Main function definition
 @profile
