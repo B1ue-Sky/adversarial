@@ -24,7 +24,7 @@ ROOT.PyConfig.IgnoreCommandLineOptions = True
 # from sklearn.metrics import roc_curve, roc_auc_score
 
 # Project import(s)
-from adversarial.utils import initialise, initialise_backend, parse_args, load_data,load_data_raw, mkdir, wpercentile, latex
+from adversarial.utils import initialise, initialise_backend, parse_args, load_data, mkdir, wpercentile, latex
 from adversarial.profile import profile, Profile
 # from adversarial.constants import *
 from run.adversarial.common import initialise_config
