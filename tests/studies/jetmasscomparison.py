@@ -40,7 +40,7 @@ def jetmasscomparison (data, args, features, eff_sig=50,debug=False):
         # cut = wpercentile(data.loc[msk_sig, feat].values, eff_cut, weights=data.loc[msk_sig, 'weight_test'].values)
         #cut = wpercentile(data.loc[msk_sig, feat].values, eff_cut)
         cut=np.percentile(data.loc[msk_sig, feat].values, eff_cut)
-        print feat,"cut",cut
+        print feat,"jetmass eff@cut",eff_cut,"@",cut
         msks_pass[feat] = data[feat] > cut # pass cut means tagged as sig
 
         # Ensure correct cut direction
@@ -49,8 +49,7 @@ def jetmasscomparison (data, args, features, eff_sig=50,debug=False):
             print "Use cut <xxx",feat
             pass
         pass
-        print "eff",eff_sig,"cut",cut
-        print feat, msks_pass[feat].sum(), msks_pass[feat].size
+        print "{}: pass {}, tot {}".format(feat, msks_pass[feat].sum(), msks_pass[feat].size)
         msk = (data['signal'] == 1) & msks_pass[feat]
         MSK=data['signal'] == 1
         print "For Sig", msk.sum(),MSK.sum(),1.0*msk.sum()/MSK.sum()

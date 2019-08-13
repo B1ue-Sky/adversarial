@@ -76,7 +76,7 @@ def initialise_config (args, cfg):
     """
 
     # Import(s)
-    import keras
+    # import keras
 
     # If the `model/architecture` parameter is provided as an int, convert
     # to list of empty dicts

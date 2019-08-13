@@ -44,7 +44,8 @@ def roc (data_, args, features, masscut=False, pt_range=(200*GeV, 2000*GeV)):
         pass
 
     # (Opt.) masscut | @NOTE: Duplication with adversarial/utils/metrics.py
-    msk = (data[MASS] > 80. * GeV) & (data[MASS] < 140. * GeV) if masscut else np.ones_like(data['signal']).astype(bool)
+    # msk = (data[MASS] > 80. * GeV) & (data[MASS] < 140. * GeV) if masscut else np.ones_like(data['signal']).astype(bool)
+    msk = (data[MASS] > 50. * GeV) & (data[MASS] < 300. * GeV) if masscut else np.ones_like(data['signal']).astype(bool)
     if args.debug:
         print "ROC masscut",msk.sum(),msk.size
 
@@ -69,6 +70,7 @@ def roc (data_, args, features, masscut=False, pt_range=(200*GeV, 2000*GeV)):
             pass
 
         # Filter, to advoid background rejection blowing up
+        # But why eff<0 ??
         indices = np.where((eff_bkg > 0) & (eff_sig > 0))
         eff_sig = eff_sig[indices]
         eff_bkg = eff_bkg[indices]

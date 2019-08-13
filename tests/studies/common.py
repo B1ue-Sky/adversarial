@@ -221,7 +221,7 @@ def showsave (f):
         if args.save:
             if args.debug:
                 print "Saving", path
-            dir = '/'.join(path.split('/')[:-1])
+            dir = '/'.join(path.split('/')[:-1]) # safe and good...
             mkdir(dir)
             suffix = path.split('.')[-1]
             if len(suffix) < 4: #??
