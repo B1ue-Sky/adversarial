@@ -48,6 +48,13 @@ def main (args):
     exam_samples(DATA, args, testOnly=False)
     return 0
 
+def dataSlice(data,ARG):
+    _, feature, _, _, _, _=ARG
+    # partList=list(set([feature]+[PT,MASS]+["signal","train"]+WEIGHT_VARIABLES))
+    partList=list(set([feature]+[PT,MASS]+["signal","train"]))
+    dataPart=data[partList]
+    return dataPart
+
 def exam_samples(data, args, testOnly=False,features=None):
         """
         Method exam samples.
@@ -89,9 +96,3 @@ if __name__ == '__main__':
     main(args)
     pass
 
-def dataSlice(data,ARG):
-    _, feature, _, _, _, _=ARG
-    # partList=list(set([feature]+[PT,MASS]+["signal","train"]+WEIGHT_VARIABLES))
-    partList=list(set([feature]+[PT,MASS]+["signal","train"]))
-    dataPart=data[partList]
-    return dataPart
