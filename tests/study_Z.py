@@ -92,6 +92,6 @@ if __name__ == '__main__':
 def dataSlice(data,ARG):
     _, feature, _, _, _, _=ARG
     # partList=list(set([feature]+[PT,MASS]+["signal","train"]+WEIGHT_VARIABLES))
-    partList=list(set([feature]+[PT,MASS]+["signal","train"])
+    partList=list(set([feature]+[PT,MASS]+["signal","train"]))
     dataPart=data[partList]
     return dataPart
