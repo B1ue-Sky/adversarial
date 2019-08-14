@@ -208,6 +208,7 @@ def main (args):
     unused_variables = [var for var in list(data) if var not in used_variables]
     data=data.drop(columns=unused_variables)
     gc.collect() #important!!
+    # not drop N/A, because we have dominate truth label.
     # print "Now counts OUTPUT NA, dropped"
     # print data.isna().sum()
     # # print "All output NA are dropped, INPUT NA are filled"

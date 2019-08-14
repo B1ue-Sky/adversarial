@@ -444,7 +444,7 @@ def entropy (data, num_bins=None, weights=None):
 if __name__ == '__main__':
 
     # Parse command-line arguments
-    args = parse_args()
+    args = parse_args(backend=True, plots=True)
 
     # Call main function
     main(args)
