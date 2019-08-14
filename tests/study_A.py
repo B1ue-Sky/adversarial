@@ -209,8 +209,8 @@ def main (args):
     data=data.drop(columns=unused_variables)
     gc.collect() #important!!
     # not drop N/A, because we have dominate truth label.
-    # print "Now counts OUTPUT NA, dropped"
-    # print data.isna().sum()
+    print "Now counts OUTPUT NA, will not dropped"
+    print data.isna().sum()
     # # print "All output NA are dropped, INPUT NA are filled"
     # data=data.dropna() #drop all missing value in all output vars,
     # #note drop1: na in test input, drop2: can't get right score/predict!
