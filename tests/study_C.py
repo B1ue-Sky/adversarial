@@ -24,7 +24,7 @@ from scipy.stats import entropy
 from sklearn.metrics import roc_curve, roc_auc_score
 
 # Project import(s)
-from adversarial.utils import initialise, initialise_backend, parse_args, load_data,load_data_raw, mkdir, wpercentile, latex,INPUT_DEFAULTS
+from adversarial.utils import initialise, initialise_backend, parse_args, load_data, mkdir, wpercentile, latex,INPUT_DEFAULTS
 from adversarial.profile import profile, Profile
 from adversarial.constants import *
 from run.adversarial.common import initialise_config
@@ -175,7 +175,7 @@ def perform_studies (data, args, tagger_features, ann_vars=None):
                 studies.efficiency(data, args, feat)
                 pass
             pass
-    if False:
+    if True:
         with Profile("Study: ROC:debug"):
             for masscut, pt_range in itertools.product(masscuts, pt_ranges):
                 studies.roc(data, args, tagger_features, masscut=masscut, pt_range=pt_range)

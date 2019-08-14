@@ -65,7 +65,7 @@ def main (args):
 
 
 @profile
-# @showsave
+@showsave
 def plot_classifier_training_loss (num_folds=None, basedir='models/adversarial/classifier/full/'):
     """
     Plot the classifier training loss.
@@ -141,18 +141,14 @@ def plot_classifier_training_loss (num_folds=None, basedir='models/adversarial/c
     c.text(TEXT + ["#it{Hbb} tagging", "Neural network (NN) classifier"],
            qualifier=QUALIFIER)
     # Save
-    mkdir('figures/')
-    c.save('figures/loss_classifier.pdf')
-    c.save('figures/loss_classifier.png')
-    c.save('figures/loss_classifier.eps')
-    c.save('figures/loss_classifier.C')
-    # path='figures/loss_classifier.pdf'
-    # return c, args, path
-    return
+    # mkdir('figures/')
+    # c.save('figures/loss_classifier.pdf')
+    path='figures/loss_classifier.pdf'
+    return c, args, path
 
 
 @profile
-# @showsave
+@showsave
 def plot_adversarial_training_loss (lambda_reg=10., num_folds=None, pretrain_epochs=10, H_prior=None, basedir='models/adversarial/combined/full/'):
     """
     Plot the classifier, adversary, and combined losses for the adversarial
@@ -353,15 +349,10 @@ def plot_adversarial_training_loss (lambda_reg=10., num_folds=None, pretrain_epo
     c.pads()[0].legend(xmin=0.60, ymax=0.70, categories=categories)
 
     # Save
-    mkdir('figures/')
-    filename='figures/loss_adversarial_lambda{}_{}'.format(lambda_str, 'full' if num_folds is None else 'cv')
-    c.save(filename+".pdf")
-    c.save(filename + ".eps")
-    c.save(filename + ".png")
-    c.save(filename + ".C")
-    # path='figures/loss_adversarial_lambda{}_{}.pdf'.format(lambda_str, 'full' if num_folds is None else 'cv')
-    # return c, args, path
-    return
+    # mkdir('figures/')
+    # c.save('figures/loss_adversarial_lambda{}_{}.pdf'.format(lambda_str, 'full' if num_folds is None else 'cv'))
+    path='figures/loss_adversarial_lambda{}_{}.pdf'.format(lambda_str, 'full' if num_folds is None else 'cv')
+    return c, args, path
 
 
 def get_nonzero_bin_contents (h):
