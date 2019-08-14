@@ -44,7 +44,14 @@ def main (args):
     plot_classifier_training_loss(num_folds)
 
     # Compute entropy of decorrelation variable posterior
-    data, _, _ = load_data(args.input + 'data.h5', train=True, background=True) #for training, should fill N/A
+    # data, _, _ = load_data(args.input + 'data.h5', train=True, background=True) #for training, should fill N/A
+    # Load data
+    tempFile = "output/study.h5"
+    if os.path.exists(tempFile):
+        data = pd.read_hdf(tempFile, "dataset")
+    else:
+        print "Not found ",tempFile,"please run study_A first!"
+        return -1
     decorrelation = get_decorrelation_variables(data) #mass or log mass ?????!
     # H_prior = entropy(decorrelation, weights=data['weight_adv'])
     H_prior = entropy(decorrelation)
