@@ -9,6 +9,7 @@ import glob
 import json
 import itertools
 from pprint import pprint
+import pandas as pd
 
 # Set Keras backend
 os.environ['KERAS_BACKEND'] = 'tensorflow'
