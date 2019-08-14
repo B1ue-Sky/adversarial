@@ -496,7 +496,8 @@ def load_data (path, name='dataset', train=None, test=None, signal=None, backgro
     if sample: assert 0 < sample and sample < 1.
 
     # Read data from HDF5 file
-    data = pd.read_hdf(path, name)[USED_VARIABLES]
+    # data = pd.read_hdf(path, name)[USED_VARIABLES]
+    data = pd.read_hdf(path, name)
     log.info("examine input data\n{}".format(
         data.info()
     ))
