@@ -175,7 +175,7 @@ def perform_studies (data, args, tagger_features, ann_vars=None):
                 studies.efficiency(data, args, feat)
                 pass
             pass
-    if True:
+    if False:
         with Profile("Study: ROC:debug"):
             for masscut, pt_range in itertools.product(masscuts, pt_ranges):
                 studies.roc(data, args, tagger_features, masscut=masscut, pt_range=pt_range)
@@ -189,7 +189,7 @@ def perform_studies (data, args, tagger_features, ann_vars=None):
                 studies.distribution(data, args, feat, pt_range, mass_range)
                 pass
             pass
-    if False:
+    if True:
         with Profile("Study: JSD:debug"):
             for pt_range in pt_ranges:
                 studies.jsd(data, args, tagger_features, pt_range)

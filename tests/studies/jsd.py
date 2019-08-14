@@ -101,7 +101,7 @@ def jsd (data_, args, features, pt_range):
                 qualifier=QUALIFIER)
 
             # -- Save
-            os.system("mkdir figures/jsd/")
+            os.system("mkdir -p figures/jsd/")
             c.save('figures/jsd/temp_jsd_{:s}_{:.0f}{}.pdf'.format(feat, eff, '' if pt_range is None else '__pT{:.0f}_{:.0f}'.format(pt_range[0]/GeV,pt_range[1]/GeV)))
 
             pass
