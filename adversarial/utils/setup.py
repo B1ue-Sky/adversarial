@@ -500,12 +500,12 @@ def load_data (path, name='dataset', train=None, test=None, signal=None, backgro
     # Read data from HDF5 file
     # data = pd.read_hdf(path, name)[USED_VARIABLES]
     data = pd.read_hdf(path, name)
-    log.info("examining load data")
+    print "examining load data"
     if debug:
         data.info(verbose=True, memory_usage="deep",null_counts=True)
     else:
         data.info()
-    log.info("N/A report:\n")
+    print "N/A report: "
     NA_mask=data.isna()
     NA_count=NA_mask.sum()
     NA_colnames = data.columns[NA_count>0]
@@ -514,9 +514,9 @@ def load_data (path, name='dataset', train=None, test=None, signal=None, backgro
     NA_rows = NA_mask.sum(axis=1)>0
     log.info("\n{}".format(NA_count))
     log.info("\n{}".format(NA_count / len(data)))
-    log.info("Total N/A {}/{}={:.3%}".format(NA_rows.sum(),len(data),1.*NA_rows.sum() / len(data)))
+    print "Total rows have N/A {}/{}={:.3%}".format(NA_rows.sum(),len(data),1.*NA_rows.sum() / len(data))
     if fillna or dropna:
-        log.info("N/A filling with defaults input..." if fillna else "Drop row with N/A...")
+        print "N/A filling with defaults input..." if fillna else "Drop rows have N/A..."
         log.debug("examine input data before {}\n{}".format(
             "fill" if fillna else "drop",
             data[NA_colnames].describe()
@@ -530,14 +530,14 @@ def load_data (path, name='dataset', train=None, test=None, signal=None, backgro
             "fill" if fillna else "drop",
             data[NA_colnames].describe()
         ))
-        log.info("N/A report again:")
+        print "N/A report again:"
         NA_mask = data.isna()
         NA_count = NA_mask.sum()
         NA_count = NA_count[NA_count > 0]
         NA_rows = NA_mask.sum(axis=1) > 0
         log.info("\n{}".format(NA_count))
-        log.info("\n{:.3%}".format(NA_count / len(data)))
-        log.info("Total N/A {}/{}={}".format(NA_rows.sum(), len(data), 1.*NA_rows.sum() / len(data)))
+        log.info("\n{}".format(NA_count / len(data)))
+        print "Total rows have N/A {}/{}={:.3%}".format(NA_rows.sum(),len(data),1.*NA_rows.sum() / len(data))
         # assert NA_count.sum()==0  # Those output value might be still be N/A
         pass
 
