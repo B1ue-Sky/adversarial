@@ -164,7 +164,7 @@ def plot (*argv):
             "#it{Hbb} tagging"] + (
                 ["p_{{T}} #in  [{:.0f}, {:.0f}] GeV".format(pt_range[0]/GeV, pt_range[1]/GeV)] if pt_range is not None else []
             ) + (
-                ["Cut: m #in  [{.0f}, {.0f}] GeV".format(MASSRANGE[0]/GeV,MASSRANGE[0]/GeV)] if masscut else []
+                ["Cut: m #in  [{:.0f}, {:.0f}] GeV".format(MASSRANGE[0]/GeV,MASSRANGE[0]/GeV)] if masscut else []
             ),
            ATLAS=False)
 
@@ -233,7 +233,7 @@ def plotROC2 (*argv):
             "#it{Hbb} tagging"] + (
                 ["p_{{T}} #in  [{:.0f}, {:.0f}] GeV".format(pt_range[0]/GeV, pt_range[1]/GeV)] if pt_range is not None else []
             ) + (
-                ["Cut: m #in  [{.0f}, {.0f}] GeV".format(MASSRANGE[0]/GeV,MASSRANGE[0]/GeV)] if masscut else []
+                ["Cut: m #in  [{:.0f}, {:.0f}] GeV".format(MASSRANGE[0]/GeV,MASSRANGE[0]/GeV)] if masscut else []
             ),
            ATLAS=False)
 
