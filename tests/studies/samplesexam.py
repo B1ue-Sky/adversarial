@@ -195,7 +195,7 @@ class samplesChecker (multiprocessing.Process):
 
 @garbage_collect
 @showsave
-def samplesexam(self,data_, args, feat, pt_range = None, mass_range = None, train = None, fillna = True):
+def samplesexam(data_, args, feat, pt_range = None, mass_range = None, train = None, fillna = True):
     """
     Perform study of substructure variable distributions.
 
