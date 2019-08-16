@@ -52,7 +52,8 @@ def jetmasscomparison (data, args, features, eff_sig=50,debug=False):
         bkg_pass = (msks_pass[feat] & ~msk_sig).sum()
         sig_all=msk_sig.sum()
         bkg_all = (~msk_sig).sum()
-        alive_bkg[feat]=1.-1.*bkg_pass/bkg_all
+        featDict={"fjet_XbbScoreHiggs":"XbbScore","MV2c10":"MV2c10","ANN(#lambda=10)":"ANN","NN":"NN"}
+        alive_bkg[featDict[feat]]=1.*bkg_pass/bkg_all
         print feat, "jetmass cut @ {} get eff_sig {:.1%}, rej_bkg {:.6%}".format(cut,1.*sig_pass/sig_all,1.-1.*bkg_pass/bkg_all)
         if args.debug:
             print "Total Counts: ",sig_pass,sig_all,bkg_pass,bkg_all
@@ -224,8 +225,9 @@ def plot (*argv):
         # I have written a _lot_ of ugly code, but this ^ is probably the worst.
         bkgStr={"D":"Hbb v.s. Dijets","T":"Hbb v.s. Top"}
         bkgT = []
-        for feat,tbg in alive_bkg.iteritems():
-            bkgT.append("    #varepsilon_{{bkg,{}}}^{{rel}}={:.2%}".format(feat,tbg))
+        featList=["ANN","NN","MV2c10","XbbScore"]
+        for feat in featList:
+            bkgT.append("  #varepsilon_{{bkg,{}}}^{{rel}}={:.2%}".format(feat,alive_bkg[feat]))
         bkgSumy=[bkgT[0].join(bkgT[1]),bkgT[2].join(bkgT[3])]
         c.pads()[0].text(["dataset p3652,  #it{Hbb} tagging",
                     "Cuts at #varepsilon_{sig}^{rel} = %.0f%%" % eff_sig
