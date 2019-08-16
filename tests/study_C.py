@@ -219,7 +219,7 @@ def perform_studies (data, args, tagger_features, ann_vars=None):
                     pass
                 pass
             pass
-    if False:
+    if True:
         with Profile("Study: JSD:debug"):
             for pt_range in pt_ranges:
                 studies.jsd(data, args, tagger_features, pt_range)

@@ -149,7 +149,7 @@ def plot (*argv):
         c.hist(ref, linecolor=ROOT.kGray + 2, linewidth=1)
 
         width = 0.15
-        for is_simple in [True, False]:
+        for is_simple in [False]: #simple means convention single-variable based cut. like D2 or Tau32
             for ifeat, feat in enumerate(features):
                 if is_simple != signal_low(feat): continue
                 colour = rp.colours[(ifeat // 2) % len(rp.colours)]
@@ -159,7 +159,7 @@ def plot (*argv):
                 pass
 
             c.legend(header=("Analytical:" if is_simple else "MVA:"),
-                     width=width * (1 + 0.8 * int(is_simple)), xmin=0.42 + (width + 0.05) * (is_simple), ymax=0.888,
+                     width=width * (1 + 0.8 * int(not is_simple)), xmin=0.32 + (width + 0.05) * (not is_simple), ymax=0.888,
                      columns=2 if is_simple else 1,
                      margin=0.35)
             pass
@@ -178,13 +178,19 @@ def plot (*argv):
         c.xlabel("Background efficiency #varepsilon_{bkg}^{rel}")
         c.ylabel("Mass correlation, JSD")
         c.text([], xmin=0.15, ymax = 0.96, qualifier=QUALIFIER)
-        c.text(["data p3652",  "Dijets"] + \
-              (["p_{T} [GeV] #in", "    [{:.0f}, {:.0f}]".format(pt_range[0]/GeV,pt_range[1]/GeV)] if pt_range else []),
+
+        if args.bkg=="D":
+            bkg="Dijets"
+        elif args.bkg=="T":
+            bkg = "Top"
+        else:
+            bkg="Background"
+        c.text(TEXT + ["Hbb v.s. "+bkg] + (["p_{{T}} [GeV] #in [{:.0f}, {:.0f}]".format(pt_range[0]/GeV,pt_range[1]/GeV)] if pt_range else []),
                ymax=0.85, ATLAS=None)
 
         c.latex("Maximal sculpting", 0.065, 1.2, align=11, textsize=11, textcolor=ROOT.kGray + 2)
         c.xlim(0, 1)
-        c.ymin(5E-05)
+        c.ymin(5E-06) #fix ymin then different pt plot can compare in same range.
         c.padding(0.45)
         c.logy()
 

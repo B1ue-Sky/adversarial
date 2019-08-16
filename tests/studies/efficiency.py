@@ -98,9 +98,15 @@ def plot (*argv):
             pass
 
         # Decorations
+        if args.bkg=="D":
+            bkg="Dijets"
+        elif args.bkg=="T":
+            bkg = "Top"
+        else:
+            bkg="Background"
         c.xlabel("Large-#it{R} jet mass [GeV]")
         c.ylabel("Background efficiency, #varepsilon_{bkg}^{rel}")
-        c.text(["data p3652,  Dijets",
+        c.text(["data p3652, #it{Hbb} tagging","Hbb v.s. {}".format(bkg),
                 #"#it{W} jet tagging",
                 "Cuts on {}".format(latex(feat, ROOT=True)),
                 ],
