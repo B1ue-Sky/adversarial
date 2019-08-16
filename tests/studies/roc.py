@@ -251,7 +251,7 @@ def plotROC2 (*argv):
     c.latex("Random guessing", 0.4, 1./0.4 * 0.9, align=23, angle=-12 + 2 * ranges, textsize=13, textcolor=ROOT.kGray + 2)
     c.xlim(0.2, 1.)
     # c.ylim(1E+00, 5E+02 * mult) #5000 or 1000 or 500?
-    c.ylim(0, 1.)
+    c.ylim(0, 2.)
     # c.logy()
     c.legend()
 
