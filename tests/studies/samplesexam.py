@@ -265,7 +265,7 @@ def samplesexam(data_, args, feat, pt_range = None, mass_range = None, train = N
     bins = np.linspace(xmin, xmax, 50 + 1, endpoint=True)
 
     # Perform plotting
-    c = self.plot(args, data, feat, bins, pt_range, mass_range)
+    c = plot(args, data, feat, bins, pt_range, mass_range)
 
     # Output
     outPath = args.output.rstrip("/")
@@ -280,7 +280,7 @@ def samplesexam(data_, args, feat, pt_range = None, mass_range = None, train = N
     return c, args, path
 
 # @staticmethod
-def plot(self,*argv):
+def plot(*argv):
     """
     Method for delegating plotting.
     """
