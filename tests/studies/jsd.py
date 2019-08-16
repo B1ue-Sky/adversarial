@@ -185,7 +185,7 @@ def plot (*argv):
             bkg = "Top"
         else:
             bkg="Background"
-        c.text(TEXT + ["Hbb v.s. "+bkg] + (["p_{{T}} [GeV] #in [{:.0f}, {:.0f}]".format(pt_range[0]/GeV,pt_range[1]/GeV)] if pt_range else []),
+        c.text(TEXT +["#it{Hbb} tagging","Hbb v.s. "+bkg] + (["p_{{T}} [GeV] #in [{:.0f}, {:.0f}]".format(pt_range[0]/GeV,pt_range[1]/GeV)] if pt_range else []),
                ymax=0.85, ATLAS=None)
 
         c.latex("Maximal sculpting", 0.065, 1.2, align=11, textsize=11, textcolor=ROOT.kGray + 2)

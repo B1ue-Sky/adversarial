@@ -118,10 +118,10 @@ def roc (data_, args, features, masscut=False, pt_range=(200*GeV, 2000*GeV)):
     # path = 'figures/roc{}{:s}.pdf'.format('__pT{:.0f}_{:.0f}'.format(pt_range[0]/GeV, pt_range[1]/GeV) if pt_range is not None else '', '__masscut' if masscut else '')
     pt_range_str='__pT{:.0f}_{:.0f}'.format(pt_range[0]/GeV, pt_range[1]/GeV) if pt_range is not None else ''
     mass_range_srt='__masscut' if masscut else ''
-    base = 'figures/roc/roc'+pt_range_str+mass_range_srt+args.bkg
+    base = 'figures/roc'+pt_range_str+mass_range_srt+args.bkg
     path=base + ".pdf"
-
-    plotROC2(args, data, features, ROCs, AUCs, masscut, pt_range)
+    if args.debug:
+        plotROC2(args, data, features, ROCs, AUCs, masscut, pt_range)
     return c, args, path
 
 
