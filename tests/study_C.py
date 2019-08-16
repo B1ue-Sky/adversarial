@@ -175,13 +175,13 @@ def perform_studies (data, args, tagger_features, ann_vars=None):
                 studies.efficiency(data, args, feat)
                 pass
             pass
-    if True:
+    if False:
         with Profile("Study: ROC:debug"):
             for masscut, pt_range in itertools.product(masscuts, pt_ranges):
                 studies.roc(data, args, tagger_features, masscut=masscut, pt_range=pt_range)
                 pass
             pass
-    if False:
+    if True:
         with Profile("Study: Substructure tagger distributions:debug"):
             mass_ranges = np.linspace(50 * GeV, 300 * GeV, 5 + 1, endpoint=True)
             mass_ranges = [None] + zip(mass_ranges[:-1], mass_ranges[1:])

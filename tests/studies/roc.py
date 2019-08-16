@@ -11,7 +11,7 @@ import root_numpy
 
 # Project import(s)
 from .common import *
-from adversarial.utils import mkdir, latex, wpercentile, signal_low,MASSRANGE
+from adversarial.utils import mkdir, latex, wpercentile, signal_low,MASSCUT
 from adversarial.constants import *
 
 # Custom import(s)
@@ -44,7 +44,7 @@ def roc (data_, args, features, masscut=False, pt_range=(200*GeV, 2000*GeV)):
         pass
     # (Opt.) masscut | @NOTE: Duplication with adversarial/utils/metrics.py
     # msk = (data[MASS] > 80. * GeV) & (data[MASS] < 140. * GeV) if masscut else np.ones_like(data['signal']).astype(bool)
-    msk = (data[MASS] > MASSRANGE[0]) & (data[MASS] < MASSRANGE[1]) if masscut else np.ones_like(data['signal']).astype(bool)
+    msk = (data[MASS] > MASSCUT[0]) & (data[MASS] < MASSCUT[1]) if masscut else np.ones_like(data['signal']).astype(bool)
     if args.debug:
         print "ROC masscut",msk.sum(),msk.size
 
@@ -115,7 +115,11 @@ def roc (data_, args, features, masscut=False, pt_range=(200*GeV, 2000*GeV)):
     c = plot(args, data, features, ROCs, AUCs, masscut, pt_range)
 
     # Output
-    path = 'figures/roc{}{:s}.pdf'.format('__pT{:.0f}_{:.0f}'.format(pt_range[0]/GeV, pt_range[1]/GeV) if pt_range is not None else '', '__masscut' if masscut else '')
+    # path = 'figures/roc{}{:s}.pdf'.format('__pT{:.0f}_{:.0f}'.format(pt_range[0]/GeV, pt_range[1]/GeV) if pt_range is not None else '', '__masscut' if masscut else '')
+    pt_range_str='__pT{:.0f}_{:.0f}'.format(pt_range[0]/GeV, pt_range[1]/GeV) if pt_range is not None else ''
+    mass_range_srt='__masscut' if masscut else ''
+    base = 'figures/roc'+pt_range_str+mass_range_srt+args.bkg
+    path=base + ".pdf"
 
     plotROC2(args, data, features, ROCs, AUCs, masscut, pt_range)
     return c, args, path
@@ -160,11 +164,18 @@ def plot (*argv):
     c.xlabel("Signal efficiency #varepsilon_{sig}^{rel}")
     c.ylabel("Background rejection 1/#varepsilon_{bkg}^{rel}")
     c.text([], xmin=0.15, ymax=0.96, qualifier=QUALIFIER)
-    c.text(["dataset p3652,",
-            "#it{Hbb} tagging"] + (
+    if args.bkg == "D":
+        bkg="Hbb v.s. Dijets(subsampling)"
+    elif args.bkg=="T":
+        bkg = "Hbb v.s. Top"
+    else:
+        bkg = ""
+        pass
+    c.text(["dataset p3652",
+            "#it{Hbb} tagging",bkg] + (
                 ["p_{{T}} #in  [{:.0f}, {:.0f}] GeV".format(pt_range[0]/GeV, pt_range[1]/GeV)] if pt_range is not None else []
             ) + (
-                ["Cut: m #in  [{:.0f}, {:.0f}] GeV".format(MASSRANGE[0]/GeV,MASSRANGE[0]/GeV)] if masscut else []
+                ["Cut: m #in  [{:.0f}, {:.0f}] GeV".format(MASSCUT[0] / GeV, MASSCUT[0] / GeV)] if masscut else []
             ),
            ATLAS=False)
 
@@ -229,11 +240,18 @@ def plotROC2 (*argv):
     c.xlabel("Signal efficiency #varepsilon_{sig}^{rel}")
     c.ylabel("Background rejection 1/#varepsilon_{bkg}^{rel}")
     c.text([], xmin=0.15, ymax=0.96, qualifier=QUALIFIER)
-    c.text(["dataset p3652,",
-            "#it{Hbb} tagging"] + (
+    if args.bkg == "D":
+        bkg="Hbb v.s. Dijets(subsampling)"
+    elif args.bkg=="T":
+        bkg = "Hbb v.s. Top"
+    else:
+        bkg = ""
+        pass
+    c.text(["dataset p3652",
+            "#it{Hbb} tagging",bkg] + (
                 ["p_{{T}} #in  [{:.0f}, {:.0f}] GeV".format(pt_range[0]/GeV, pt_range[1]/GeV)] if pt_range is not None else []
             ) + (
-                ["Cut: m #in  [{:.0f}, {:.0f}] GeV".format(MASSRANGE[0]/GeV,MASSRANGE[0]/GeV)] if masscut else []
+                ["Cut: m #in  [{:.0f}, {:.0f}] GeV".format(MASSCUT[0] / GeV, MASSCUT[0] / GeV)] if masscut else []
             ),
            ATLAS=False)
 
@@ -255,7 +273,9 @@ def plotROC2 (*argv):
     # c.logy()
     c.legend()
 
-    base = 'figures/roc2{}{:s}'.format('__pT{:.0f}_{:.0f}'.format(pt_range[0]/GeV, pt_range[1]/GeV) if pt_range is not None else '', '__masscut' if masscut else '')
+    pt_range_str='__pT{:.0f}_{:.0f}'.format(pt_range[0]/GeV, pt_range[1]/GeV) if pt_range is not None else ''
+    mass_range_srt='__masscut' if masscut else ''
+    base = 'figures/roc2'+pt_range_str+mass_range_srt+args.bkg
     c.save(base + ".pdf")
     c.save(base + ".eps")
     c.save(base + ".C")

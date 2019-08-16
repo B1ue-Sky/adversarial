@@ -100,6 +100,7 @@ def parse_args (cmdline_args=sys.argv[1:], backend=False, adversarial=False, plo
         pass
     parser.add_argument('--debug', action='store_true', help='Global debug flag')
     parser.add_argument('--max',   action='store', type=int, default=2, help='Global max multiprocess')
+    parser.add_argument('--bkg', action='store', type=str, default="D", help='Background Type')
     return parser.parse_args(cmdline_args)
 
 
