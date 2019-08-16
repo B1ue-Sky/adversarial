@@ -11,7 +11,7 @@ import root_numpy
 
 # Project import(s)
 from .common import *
-from adversarial.utils import mkdir, latex, wpercentile, signal_low
+from adversarial.utils import mkdir, latex, wpercentile, signal_low,MASSRANGE
 from adversarial.constants import *
 
 # Custom import(s)
@@ -42,10 +42,9 @@ def roc (data_, args, features, masscut=False, pt_range=(200*GeV, 2000*GeV)):
     else:
         data = data_
         pass
-
     # (Opt.) masscut | @NOTE: Duplication with adversarial/utils/metrics.py
     # msk = (data[MASS] > 80. * GeV) & (data[MASS] < 140. * GeV) if masscut else np.ones_like(data['signal']).astype(bool)
-    msk = (data[MASS] > 50. * GeV) & (data[MASS] < 300. * GeV) if masscut else np.ones_like(data['signal']).astype(bool)
+    msk = (data[MASS] > MASSRANGE[0]) & (data[MASS] < MASSRANGE[1]) if masscut else np.ones_like(data['signal']).astype(bool)
     if args.debug:
         print "ROC masscut",msk.sum(),msk.size
 
@@ -118,6 +117,7 @@ def roc (data_, args, features, masscut=False, pt_range=(200*GeV, 2000*GeV)):
     # Output
     path = 'figures/roc{}{:s}.pdf'.format('__pT{:.0f}_{:.0f}'.format(pt_range[0]/GeV, pt_range[1]/GeV) if pt_range is not None else '', '__masscut' if masscut else '')
 
+    plotROC2(args, data, features, ROCs, AUCs, masscut, pt_range)
     return c, args, path
 
 
@@ -164,7 +164,7 @@ def plot (*argv):
             "#it{Hbb} tagging"] + (
                 ["p_{{T}} #in  [{:.0f}, {:.0f}] GeV".format(pt_range[0]/GeV, pt_range[1]/GeV)] if pt_range is not None else []
             ) + (
-                ["Cut: m #in  [80, 140] GeV"] if masscut else []
+                ["Cut: m #in  [{.0f}, {.0f}] GeV".format(MASSRANGE[0]/GeV,MASSRANGE[0]/GeV)] if masscut else []
             ),
            ATLAS=False)
 
@@ -182,7 +182,81 @@ def plot (*argv):
     c.latex("Random guessing", 0.4, 1./0.4 * 0.9, align=23, angle=-12 + 2 * ranges, textsize=13, textcolor=ROOT.kGray + 2)
     c.xlim(0.2, 1.)
     # c.ylim(1E+00, 5E+02 * mult) #5000 or 1000 or 500?
+    c.ylim(1E+00, 1E+05)
     c.logy()
     c.legend()
 
     return c
+
+def plotROC2 (*argv):
+    """
+    Method for plotting another ROC -- 1-eff_bkg v.s. eff_sig.
+    """
+
+    # Unpack arguments
+    args, data, features, ROCs, AUCs, masscut, pt_range = argv
+
+    # Canvas
+    c = rp.canvas(batch=not args.show)
+
+    # Plots
+    # -- Random guessing
+    bins = np.linspace(0.2, 1., 100 + 1, endpoint=True)
+    bins = np.array([bins[0], bins[0] + 0.01 * np.diff(bins[:2])[0]] + list(bins[1:]))
+    #bins = np.array([0.2] + list(bins[1:]))
+    #edges = bins[1:-1]
+    edges = bins
+    centres = edges[:-1] + 0.5 * np.diff(edges)
+    # c.hist(np.power(centres, -1.), bins=edges, linecolor=ROOT.kGray + 2, fillcolor=ROOT.kBlack, alpha=0.05, linewidth=1, option='HISTC')
+    c.hist(1-centres, bins=edges, linecolor=ROOT.kGray + 2, fillcolor=ROOT.kBlack, alpha=0.05, linewidth=1, option='HISTC')
+
+    # -- ROCs
+    for is_simple in [False]: # Now all tagger are MVA
+        # Split the legend into simple- and MVA taggers
+        for ifeat, feat in filter(lambda t: is_simple == signal_low(t[1]), enumerate(features)):
+            eff_sig, eff_bkg = ROCs[feat]
+            # c.graph(np.power(eff_bkg, -1.), bins=eff_sig, linestyle=1 + (ifeat % 2), linecolor=rp.colours[(ifeat // 2) % len(rp.colours)], linewidth=2, label=latex(feat, ROOT=True), option='L')
+            c.graph(1-eff_bkg, bins=eff_sig, linestyle=1 + (ifeat % 2), linecolor=rp.colours[(ifeat // 2) % len(rp.colours)], linewidth=2, label=latex(feat, ROOT=True), option='L')
+            pass
+
+        # Draw class-specific legend
+        width = 0.17
+        c.legend(header=("Analytical:" if is_simple else "MVA:"),
+                 width=width, xmin=0.58 + (width) * (is_simple), ymax=0.888)
+        pass
+
+    # Decorations
+    c.xlabel("Signal efficiency #varepsilon_{sig}^{rel}")
+    c.ylabel("Background rejection 1/#varepsilon_{bkg}^{rel}")
+    c.text([], xmin=0.15, ymax=0.96, qualifier=QUALIFIER)
+    c.text(["dataset p3652,",
+            "#it{Hbb} tagging"] + (
+                ["p_{{T}} #in  [{:.0f}, {:.0f}] GeV".format(pt_range[0]/GeV, pt_range[1]/GeV)] if pt_range is not None else []
+            ) + (
+                ["Cut: m #in  [{.0f}, {.0f}] GeV".format(MASSRANGE[0]/GeV,MASSRANGE[0]/GeV)] if masscut else []
+            ),
+           ATLAS=False)
+
+    ranges = int(pt_range is not None) + int(masscut)
+    mult = 10. if ranges == 2 else (2. if ranges == 1 else 1.)
+
+    # ptRange None, massRange None -> ymax=500
+    # ptRange Yes , massRange None -> ymax=1000
+    # ptRange None, massRange Yes  -> ymax=1000
+    # ptRange Yes , massRange Yes  -> ymax=5000
+
+
+    if args.debug:
+        print "roc plot, ranges {}, mult {}".format(ranges,mult)
+    c.latex("Random guessing", 0.4, 1./0.4 * 0.9, align=23, angle=-12 + 2 * ranges, textsize=13, textcolor=ROOT.kGray + 2)
+    c.xlim(0.2, 1.)
+    # c.ylim(1E+00, 5E+02 * mult) #5000 or 1000 or 500?
+    c.ylim(1E+00, 1E+05)
+    c.logy()
+    c.legend()
+
+    base = 'figures/roc2{}{:s}'.format('__pT{:.0f}_{:.0f}'.format(pt_range[0]/GeV, pt_range[1]/GeV) if pt_range is not None else '', '__masscut' if masscut else '')
+    c.save(base + ".pdf")
+    c.save(base + ".eps")
+    c.save(base + ".C")
+    return

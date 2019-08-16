@@ -15,7 +15,7 @@ from adversarial.utils import garbage_collect
 
 # Global variable definition(s)
 MASSBINS = np.linspace(50*GeV, 300*GeV, (300 - 50) // 5 + 1, endpoint=True)
-
+MASSRANGE=[50.*GeV,300.*GeV]
 
 def signal_low (feat):
     """Method to determine whether the signal distribution is towards higher values."""
