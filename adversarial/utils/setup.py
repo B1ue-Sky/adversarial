@@ -530,7 +530,7 @@ def load_data (path, name='dataset', train=None, test=None, signal=None, backgro
         log.info("N/A report again:")
         NA_count = data.isna().sum()
         log.info(NA_count[NA_count > 0])
-        assert NA_count.sum()==0
+        # assert NA_count.sum()==0  # Those output value might be still be N/A
         pass
 
 
