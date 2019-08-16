@@ -225,14 +225,14 @@ def plot (*argv):
         # I have written a _lot_ of ugly code, but this ^ is probably the worst.
         bkgStr={"D":"Hbb v.s. Dijets","T":"Hbb v.s. Top"}
         bkgT = []
-        featList=["ANN","NN","MV2c10","XbbScore"]
+        featList=["NN","ANN","MV2c10","XbbScore"]
         for feat in featList:
             bkgT.append("  #varepsilon_{{bkg,{}}}^{{rel}}={:.2%}".format(feat,alive_bkg[feat]))
         bkgSumy=[bkgT[0]+bkgT[1],bkgT[2]+bkgT[3]]
         print bkgSumy
         c.pads()[0].text(["dataset p3652,  #it{Hbb} tagging",
                     "Cuts at #varepsilon_{sig}^{rel} = %.0f%%" % eff_sig
-                    ]+bkgSumy, xmin=0.2, ymax=0.72, qualifier=QUALIFIER)
+                    ]+bkgSumy, xmin=0.2, ymax=0.72, qualifier=QUALIFIER,textsize=10)
 
         for pad in c.pads()[1:]:
             pad.ylim(ymin, ymax)
