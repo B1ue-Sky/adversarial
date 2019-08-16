@@ -225,7 +225,7 @@ def plot (*argv):
         # I have written a _lot_ of ugly code, but this ^ is probably the worst.
         bkgStr={"D":"Hbb v.s. Dijets","T":"Hbb v.s. Top"}
         bkgT = []
-        featList=["NN","ANN","MV2c10","XbbScore"]
+        featList=["NN","XbbScore","ANN","MV2c10"]
         for feat in featList:
             bkgT.append("  #varepsilon_{{bkg,{}}}^{{rej}}={:.2%}".format(feat,alive_bkg[feat]))
         bkgSumy=[bkgT[0]+bkgT[1],bkgT[2]+bkgT[3]]
