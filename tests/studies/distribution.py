@@ -71,7 +71,6 @@ def distribution (data_, args, feat, pt_range, mass_range):
     c = plot(args, data, feat, bins, pt_range, mass_range)
 
     # Output
-    pt_range_str=
     path = 'figures/distribution/distribution_{}{}{}'.format(standardise(feat), '__pT{:.0f}_{:.0f}'.format(pt_range[0]/GeV, pt_range[1]/GeV) if pt_range is not None else '', '__mass{:.0f}_{:.0f}'.format(mass_range[0]/GeV, mass_range[1]/GeV) if mass_range is not None else '')
     path = path+args.bkg+".pdf"
 
