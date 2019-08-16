@@ -512,8 +512,11 @@ def load_data (path, name='dataset', train=None, test=None, signal=None, backgro
     NA_count = NA_count[NA_count>0]
 
     NA_rows = NA_mask.sum(axis=1)>0
-    log.info("\n{}".format(NA_count))
-    log.info("\n{}".format(NA_count / len(data)))
+    log.info("\n{}".format(NA_count[:]))
+    log.info("\n{}".format(NA_count[:] / len(data)))
+    print "\n{}".format(NA_count[:])
+    print "\n{}".format(NA_count[:] / len(data))
+    print "N/A columns",NA_colnames
     print "Total rows have N/A {}/{}={:.3%}".format(NA_rows.sum(),len(data),1.*NA_rows.sum() / len(data))
     if fillna or dropna:
         print "N/A filling with defaults input..." if fillna else "Drop rows have N/A..."
@@ -535,8 +538,8 @@ def load_data (path, name='dataset', train=None, test=None, signal=None, backgro
         NA_count = NA_mask.sum()
         NA_count = NA_count[NA_count > 0]
         NA_rows = NA_mask.sum(axis=1) > 0
-        log.info("\n{}".format(NA_count))
-        log.info("\n{}".format(NA_count / len(data)))
+        log.info("\n{}".format(NA_count[:]))
+        log.info("\n{}".format(NA_count[:] / len(data)))
         print "Total rows have N/A {}/{}={:.3%}".format(NA_rows.sum(),len(data),1.*NA_rows.sum() / len(data))
         # assert NA_count.sum()==0  # Those output value might be still be N/A
         pass
