@@ -471,7 +471,7 @@ def get_decorrelation_variables (data,bWithAux=False,bAuxLog=True):
 
 @garbage_collect
 @profile
-def load_data (path, name='dataset', train=None, test=None, signal=None, background=None, sample=None, seed=21, replace=True,fillna=True,dropna=False):
+def load_data (path, name='dataset', train=None, test=None, signal=None, background=None, sample=None, seed=21, replace=True,fillna=True,dropna=False,debug=False):
     """
     General script to load data, common to all run scripts.
 
@@ -499,30 +499,41 @@ def load_data (path, name='dataset', train=None, test=None, signal=None, backgro
     # Read data from HDF5 file
     # data = pd.read_hdf(path, name)[USED_VARIABLES]
     data = pd.read_hdf(path, name)
-    log.info("examine input data\n{}".format(
+    log.info("examine input data")
+    if debug:
+        data.info(verbose=True, memory_usage="deep",null_counts=True)
+    else:
         data.info()
-    ))
-    log.debug("examine input data without filling\n{}".format(
-        data.describe()
-    ))
     log.info("N/A report:")
-    log.info(data.isna().sum())
+    NA_count=data.isna().sum()
+    NA_cols = data.columns[NA_count > 0]
+    NA_count=NA_count[NA_count > 0]
+    log.info(NA_count)
+    log.info(NA_count/len(data))
     if fillna:
         log.info("N/A filling with defaults...")
+        log.debug("examine input data before filling\n{}".format(
+            data[NA_cols].describe()
+        ))
         data=data.fillna(value=INPUT_DEFAULTS)
         log.debug("examine input data after filling\n{}".format(
-            data.describe()
+            data[NA_cols].describe()
         ))
         log.info("N/A report NOW:")
-        log.info(data.isna().sum())
+        NA_count=data.isna().sum()
+        log.info(NA_count[NA_count > 0])
     elif dropna:
         log.info("N/A dropped in any colomn...")
+        log.debug("examine input data before drop\n{}".format(
+            data[NA_cols].describe()
+        ))
         data = data.dropna()
-        log.debug("examine input data after dropping\n{}".format(
-            data.describe()
+        log.debug("examine input data after drop\n{}".format(
+            data[NA_cols].describe()
         ))
         log.info("N/A report NOW:")
-        log.info(data.isna().sum())
+        NA_count = data.isna().sum()
+        log.info(NA_count[NA_count > 0])
 
     # Subsample signal by x10 for testing: 1E+07 -> 1E+06?????????
     # np.random.seed(7)
