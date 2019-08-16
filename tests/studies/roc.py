@@ -249,10 +249,10 @@ def plotROC2 (*argv):
     if args.debug:
         print "roc plot, ranges {}, mult {}".format(ranges,mult)
     c.latex("Random guessing", 0.4, 1./0.4 * 0.9, align=23, angle=-12 + 2 * ranges, textsize=13, textcolor=ROOT.kGray + 2)
-    c.xlim(0.2, 1.)
+    c.xlim(0, 1.)
     # c.ylim(1E+00, 5E+02 * mult) #5000 or 1000 or 500?
-    c.ylim(1E+00, 1E+05)
-    c.logy()
+    c.ylim(0, 1.)
+    # c.logy()
     c.legend()
 
     base = 'figures/roc2{}{:s}'.format('__pT{:.0f}_{:.0f}'.format(pt_range[0]/GeV, pt_range[1]/GeV) if pt_range is not None else '', '__masscut' if masscut else '')
