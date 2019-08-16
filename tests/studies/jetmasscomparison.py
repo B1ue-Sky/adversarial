@@ -232,7 +232,7 @@ def plot (*argv):
         print bkgSumy
         c.pads()[0].text(["dataset p3652,  #it{Hbb} tagging",
                     "Cuts at #varepsilon_{sig}^{rel} = %.0f%%" % eff_sig
-                    ]+bkgSumy, xmin=0.2, ymax=0.72, qualifier=QUALIFIER,textsize=10)
+                    ]+bkgSumy, xmin=0.2, ymax=0.72, qualifier=QUALIFIER)
 
         for pad in c.pads()[1:]:
             pad.ylim(ymin, ymax)
