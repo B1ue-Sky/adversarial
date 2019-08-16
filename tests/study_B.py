@@ -49,7 +49,8 @@ def main (args):
     # Load data
     tempFile = "output/study.h5"
     if os.path.exists(tempFile):
-        data = pd.read_hdf(tempFile, "dataset")
+        # data = pd.read_hdf(tempFile, "dataset")
+        data,_,_=load_data(tempFile,debug=args.debug,study=True)
     else:
         print "Not found ",tempFile,"please run study_A first!"
         return -1

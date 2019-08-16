@@ -135,7 +135,7 @@ def main (args):
     tagger_features = ['NN', ann_var, mv_var, sc_var]
 
     # Load data
-    data, features, _ = load_data(args.input + 'data.h5', test=True,fillna=True) #should fillna for test input
+    data, features, _ = load_data(args.input + 'data.h5', test=True,fillna=True,debug=args.debug) #should fillna for test input
 
     # Add variables
     # --------------------------------------------------------------------------
@@ -208,15 +208,15 @@ def main (args):
     unused_variables = [var for var in list(data) if var not in used_variables]
     data=data.drop(columns=unused_variables)
     gc.collect() #important!!
-    # not drop N/A, because we have dominate truth label.
-    print "Now counts OUTPUT NA, will not dropped"
-    print data.isna().sum()
-    print data.shape
-    print "Total N/A in output {:.3%}".format(1.*data.isna().sum().sum()/data.shape[0])
-    # # print "All output NA are dropped, INPUT NA are filled"
-    # data=data.dropna() #drop all missing value in all output vars,
-    # #note drop1: na in test input, drop2: can't get right score/predict!
-    # # note: all input var for train are already filled!
+    # # not drop N/A, because we have dominate truth label.
+    # print "Now counts OUTPUT NA, will not dropped"
+    # print data.isna().sum()
+    # print data.shape
+    # print "Total N/A in output {:.3%}".format(1.*data.isna().sum().sum()/data.shape[0])
+    # # # print "All output NA are dropped, INPUT NA are filled"
+    # # data=data.dropna() #drop all missing value in all output vars,
+    # # #note drop1: na in test input, drop2: can't get right score/predict!
+    # # # note: all input var for train are already filled!
     outputFile="output/study.h5"
     data.to_hdf(outputFile,"dataset",mode="w",format="fixed")
     return 0

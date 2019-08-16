@@ -471,7 +471,7 @@ def get_decorrelation_variables (data,bWithAux=False,bAuxLog=True):
 
 @garbage_collect
 @profile
-def load_data (path, name='dataset', train=None, test=None, signal=None, background=None, sample=None, seed=21, replace=True,fillna=True,dropna=False,debug=False):
+def load_data (path, name='dataset', train=None, test=None, signal=None, background=None, sample=None, seed=21, replace=True,fillna=True,dropna=False,debug=False,study=False):
     """
     General script to load data, common to all run scripts.
 
@@ -495,6 +495,7 @@ def load_data (path, name='dataset', train=None, test=None, signal=None, backgro
     # Check(s)
     assert False not in [train, test, signal, background]
     if sample: assert 0 < sample and sample < 1.
+    if study:fillna=False
 
     # Read data from HDF5 file
     # data = pd.read_hdf(path, name)[USED_VARIABLES]
@@ -510,6 +511,7 @@ def load_data (path, name='dataset', train=None, test=None, signal=None, backgro
     NA_count=NA_count[NA_count > 0]
     log.info(NA_count)
     log.info(NA_count/len(data))
+    log.info("Total N/A",NA_count.sum(),len(data),NA_count.sum() / len(data))
     if fillna:
         log.info("N/A filling with defaults...")
         log.debug("examine input data before filling\n{}".format(
@@ -534,6 +536,10 @@ def load_data (path, name='dataset', train=None, test=None, signal=None, backgro
         log.info("N/A report NOW:")
         NA_count = data.isna().sum()
         log.info(NA_count[NA_count > 0])
+
+    if study:
+        print "Load study data OK!"
+        return data,None,None
 
     # Subsample signal by x10 for testing: 1E+07 -> 1E+06?????????
     # np.random.seed(7)

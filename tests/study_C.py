@@ -135,18 +135,19 @@ def main (args):
     # Load data
     tempFile = "output/study.h5"
     if os.path.exists(tempFile):
-        data = pd.read_hdf(tempFile, "dataset")
+        # data = pd.read_hdf(tempFile, "dataset")
+        data,_,_ = load_data(tempFile, debug=args.debug, study=True, dropna=True)
     else:
         print "Not found ",tempFile,"please run study_A first!"
         return -1
 
-    print "Now counts OUTPUT NA, dropped"
-    print data.isna().sum()
-    print data.shape
-    # print "All output NA are dropped, INPUT NA are filled"
-    data=data.dropna()  # drop all missing value in all output vars,
-    # note drop: can't get right score/predict!
-    # note: all input var for train are already filled!
+    # print "Now counts OUTPUT NA, dropped"
+    # print data.isna().sum()
+    # print data.shape
+    # # print "All output NA are dropped, INPUT NA are filled"
+    # data=data.dropna()  # drop all missing value in all output vars,
+    # # note drop: can't get right score/predict!
+    # # note: all input var for train are already filled!
     perform_studies (data, args, tagger_features)
     return 0
 
