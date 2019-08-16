@@ -211,6 +211,8 @@ def main (args):
     # not drop N/A, because we have dominate truth label.
     print "Now counts OUTPUT NA, will not dropped"
     print data.isna().sum()
+    print data.shape
+    print "Total N/A in output {:.3%}".format(1.*data.isna().sum().sum()/data.shape[0])
     # # print "All output NA are dropped, INPUT NA are filled"
     # data=data.dropna() #drop all missing value in all output vars,
     # #note drop1: na in test input, drop2: can't get right score/predict!
