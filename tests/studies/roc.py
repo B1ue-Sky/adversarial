@@ -118,7 +118,7 @@ def roc (data_, args, features, masscut=False, pt_range=(200*GeV, 2000*GeV)):
     # path = 'figures/roc{}{:s}.pdf'.format('__pT{:.0f}_{:.0f}'.format(pt_range[0]/GeV, pt_range[1]/GeV) if pt_range is not None else '', '__masscut' if masscut else '')
     pt_range_str='__pT{:.0f}_{:.0f}'.format(pt_range[0]/GeV, pt_range[1]/GeV) if pt_range is not None else ''
     mass_range_srt='__masscut' if masscut else ''
-    base = 'figures/roc'+pt_range_str+mass_range_srt+args.bkg
+    base = 'figures/roc'+pt_range_str+mass_range_srt
     path=base + ".pdf"
     if args.debug:
         plotROC2(args, data, features, ROCs, AUCs, masscut, pt_range)
@@ -165,7 +165,7 @@ def plot (*argv):
     c.ylabel("Background rejection 1/#varepsilon_{bkg}^{rel}")
     c.text([], xmin=0.15, ymax=0.96, qualifier=QUALIFIER)
     if args.bkg == "D":
-        bkg="Hbb v.s. Dijets(subsampling)"
+        bkg="Hbb v.s. Dijets"
     elif args.bkg=="T":
         bkg = "Hbb v.s. Top"
     else:
@@ -241,7 +241,7 @@ def plotROC2 (*argv):
     c.ylabel("Background rejection 1/#varepsilon_{bkg}^{rel}")
     c.text([], xmin=0.15, ymax=0.96, qualifier=QUALIFIER)
     if args.bkg == "D":
-        bkg="Hbb v.s. Dijets(subsampling)"
+        bkg="Hbb v.s. Dijets"
     elif args.bkg=="T":
         bkg = "Hbb v.s. Top"
     else:
@@ -275,7 +275,7 @@ def plotROC2 (*argv):
 
     pt_range_str='__pT{:.0f}_{:.0f}'.format(pt_range[0]/GeV, pt_range[1]/GeV) if pt_range is not None else ''
     mass_range_srt='__masscut' if masscut else ''
-    base = 'figures/roc/roc2'+pt_range_str+mass_range_srt+args.bkg
+    base = 'figures/roc2'+pt_range_str+mass_range_srt+args.bkg
     c.save(base + ".pdf")
     c.save(base + ".eps")
     c.save(base + ".C")
