@@ -186,8 +186,20 @@ def perform_studies (data, args, tagger_features, ann_vars=None):
         with Profile("Study: Substructure tagger distributions:debug"):
             mass_ranges = np.linspace(50 * GeV, 300 * GeV, 5 + 1, endpoint=True)
             mass_ranges = [None] + zip(mass_ranges[:-1], mass_ranges[1:])
+            import threading
+            threads = []
+            TMAX=10
             for feat, pt_range, mass_range in itertools.product(tagger_features, pt_ranges, mass_ranges):  # tagger_features
-                studies.distribution(data, args, feat, pt_range, mass_range)
+                if len(threads)>TMAX:
+                    print "Now queue is full, pop first..."
+                    thread=threads.pop(0)
+                    thread.join()
+                    pass
+                print "Add thread...",len(threads)
+                threads.append(threading.Thread(target=studies.distribution,
+                                                args=(data, args, feat, pt_range, mass_range)))
+                threads[-1].start()
+                # studies.distribution(data, args, feat, pt_range, mass_range)
                 pass
             pass
     if False:
