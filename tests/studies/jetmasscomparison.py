@@ -229,6 +229,7 @@ def plot (*argv):
         for feat in featList:
             bkgT.append("  #varepsilon_{{bkg,{}}}^{{rel}}={:.2%}".format(feat,alive_bkg[feat]))
         bkgSumy=[bkgT[0].join(bkgT[1]),bkgT[2].join(bkgT[3])]
+        print bkgSumy
         c.pads()[0].text(["dataset p3652,  #it{Hbb} tagging",
                     "Cuts at #varepsilon_{sig}^{rel} = %.0f%%" % eff_sig
                     ]+bkgSumy, xmin=0.2, ymax=0.72, qualifier=QUALIFIER)
