@@ -227,8 +227,8 @@ def plot (*argv):
         bkgT = []
         featList=["NN","XbbScore","ANN","MV2c10"]
         for feat in featList:
-            bkgT.append("  #varepsilon_{{bkg,{}}}^{{rej}}={:.2%}".format(feat,alive_bkg[feat]))
-        bkgSumy=[bkgT[0]+bkgT[1],bkgT[2]+bkgT[3]]
+            bkgT.append("#varepsilon_{{bkg,{}}}^{{rej}}={:.2%}".format(feat,alive_bkg[feat]))
+        bkgSumy=[bkgT[0]+" "+bkgT[1],bkgT[2]+" "+bkgT[3]]
         print bkgSumy
         c.pads()[0].text(["dataset p3652,  #it{Hbb} tagging",
                     "Cuts at #varepsilon_{sig}^{rel} = %.0f%%" % eff_sig
