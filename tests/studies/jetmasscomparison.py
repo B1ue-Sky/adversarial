@@ -55,7 +55,7 @@ def jetmasscomparison (data, args, features, eff_sig=50,debug=False):
         alive_bkg[feat]=1.-1.*bkg_pass/bkg_all
         print feat, "jetmass cut @ {} get eff_sig {:.1%}, rej_bkg {:.6%}".format(cut,1.*sig_pass/sig_all,1.-1.*bkg_pass/bkg_all)
         if args.debug:
-            print "Total Counts: ",sig_pass,sig_all,bkg_pass,bkg,all
+            print "Total Counts: ",sig_pass,sig_all,bkg_pass,bkg_all
         # print "{}: pass {}, tot {}".format(feat, msks_pass[feat].sum(), msks_pass[feat].size)
         # msk = (data['signal'] == 1) & msks_pass[feat]
         # MSK=data['signal'] == 1
@@ -225,7 +225,7 @@ def plot (*argv):
         bkgStr={"D":"Hbb v.s. Dijets","T":"Hbb v.s. Top"}
         bkgT = []
         for feat,tbg in alive_bkg.iteritems():
-            bkgT.append("#varepsilon_{{bkg,{}}}^{{rel}}={:.2%}".format(feat,tbg))
+            bkgT.append("    #varepsilon_{{bkg,{}}}^{{rel}}={:.2%}".format(feat,tbg))
         bkgSumy=[bkgT[0].join(bkgT[1]),bkgT[2].join(bkgT[3])]
         c.pads()[0].text(["dataset p3652,  #it{Hbb} tagging",
                     "Cuts at #varepsilon_{sig}^{rel} = %.0f%%" % eff_sig
