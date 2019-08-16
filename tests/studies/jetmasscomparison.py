@@ -72,7 +72,7 @@ def jetmasscomparison (data, args, features, eff_sig=50,debug=False):
         plot_individual(data, args, features, msks_pass, eff_sig)
 
     # Output
-    path = 'figures/jetmasscomparison__eff_sig_{:d}.pdf'.format(int(eff_sig))
+    path = 'figures/jetmass/jetmasscomparison__eff_sig_{:d}.pdf'.format(int(eff_sig))
 
     return c, args, path
 

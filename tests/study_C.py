@@ -172,12 +172,12 @@ def perform_studies (data, args, tagger_features, ann_vars=None):
                 studies.robustness_full(data, args, tagger_features, masscut=masscut)
                 pass
             pass
-    if True:
+    if False:
         with Profile("Study: Jet mass comparison:debug"):
             for eff in set(range(0,110,5)):
                 studies.jetmasscomparison(data, args, tagger_features,eff,True)
                 pass
-    if False:
+    if True:
         with Profile("Study: Efficiency:debug"):
             for feat in tagger_features:
                 studies.efficiency(data, args, feat)
