@@ -142,6 +142,7 @@ def main (args):
 
     print "Now counts OUTPUT NA, dropped"
     print data.isna().sum()
+    print data.shape
     # print "All output NA are dropped, INPUT NA are filled"
     data=data.dropna()  # drop all missing value in all output vars,
     # note drop: can't get right score/predict!
