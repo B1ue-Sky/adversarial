@@ -29,7 +29,7 @@ from adversarial.profile import profile, Profile
 # from adversarial.constants import *
 from run.adversarial.common import initialise_config
 from .studies.common import *
-import studies.samplesexam
+from studies.samplesexam import samplesexam
 # import os
 
 # Custom import(s)
@@ -79,11 +79,36 @@ def exam_samples(data, args, testOnly=False,features=None):
             #     # studies.samplesexam(data, args, feat, pt_range, mass_range,train,fillna)
             #     pass
             # argsBatch=itertools.product([data],[args],features, pt_ranges,mass_ranges,trains,fillnas)
-            argsBatch1=itertools.product([args],features, pt_ranges,mass_ranges,trains,fillnas)
-            argsBatch2=list(argsBatch1)
-            argsBatch3=[[dataSlice(data,ARG)]+[ARG] for ARG in argsBatch2]
-            # if args.debug: print "batchArgs",len(list(argsBatch))
-            run_batched(studies.samplesChecker,argsBatch3,args.max)
+            # argsBatch1=itertools.product([args],features, pt_ranges,mass_ranges,trains,fillnas)
+            # argsBatch2=list(argsBatch1)
+            # argsBatch3=[[dataSlice(data,ARG)]+[ARG] for ARG in argsBatch2]
+            # # if args.debug: print "batchArgs",len(list(argsBatch))
+            # run_batched(studies.samplesChecker,argsBatch3,args.max)
+            if args.max>1: #seems no use... should use multiprocess??
+                import threading
+                threads = []
+                TMAX=args.max
+                for feat, pt_range, mass_range, train, fillna in itertools.product(features, pt_ranges,mass_ranges,trains,fillnas):
+                    if len(threads)>TMAX:
+                        print "Now queue is full, pop first..."
+                        thread=threads.pop(0)
+                        thread.join()
+                        pass
+                    print "Add thread...",len(threads)
+                    threads.append(threading.Thread(target=samplesexam,
+                                                    args=(data, args, feat, pt_range, mass_range, train, fillna)))
+                    threads[-1].start()
+                    # studies.distribution(data, args, feat, pt_range, mass_range)
+                    pass
+                for thread in threads:
+                    print "Now join threads..."
+                    thread.join()
+                pass
+            else:
+                for feat, pt_range, mass_range, train, fillna in itertools.product(features, pt_ranges, mass_ranges,trains, fillnas):
+                    samplesexam(data, args, feat, pt_range, mass_range, train, fillna)
+                    pass
+                pass
             pass
 
 # Main function call
