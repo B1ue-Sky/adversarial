@@ -60,7 +60,7 @@ def jetmasscomparison (data, args, features, eff_sig=50,debug=False):
     c = plot(data, args, features, msks_pass, eff_sig)
 
     # Perform plotting on individual figures
-    if not debug:
+    if not debug or True:
         plot_individual(data, args, features, msks_pass, eff_sig)
 
     # Output
@@ -122,7 +122,7 @@ def plot (*argv):
             for ipad, pad in enumerate(c.pads()[1:], 1):
                 print "hist2",ipad
                 histstyle[signal]['option'] = 'HIST'
-                if args.debug: print "style",histstyle[signal]
+                # if args.debug: print "style",histstyle[signal]
                 # pad.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, **histstyle[signal])
                 pad.hist(data.loc[msk, MASS].values, **histstyle[signal])
                 pass
@@ -131,9 +131,9 @@ def plot (*argv):
         for sig in [1, 0]:
             histstyle[sig]['option'] = 'FL'
             pass
-
+        bkg={"D":"Dijets","T":"Top"}
         c.pads()[0].legend(header='Inclusive selection:', categories=[
-            ("Bkg",   histstyle[False]),
+            (bkg[args.bkg],   histstyle[False]),
             ("#it{Hbb} Signals", histstyle[True])
             ], xmin=0.18, width= 0.60, ymax=0.28 + 0.07, ymin=0.001 + 0.07, columns=2)
         c.pads()[0]._legends[-1].SetTextSize(style.GetLegendTextSize())
@@ -158,7 +158,7 @@ def plot (*argv):
             # print "pad",(1 + ifeat//2)
             # pad = c.pads()[1 + ifeat//2] #???
             pad = c.pads()[padDict[ifeat]]  # ???
-            if args.debug: print "style",cfg
+            # if args.debug: print "style",cfg
             # pad.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, label=" " + latex(feat, ROOT=True), **cfg)
             pad.hist(data.loc[msk, MASS].values, label=" " + latex(feat, ROOT=True), **cfg)
             pass
@@ -279,11 +279,11 @@ def plot_individual (*argv):
 
             # Canvas
             c = rp.canvas(batch=not args.show, size=(300, 200))#int(200 * (1.45 if first else 1.))))
-
+            bkg = {"D": "Dijets", "T": "Top"}
             if first:
                 opts = dict(xmin=0.185, width=0.60, columns=2)
                 c.legend(header=' ', categories=[
-                            ("Bkg",   histstyle[False]),
+                            (bkg[args.bkg]",   histstyle[False]),
                             ("#it{Hbb}", histstyle[True])
                         ], ymax=0.45, **opts)
                 c.legend(header='Inclusive selection:',
