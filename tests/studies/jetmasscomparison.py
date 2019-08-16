@@ -35,12 +35,12 @@ def jetmasscomparison (data, args, features, eff_sig=50,debug=False):
     #features is ['NN', ann_var,mv_var,sc_var]
     msk_sig = data['signal'] == 1
     cuts, msks_pass = dict(), dict()
+    alive_bkg=dict()
     for feat in features:
         eff_cut = eff_sig if signal_low(feat) else 100 - eff_sig #default is high tagger output->more like sig; or shouled correct here
         # cut = wpercentile(data.loc[msk_sig, feat].values, eff_cut, weights=data.loc[msk_sig, 'weight_test'].values)
         #cut = wpercentile(data.loc[msk_sig, feat].values, eff_cut)
         cut=np.percentile(data.loc[msk_sig, feat].values, eff_cut)
-        print feat,"jetmass eff@cut",eff_cut,"@",cut
         msks_pass[feat] = data[feat] > cut # pass cut means tagged as sig
 
         # Ensure correct cut direction
@@ -48,19 +48,26 @@ def jetmasscomparison (data, args, features, eff_sig=50,debug=False):
             msks_pass[feat] = ~msks_pass[feat]
             print "Use cut <xxx",feat
             pass
-        pass
-        print "{}: pass {}, tot {}".format(feat, msks_pass[feat].sum(), msks_pass[feat].size)
-        msk = (data['signal'] == 1) & msks_pass[feat]
-        MSK=data['signal'] == 1
-        print "For Sig", msk.sum(),MSK.sum(),1.0*msk.sum()/MSK.sum()
-        msk = (data['signal'] == 0) & msks_pass[feat]
-        MSK = data['signal'] == 0
-        print "For Bkg", msk.sum(),MSK.sum(),1.0*msk.sum()/MSK.sum()
+        sig_pass=(msks_pass[feat] & msk_sig).sum()
+        bkg_pass = (msks_pass[feat] & ~msk_sig).sum()
+        sig_all=msk_sig.sum()
+        bkg_all = (~msk_sig).sum()
+        alive_bkg[feat]=1.-1.*bkg_pass/bkg_all
+        print feat, "jetmass cut @ {} get eff_sig {:.1%}, rej_bkg {:.6%}".format(cut,1.*sig_pass/sig_all,1.-1.*bkg_pass/bkg_all)
+        if args.debug:
+            print "Total Counts: ",sig_pass,sig_all,bkg_pass,bkg,all
+        # print "{}: pass {}, tot {}".format(feat, msks_pass[feat].sum(), msks_pass[feat].size)
+        # msk = (data['signal'] == 1) & msks_pass[feat]
+        # MSK=data['signal'] == 1
+        # print "For Sig", msk.sum(),MSK.sum(),1.0*msk.sum()/MSK.sum()
+        # msk = (data['signal'] == 0) & msks_pass[feat]
+        # MSK = data['signal'] == 0
+        # print "For Bkg", msk.sum(),MSK.sum(),1.0*msk.sum()/MSK.sum()
     # Perform plotting
-    c = plot(data, args, features, msks_pass, eff_sig)
+    c = plot(data, args, features, msks_pass, eff_sig,alive_bkg)
 
     # Perform plotting on individual figures
-    if not debug or True:
+    if not debug:
         plot_individual(data, args, features, msks_pass, eff_sig)
 
     # Output
@@ -75,7 +82,7 @@ def plot (*argv):
     """
 
     # Unpack arguments
-    data, args, features, msks_pass, eff_sig = argv
+    data, args, features, msks_pass, eff_sig, alive_bkg = argv
 
     with TemporaryStyle() as style:
 
@@ -142,7 +149,7 @@ def plot (*argv):
         # -- Tagged
         # padDict={0:1,1:1,2:2,3:2,4:3,5:3}
         padDict = {0: 1, 1: 1, 2: 2, 3: 3}
-        textsizeDict={0: 16, 1: 16, 2: 16, 3: 12}
+        textsizeDict={0: 16, 1: 16, 2: 10, 3: 10}
         base['linewidth'] = 2
         for ifeat, feat in enumerate(features):
             opts = dict(
@@ -169,7 +176,7 @@ def plot (*argv):
             offsety =  0.20 * ((2 - (ipad // 2)) / float(2.))
             print "leg Pos",0.68 - offsetx,0.80 - offsety
             pad.legend(width=0.25, xmin=0.68 - offsetx, ymax=0.80 - offsety)
-            pad.latex("Tagged Bkg:", NDC=True, x=0.93 - offsetx, y=0.84 - offsety, textcolor=ROOT.kGray + 3, textsize=style.GetLegendTextSize() * 0.8, align=31)
+            pad.latex("Tagged Bkg:", NDC=True, x=0.93 - offsetx, y=0.84 - offsety, textcolor=ROOT.kGray + 3, textsize=style.GetLegendTextSize() * 0.6, align=31)
             # try:
             #     print pad
             #     print pad._legends
@@ -215,10 +222,14 @@ def plot (*argv):
         c.pads()[1].ylabel("#splitline{#splitline{#splitline{#splitline{}{}}{#splitline{}{}}}{#splitline{}{}}}{#splitline{}{#splitline{}{#splitline{}{Fraction of jets}}}}")
         c.pads()[2].ylabel("#splitline{#splitline{#splitline{#splitline{Fraction of jets}{}}{}}{}}{#splitline{#splitline{}{}}{#splitline{#splitline{}{}}{#splitline{}{}}}}")
         # I have written a _lot_ of ugly code, but this ^ is probably the worst.
-
+        bkgStr={"D":"Hbb v.s. Dijets","T":"Hbb v.s. Top"}
+        bkgT = []
+        for feat,tbg in alive_bkg.iteritems():
+            bkgT.append("#varepsilon_{{bkg,{}}}^{{rel}}={:.2%}".format(feat,tbg))
+        bkgSumy=[bkgT[0].join(bkgT[1]),bkgT[2].join(bkgT[3])]
         c.pads()[0].text(["dataset p3652,  #it{Hbb} tagging",
-                    "Cuts at #varepsilon_{sig}^{rel} = %.0f%%" % eff_sig,
-                    ], xmin=0.2, ymax=0.72, qualifier=QUALIFIER)
+                    "Cuts at #varepsilon_{sig}^{rel} = %.0f%%" % eff_sig
+                    ]+bkgSumy, xmin=0.2, ymax=0.72, qualifier=QUALIFIER)
 
         for pad in c.pads()[1:]:
             pad.ylim(ymin, ymax)
@@ -283,7 +294,7 @@ def plot_individual (*argv):
             if first:
                 opts = dict(xmin=0.185, width=0.60, columns=2)
                 c.legend(header=' ', categories=[
-                            (bkg[args.bkg]",   histstyle[False]),
+                            (bkg[args.bkg],   histstyle[False]),
                             ("#it{Hbb}", histstyle[True])
                         ], ymax=0.45, **opts)
                 c.legend(header='Inclusive selection:',
@@ -292,8 +303,8 @@ def plot_individual (*argv):
                 #c.pad()._legends[-1].SetTextSize(style.GetLegendTextSize())
                 c.pad()._legends[-2].SetMargin(0.35)
                 c.pad()._legends[-1].SetMargin(0.35)
-
-                c.text(["#it{Hbb} tagging",
+                bkgStr = {"D": "Hbb v.s. Dijets", "T": "Hbb v.s. Top"}
+                c.text(["dataset p3652, #it{Hbb} tagging",
                         "Cuts at #varepsilon_{sig}^{rel} = %.0f%%" % eff_sig,
                         ], xmin=0.2, ymax=0.80, qualifier=QUALIFIER)
 
