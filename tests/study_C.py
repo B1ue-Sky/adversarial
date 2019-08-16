@@ -31,6 +31,7 @@ from run.adversarial.common import initialise_config
 from .studies.common import *
 import studies
 import os
+import logging as log
 
 # Custom import(s)
 # import rootplotting as rp
@@ -48,6 +49,11 @@ def main (args):
 
     # Neural network-specific initialisation of the configuration dict
     initialise_config(args, cfg) #need to keep because cfg is modified here!
+    log.basicConfig(format="%(levelname)s: %(message)s",
+                    level=log.DEBUG if args.debug else
+                    log.INFO if args.verbose else
+                    log.WARNING)
+
 
     # Keras import(s)
     # import keras.backend as K

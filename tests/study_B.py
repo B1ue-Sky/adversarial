@@ -29,7 +29,7 @@ from .studies.common import *
 
 # Custom import(s)
 import rootplotting as rp
-
+import logging as log
 
 # Main function definition
 @profile
@@ -37,6 +37,10 @@ def main (args):
 
     # Initialise
     args, cfg = initialise(args)
+    log.basicConfig(format="%(levelname)s: %(message)s",
+                    level=log.DEBUG if args.debug else
+                    log.INFO if args.verbose else
+                    log.WARNING)
 
     # Common definitions
     num_folds   = None #currently no k-folds  validation

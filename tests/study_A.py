@@ -135,7 +135,7 @@ def main (args):
     tagger_features = ['NN', ann_var, mv_var, sc_var]
 
     # Load data
-    data, features, _ = load_data(args.input + 'data.h5', test=True,fillna=True,debug=args.debug) #should fillna for test input
+    data, features, _ = load_data(args.input + 'data.h5', test=True,debug=args.debug) #should fillna for test input
 
     # Add variables
     # --------------------------------------------------------------------------
