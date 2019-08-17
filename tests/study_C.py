@@ -136,12 +136,13 @@ def main (args):
     # # tagger_features = ['NN', ann_var,mv_var,ann_var,sc_var, ann_var]
     # tagger_features = ['NN', ann_var, mv_var, sc_var]
     import json
-    with open("{}/study_{}.json".format(args.output,args.note)) as json_file:
-        tagger_features = json.load(json_file)
-
-
-
-
+    studyConfig="{}/study_{}.json".format(args.output,args.note)
+    if os.path.exists(studyConfig):
+        with open(studyConfig) as json_file:
+            tagger_features = json.load(json_file)
+    else:
+        print "Not found ", studyConfig, "please run study_A first!"
+        return -1
     # Load data
     tempFile = "{}/study_{}.h5".format(args.output,args.note)
     if os.path.exists(tempFile):
