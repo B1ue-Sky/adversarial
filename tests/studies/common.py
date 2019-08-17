@@ -209,13 +209,16 @@ def showsave (f):
     def wrapper (*args, **kwargs):
         # Run study
         # Error handle
-        try:
-            c, args, path = f(*args, **kwargs)
-        except Exception as e:
-            print "No saving!!"
-            print e
+        # try:
+        #     c, args, path = f(*args, **kwargs)
+        # except Exception as e:
+        #     print "No saving!!"
+        #     print e
+        #     return
+        c, args, path = f(*args, **kwargs)
+        if c is None:
+            print "Skip saving..."
             return
-        # c, args, path = f(*args, **kwargs)
 
         # Save
         if args.save:

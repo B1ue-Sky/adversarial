@@ -231,7 +231,7 @@ def samplesexam(data_, args, feat, pt_range = None, mass_range = None, train = N
     if fillna:
         if data[feat].isna().sum() == 0:
             print "No N/A to fill, only plot _raw", feat
-            return
+            return None,None,None
         else:
             print "fill N/A", feat, data[feat].isna().sum()
             # data[feat].fillna(value=INPUT_DEFAULTS,inplace=True) #inplace is annoying in python...pay attention to copy!!
@@ -246,7 +246,7 @@ def samplesexam(data_, args, feat, pt_range = None, mass_range = None, train = N
     if args.debug: print "xmin,xmax", xmin, xmax
     if not xmax > xmin:  # wrong values or nan
         print "Error, xmax xmin is not valid, exit.", feat
-        return  # return empty so that no saving
+        return  None,None,None# return empty so that no saving
 
     # if   feat == 'D2-k#minusNN':
     #     print "distribution: kNN feature '{}'".format(feat)
