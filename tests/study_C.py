@@ -171,6 +171,12 @@ def perform_studies (data, args, tagger_features, ann_vars=None):
 
     # debug>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     os.chdir(args.output)
+    if True:
+        with Profile("Study: JSD:debug"):
+            for pt_range in pt_ranges:
+                studies.jsd(data, args, tagger_features, pt_range)
+                pass
+            pass
     if False:
         with Profile("Study: Robustness：debug"):
             for masscut in masscuts:
@@ -222,12 +228,6 @@ def perform_studies (data, args, tagger_features, ann_vars=None):
                 for feat, pt_range, mass_range in itertools.product(tagger_features, pt_ranges, mass_ranges):  # tagger_features
                     studies.distribution(data, args, feat, pt_range, mass_range)
                     pass
-                pass
-            pass
-    if True:
-        with Profile("Study: JSD:debug"):
-            for pt_range in pt_ranges:
-                studies.jsd(data, args, tagger_features, pt_range)
                 pass
             pass
     if False:
