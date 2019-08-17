@@ -93,7 +93,7 @@ def parse_args (cmdline_args=sys.argv[1:], backend=False, adversarial=False, plo
                             help='Optimise adversarial network')
         pass
 
-    if plots or True: #make it universal
+    if plots:
         # Flags
         parser.add_argument('--save', action='store_true', help='Save plots to file')
         parser.add_argument('--show', action='store_true', help='Show plots')
