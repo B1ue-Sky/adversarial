@@ -215,16 +215,21 @@ def showsave (f):
         #     print "No saving!!"
         #     print e
         #     return
-        ret=f(*args, **kwargs)
+        try:
+            ret=f(*args, **kwargs)
+        except Exception as e:
+            print "Plot Error! skip..."
+            print e
+            return
         if (ret is not None) and (len(ret)==3):
             c, args, path = ret
             if c is not None:
                 print "Plot ready."
             else:
-                print "No plot, skiping..."
+                print "No plot, skip..."
                 return
         else:
-            "Not plot, skiping..."
+            "Not plot, skip..."
             return
         # Save
         if args.save:
