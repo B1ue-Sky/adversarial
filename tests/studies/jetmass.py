@@ -58,8 +58,9 @@ def plot (*argv):
     data, args, feat, msk_pass, msk_bkg, eff_sig = argv
 
     # Global variable override(s)
-    HISTSTYLE[True] ['label'] = "Passing cut"
-    HISTSTYLE[False]['label'] = "Failing cut"
+    histstyle = dict(**HISTSTYLE)
+    histstyle[True] ['label'] = "Passing cut"
+    histstyle[False]['label'] = "Failing cut"
 
     # Canvas
     c = rp.canvas(num_pads=2, size=(int(800 * 600 / 857.), 600), batch=not args.show)
@@ -69,8 +70,8 @@ def plot (*argv):
     hist = dict()
     for passing, name in zip([False, True], ['fail', 'pass']):
         msk = msk_bkg & (msk_pass if passing else ~msk_pass)
-        HISTSTYLE[passing].update(base)
-        hist[name] = c.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, **HISTSTYLE[passing])
+        histstyle[passing].update(base)
+        hist[name] = c.hist(data.loc[msk, 'm'].values, weights=data.loc[msk, 'weight_test'].values, **histstyle[passing])
         pass
 
     # Ratio plots

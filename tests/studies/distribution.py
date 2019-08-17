@@ -16,8 +16,8 @@ import rootplotting as rp
 
 
 # Global variable definition(s)
-HISTSTYLE[True] ['label'] = "#it{Hbb} jets"
-HISTSTYLE[False]['label'] = "Bkg"
+# HISTSTYLE[True] ['label'] = "#it{Hbb} jets"
+# HISTSTYLE[False]['label'] = "Bkg"
 
 
 @garbage_collect #not enough due to python's limit. might use multi-thread to release the mem.
@@ -90,6 +90,8 @@ def plot (*argv):
 
     # Style
     histstyle = dict(**HISTSTYLE)
+    histstyle[True] ['label'] = "Sig"
+    histstyle[False]['label'] = "Bkg"
     base = dict(bins=bins, alpha=0.5, normalise=True, linewidth=3,label=args.bkg)
 
     # Plots

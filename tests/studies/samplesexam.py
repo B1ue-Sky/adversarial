@@ -19,8 +19,8 @@ import rootplotting as rp
 class samplesChecker (multiprocessing.Process):
 
     # Global variable definition(s)
-    HISTSTYLE[True]['label'] = "#it{Hbb} "
-    HISTSTYLE[False]['label'] = "Dijets"
+    # HISTSTYLE[True]['label'] = "#it{Hbb} "
+    # HISTSTYLE[False]['label'] = "Dijets"
 
     def __init__ (self, vargs):
         """
