@@ -215,11 +215,17 @@ def showsave (f):
         #     print "No saving!!"
         #     print e
         #     return
-        c, args, path = f(*args, **kwargs)
-        if c is None:
-            print "Skip saving..."
+        ret=f(*args, **kwargs)
+        if (ret is not None) and (len(ret)==3):
+            c, args, path = ret
+            if c is not None:
+                print "Plot ready."
+            else:
+                print "No plot, skiping..."
+                return
+        else:
+            "Not plot, skiping..."
             return
-
         # Save
         if args.save:
             if args.debug:
