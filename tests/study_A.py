@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """Script for performing study partA-- load data and save to standalone file. """
-"""input need selected, output is fixed."""
+"""load input from inuput path, output to fixed ./output/stydy_{note}.h5"""
 
 # Basic import(s)
 import re
@@ -55,10 +55,10 @@ def main (args):
 
     # Project import(s)
     from adversarial.models import classifier_model, adversary_model, combined_model, decorrelation_model
-    log.basicConfig(format="%(levelname)s: %(message)s",
-                    level=log.DEBUG if args.debug else
-                    log.INFO if args.verbose else
-                    log.WARNING)
+    # log.basicConfig(format="%(levelname)s: %(message)s",
+    #                 level=log.DEBUG if args.debug else
+    #                 log.INFO if args.verbose else
+    #                 log.WARNING)
 
 
     # Common definitions
@@ -78,7 +78,7 @@ def main (args):
 
     # -- Adversarial neural network (ANN) scan
     lambda_reg  = 10. #should be same with config?
-    #lambda_regs = sorted([1., 3., 10.,100.]) #Allen use 100, but how about train config.jso setting??
+    #lambda_regs = sorted([1., 3., 10.,100.]) #Allen use 100, but how about train config.json setting??
     lambda_regs = sorted([10.])
     ann_vars    = list()
     lambda_strs = list()
@@ -217,8 +217,14 @@ def main (args):
     # # data=data.dropna() #drop all missing value in all output vars,
     # # #note drop1: na in test input, drop2: can't get right score/predict!
     # # # note: all input var for train are already filled!
-    outputFile="output/study.h5"
+    # outputBase=args.output.rstrip("/")+"/"
+    # os.system("mkdir -p "+outputBase)
+    # outputFile=outputBase+"study_{}.h5".format(args.note)
+    outputFile="output/study_{}.h5".format(args.note)
     data.to_hdf(outputFile,"dataset",mode="w",format="fixed")
+    import json
+    with open("output/study_{}.json".format(args.note), 'w') as outfile:
+        json.dump(tagger_features, outfile)
     return 0
 
 # Main function call

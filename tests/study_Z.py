@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """Script for performing study partZ -- examine the input (training/test samples)"""
+"""load from input path and put to out path"""
 
 # Basic import(s)
 # import re

@@ -101,6 +101,7 @@ def parse_args (cmdline_args=sys.argv[1:], backend=False, adversarial=False, plo
     parser.add_argument('--debug', action='store_true', help='Global debug flag')
     parser.add_argument('--max',   action='store', type=int, default=1, help='Global max multithreads')
     parser.add_argument('--bkg', action='store', type=str, default="D", help='Background Type')
+    parser.add_argument('--note', action='store', type=str, default="test", help='suffix of file')
     return parser.parse_args(cmdline_args)
 
 
@@ -138,7 +139,7 @@ def apply_patch (d, u):
 
 
 @profile
-def initialise (args):
+def initialise (args,simple=False):
     """General script to perform any initialisation common to all run scripts.
     Assumes the existence of keys in the namespace corresponding to the common
     `argparse` arguments defined in the common `parse_args` script.
@@ -165,8 +166,8 @@ def initialise (args):
     # Set print level
     log.basicConfig(format="%(levelname)s: %(message)s",
                     level=log.DEBUG if args.debug else
-                    log.INFO if args.verbose else
-                    log.WARNING)
+                    (log.INFO if args.verbose else
+                    log.WARNING))
 
     #  Modify input/output directory names to conform to convention
     if not args.input .endswith('/'): args.input  += '/'
@@ -174,6 +175,9 @@ def initialise (args):
 
     # Make sure output directory exists
     mkdir(args.output)
+
+    if simple: #not need cfg, like in study phase C
+        return args,None
 
     # Load configuration file
     with open(args.config, 'r') as f:

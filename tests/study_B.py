@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """Script for performing study part B -- examine the models (loss and etc, ...)"""
+"""load from fixed ./output/stydy_{note}.h5 and ./models/..., plots to fixed ./output/figures/"""
 
 # Basic import(s)
 import os
@@ -37,10 +38,10 @@ def main (args):
 
     # Initialise
     args, cfg = initialise(args)
-    log.basicConfig(format="%(levelname)s: %(message)s",
-                    level=log.DEBUG if args.debug else
-                    log.INFO if args.verbose else
-                    log.WARNING)
+    # log.basicConfig(format="%(levelname)s: %(message)s",
+    #                 level=log.DEBUG if args.debug else
+    #                 log.INFO if args.verbose else
+    #                 log.WARNING)
 
     # Common definitions
     num_folds   = None #currently no k-folds  validation
@@ -51,7 +52,7 @@ def main (args):
     # Compute entropy of decorrelation variable posterior
     # data, _, _ = load_data(args.input + 'data.h5', train=True, background=True) #for training, should fill N/A
     # Load data
-    tempFile = "output/study.h5"
+    tempFile ="output/study_{}.h5".format(args.note)
     if os.path.exists(tempFile):
         # data = pd.read_hdf(tempFile, "dataset")
         data,_,_=load_data(tempFile,debug=args.debug,study=True)
@@ -156,7 +157,8 @@ def plot_classifier_training_loss (num_folds=None, basedir='models/adversarial/c
     # Save
     # mkdir('figures/')
     # c.save('figures/loss_classifier.pdf')
-    path='figures/loss_classifier.pdf'
+
+    path='output/figures/loss_classifier.pdf'
     return c, args, path
 
 
@@ -364,7 +366,7 @@ def plot_adversarial_training_loss (lambda_reg=10., num_folds=None, pretrain_epo
     # Save
     # mkdir('figures/')
     # c.save('figures/loss_adversarial_lambda{}_{}.pdf'.format(lambda_str, 'full' if num_folds is None else 'cv'))
-    path='figures/loss_adversarial_lambda{}_{}.pdf'.format(lambda_str, 'full' if num_folds is None else 'cv')
+    path='output/figures/loss_adversarial_lambda{}_{}.pdf'.format(lambda_str, 'full' if num_folds is None else 'cv')
     return c, args, path
 
 

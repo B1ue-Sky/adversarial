@@ -120,7 +120,7 @@ def roc (data_, args, features, masscut=False, pt_range=(200*GeV, 2000*GeV)):
     mass_range_srt='__masscut' if masscut else ''
     base = 'figures/roc'+pt_range_str+mass_range_srt
     path=base + ".pdf"
-    if args.debug:
+    if args.debug and False:
         plotROC2(args, data, features, ROCs, AUCs, masscut, pt_range)
     return c, args, path
 

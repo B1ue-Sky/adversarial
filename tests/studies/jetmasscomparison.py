@@ -68,7 +68,7 @@ def jetmasscomparison (data, args, features, eff_sig=50,debug=False):
     c = plot(data, args, features, msks_pass, eff_sig,alive_bkg)
 
     # Perform plotting on individual figures
-    if not debug:
+    if not debug and False:
         plot_individual(data, args, features, msks_pass, eff_sig)
 
     # Output
@@ -378,7 +378,7 @@ def plot_individual (*argv):
                 pass
 
             # Save
-            c.save(path = 'figures/jetmasscomparison__eff_sig_{:d}__{}.pdf'.format(int(eff_sig), 'legend' if first else '{}_{}'.format(*feats)))
+            c.save(path = 'figures/jetmass/jetmasscomparison__eff_sig_{:d}__{}.pdf'.format(int(eff_sig), 'legend' if first else '{}_{}'.format(*feats)))
             pass
         pass  # end temprorary style
 
